@@ -19,9 +19,10 @@ class ReferralRequest(BaseModel):
 @router.post('/upload-notes')
 async def upload_notes(file: UploadFile = File(...)):
     image_bytes = await file.read()
-    extracted_text = process_handwritten_note(image_bytes)
+    ocr_result = process_handwritten_note(image_bytes, filename=file.filename or "note.jpg")
+    extracted_text = ocr_result.get("raw_transcription", "")
     tags = extract_client_tags(extracted_text)
-    return {'extracted_text': extracted_text, 'tags': tags}
+    return {'extracted_text': extracted_text, 'tags': tags, 'ocr_fields': ocr_result}
 
 # Match client to shelters
 @router.post('/match')

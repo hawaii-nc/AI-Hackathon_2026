@@ -1,0 +1,49 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "HTR: process images/ folder (txt + csv)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "htr.ocr_batch",
+      "args": ["--folder", "htr/images", "--format", "both"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "HTR: process images/ folder (csv only)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "htr.ocr_batch",
+      "args": ["--folder", "htr/images", "--format", "csv"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "HTR: process timestamp subfolder (edit args)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "htr.ocr_batch",
+      "args": ["--folder", "htr/images/20260620_120000", "--format", "both"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "FastAPI: run backend server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
