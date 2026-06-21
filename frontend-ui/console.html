@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#F4F1EB;}
+  @keyframes kspin{to{transform:rotate(360deg);}}
+  @keyframes kfade{from{opacity:0;}to{opacity:1;}}
+  @keyframes kmodal{from{opacity:0;transform:translateY(12px) scale(0.985);}to{opacity:1;transform:none;}}
+  textarea::placeholder{color:#A7B0AE;}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#F4F1EB;font-family:'Public Sans',system-ui,sans-serif;color:#19272B;">
+
+  <header style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#FFFFFF;border-bottom:1px solid #E6E1D7;">
+    <div style="display:flex;align-items:center;gap:13px;">
+      <div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:#0E7A66;">
+        <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #FFFFFF;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;line-height:1.12;">
+        <span style="font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Kōkua</span>
+        <span style="font-size:11px;color:#7C8888;letter-spacing:0.01em;">Community care matching</span>
+      </div>
+      <span style="margin-left:4px;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:4px 10px;border-radius:20px;cursor:default;">Hawaiʻi <span style="font-size:9px;opacity:0.6;">▾</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px;">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#7C8888;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#2E9B6E;"></span>
+        <span>Network live · 214 partner orgs</span>
+      </div>
+      <div style="width:1px;height:24px;background:#E6E1D7;"></div>
+      <div style="display:flex;align-items:center;gap:11px;">
+        <div style="text-align:right;line-height:1.25;">
+          <div style="font-size:13px;font-weight:600;color:#16242A;">Leilani Kahale</div>
+          <div style="font-size:11.5px;color:#7C8888;">Outreach Coordinator · DOH</div>
+        </div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">LK</div>
+      </div>
+    </div>
+  </header>
+
+  <main style="display:flex;gap:22px;padding:26px 28px 34px;max-width:1340px;margin:0 auto;align-items:flex-start;">
+
+    <section style="width:382px;flex:none;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(20,40,40,0.04);">
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Intake</div>
+      <h2 style="margin:7px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Describe the situation</h2>
+      <p style="margin:6px 0 16px;font-size:13px;color:#7C8888;line-height:1.5;">Capture the situation <span style="color:#16242A;font-weight:600;">either way below</span> — you don't need to do both. One is enough; more detail sharpens the match.</p>
+
+      <input type="file" id="notes-file" accept="image/*" onChange="{{ onFile }}" style="display:none;" />
+
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+        <span style="flex:none;width:18px;height:18px;border-radius:50%;background:#0E7A66;color:#FFFFFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</span>
+        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#46555A;font-weight:600;">Upload a photo</span>
+        <span style="font-size:10.5px;font-weight:600;color:#9AA6A4;background:#EFECE4;padding:2px 7px;border-radius:5px;">optional</span>
+      </div>
+
+      <sc-if value="{{ ocrIdle }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ triggerUpload }}" style="width:100%;display:flex;align-items:center;gap:11px;text-align:left;background:#FBFAF7;border:1.5px dashed #D8D2C6;border-radius:11px;padding:12px 14px;cursor:pointer;margin-bottom:14px;" style-hover="border-color:#0E7A66;background:#F4F7F5;">
+          <span style="flex:none;width:34px;height:34px;border-radius:9px;background:#EEF2F0;display:flex;align-items:center;justify-content:center;font-size:17px;color:#0E7A66;">↥</span>
+          <span style="min-width:0;">
+            <span style="display:block;font-size:13px;font-weight:600;color:#16242A;">Photo of handwritten notes</span>
+            <span style="display:block;font-size:11.5px;color:#9AA6A4;margin-top:1px;">We'll transcribe it into the box below.</span>
+          </span>
+        </button>
+      </sc-if>
+
+      <sc-if value="{{ ocrReading }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:11px;background:#FBFAF7;border:1px solid #E2DDD3;border-radius:11px;padding:12px 14px;margin-bottom:12px;">
+          <div style="flex:none;width:22px;height:22px;border-radius:50%;border:2.5px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+          <div style="min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:#16242A;">Reading your notes…</div>
+            <div style="font-size:11.5px;color:#9AA6A4;">Transcribing handwriting to text.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ ocrDone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:11px;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:11px;padding:10px 12px;margin-bottom:12px;">
+          {{ ocrThumbEl }}
+          <div style="min-width:0;flex:1;">
+            <div style="font-size:12.5px;font-weight:600;color:#16242A;display:flex;align-items:center;gap:6px;"><span style="color:#1C7A55;font-weight:700;">✓</span> Transcribed from photo</div>
+            <div style="font-size:11.5px;color:#7C8888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ ocrName }}</div>
+          </div>
+          <button onClick="{{ removeOcr }}" style="flex:none;background:none;border:none;color:#9AA6A4;font-size:14px;cursor:pointer;padding:4px;" style-hover="color:#16242A;">✕</button>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:2px 0 12px;">
+        <span style="flex:1;height:1px;background:#E6E1D7;"></span>
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#9AA6A4;text-transform:uppercase;">and / or</span>
+        <span style="flex:1;height:1px;background:#E6E1D7;"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+        <span style="flex:none;width:18px;height:18px;border-radius:50%;background:#0E7A66;color:#FFFFFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</span>
+        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#46555A;font-weight:600;">Type the notes</span>
+      </div>
+
+      <textarea id="intake-notes" style="width:100%;min-height:196px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:14px;line-height:1.6;color:#2A363A;border:1px solid #E2DDD3;border-radius:11px;padding:14px;background:#FBFAF7;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);">Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'</textarea>
+
+      <sc-if value="{{ showSignals }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:16px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px;">
+            <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;white-space:nowrap;">Attributes extracted</div>
+            <div style="font-size:10.5px;color:#B7BEBB;white-space:nowrap;">auto-tagged on match</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;">
+            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Veteran</span>
+            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Substance use</span>
+            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Housing loss</span>
+            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Untreated PTSD</span>
+            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Turned away repeatedly</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <button onClick="{{ findMatches }}" style="width:100%;height:47px;margin-top:18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14.5px;font-weight:600;border-radius:10px;cursor:pointer;box-shadow:0 2px 7px -1px rgba(14,122,102,0.42);" style-hover="background:#0B6655;">Generate attributes &amp; find matches</button>
+      <p style="margin:11px 0 0;text-align:center;font-size:11.5px;color:#9AA6A4;">Tags the situation, then ranks matches · you always make the call.</p>
+    </section>
+
+    <section style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;">
+
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <h2 style="margin:0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Matches</h2>
+            <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">3 found</span>
+          </div>
+          <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility for this situation · updated just now</p>
+          <p style="margin:7px 0 0;font-size:11.5px;color:#A7AFAC;display:flex;align-items:center;gap:6px;"><span style="font-size:13px;">↗</span> Click any match to see contact, point person &amp; people helped there.</p>
+        </div>
+        <sc-if value="{{ showLegend }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:12px;color:#9AA6A4;text-align:right;max-width:320px;line-height:1.45;">Scored across veteran eligibility, clinical fit,<br>housing capacity &amp; proximity.</div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ isAnalyzing }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:54px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
+          <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+          <div style="font-size:15px;font-weight:600;color:#16242A;">Analyzing the situation…</div>
+          <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">Generating attributes from the intake, then scoring compatibility across 214 partner organizations.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMatched }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <article onClick="{{ openVa }}" style="background:#FFFFFF;border:1.5px solid #0E7A66;border-radius:14px;padding:20px 22px 18px;box-shadow:0 12px 32px -18px rgba(14,122,102,0.5);cursor:pointer;" style-hover="background:#F4FAF8;box-shadow:0 16px 38px -16px rgba(14,122,102,0.6);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+              <div style="min-width:0;">
+                <div style="display:inline-flex;align-items:center;gap:6px;background:#0E7A66;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 9px;border-radius:6px;margin-bottom:11px;">Recommended match</div>
+                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">VA Stand Down Outreach</h3>
+                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Veteran-specific · integrated SUD + housing</p>
+                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
+                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#2E9B6E;"></span>0.6 mi · Iwilei, Honolulu</p>
+                </sc-if>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font-family:'Source Serif 4',serif;font-size:36px;font-weight:600;color:#1C7A55;line-height:1;">94%</div>
+                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
+                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:94%;height:100%;background:#2E9B6E;"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Veteran eligibility</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Active substance-use program</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> 3 beds open today</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
+              <div style="font-size:12.5px;color:#7C8888;">Top match on every priority factor for Marcus.</div>
+              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">Draft referral <span style="font-size:15px;">→</span></button>
+            </div>
+          </article>
+
+          <article onClick="{{ openHarbor }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+              <div style="min-width:0;">
+                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Harbor Light Recovery Center</h3>
+                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Strong on substance use · not veteran-specialized</p>
+                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
+                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C79A3A;"></span>1.4 mi · Kakaʻako</p>
+                </sc-if>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#8A6312;line-height:1;">71%</div>
+                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
+                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:71%;height:100%;background:#C79A3A;"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> SUD program</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> No veteran services</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> Waitlist 5–7 days</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
+              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
+            </div>
+          </article>
+
+          <article onClick="{{ openDowntown }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+              <div style="min-width:0;">
+                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Downtown Family Shelter</h3>
+                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">General shelter · no clinical support</p>
+                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
+                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C0705E;"></span>0.9 mi · Chinatown</p>
+                </sc-if>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#9E4B39;line-height:1;">58%</div>
+                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
+                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:58%;height:100%;background:#C0705E;"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Beds available</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> No substance-use support</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> Not equipped for PTSD</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
+              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
+            </div>
+          </article>
+
+        </div>
+      </sc-if>
+
+    </section>
+  </main>
+
+  <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(16,26,29,0.5);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:28px;z-index:50;animation:kfade 0.18s ease;">
+      <div onClick="{{ stop }}" style="width:648px;max-width:94vw;max-height:88vh;overflow:auto;background:#FFFFFF;border-radius:16px;box-shadow:0 30px 80px -20px rgba(10,20,22,0.55);animation:kmodal 0.22s cubic-bezier(.2,.8,.2,1);">
+
+        <div style="padding:24px 26px 0;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+            <div style="min-width:0;">
+              <div style="font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Resource details</div>
+              <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:22px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ detailName }}</h3>
+              <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">{{ detailTagline }}</p>
+              <p style="margin:7px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#2E9B6E;"></span>{{ detailLocation }}</p>
+            </div>
+            <button onClick="{{ closeDetail }}" style="flex:none;width:32px;height:32px;border-radius:50%;border:1px solid #E6E1D7;background:#FFFFFF;color:#7C8888;font-size:16px;line-height:1;cursor:pointer;" style-hover="background:#F6F4EF;">✕</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:18px 0 0;background:#EFEBE2;border-top:1px solid #EFEBE2;border-bottom:1px solid #EFEBE2;">
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Website</div>
+            <a href="{{ detailWebsiteHref }}" target="_blank" rel="noopener" onClick="{{ stop }}" style="display:inline-block;margin-top:4px;font-size:13.5px;font-weight:600;color:#0E7A66;text-decoration:none;" style-hover="text-decoration:underline;">{{ detailWebsite }} ↗</a>
+          </div>
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Point of contact</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPoc }}</div>
+            <div style="font-size:12px;color:#7C8888;">{{ detailPocRole }}</div>
+          </div>
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Phone</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPhone }}</div>
+          </div>
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Current capacity</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailCapacity }}</div>
+          </div>
+        </div>
+
+        <div style="padding:20px 26px 0;">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;margin-bottom:10px;">Services offered</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;">
+            <sc-for list="{{ detailServices }}" as="svc" hint-placeholder-count="4">
+              <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 11px;border-radius:7px;">{{ svc }}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:22px 26px 0;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;">
+            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">People helped here</div>
+            <div style="font-size:12px;color:#7C8888;">{{ detailHelped }} placed in the last 12 months</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <sc-for list="{{ detailPast }}" as="person" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid #F1EEE6;">
+                <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">{{ person.initials }}</div>
+                <div style="min-width:0;flex:1;">
+                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ person.label }}</div>
+                  <div style="font-size:12.5px;color:#7C8888;line-height:1.4;">{{ person.outcome }}</div>
+                </div>
+                <div style="flex:none;font-size:11.5px;color:#A7AFAC;white-space:nowrap;">{{ person.time }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin:10px 0 0;font-size:11px;color:#B7BEBB;">Names anonymized to protect client privacy.</p>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 26px 24px;">
+          <button onClick="{{ closeDetail }}" style="background:none;border:none;color:#7C8888;font-size:13.5px;font-weight:600;cursor:pointer;padding:8px 4px;" style-hover="color:#16242A;">Close</button>
+          <button onClick="{{ referralFromDetail }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">Draft referral <span style="font-size:15px;">→</span></button>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ referralOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(16,26,29,0.5);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:28px;z-index:55;animation:kfade 0.18s ease;">
+      <div onClick="{{ stop }}" style="width:648px;max-width:94vw;max-height:88vh;overflow:auto;background:#FFFFFF;border-radius:16px;box-shadow:0 30px 80px -20px rgba(10,20,22,0.55);animation:kmodal 0.22s cubic-bezier(.2,.8,.2,1);">
+
+        <div style="{{ draftDisplay }}">
+          <div style="padding:22px 24px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+              <div>
+                <div style="font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Draft referral · introduction email</div>
+                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Introduce Marcus to VA Stand Down</h3>
+              </div>
+              <button onClick="{{ closeReferral }}" style="flex:none;width:32px;height:32px;border-radius:50%;border:1px solid #E6E1D7;background:#FFFFFF;color:#7C8888;font-size:16px;line-height:1;cursor:pointer;" style-hover="background:#F6F4EF;">✕</button>
+            </div>
+            <div style="margin-top:11px;font-size:12px;color:#9AA6A4;">AI-drafted introduction, tailored to Marcus's intake. Edit anything before sending.</div>
+          </div>
+          <div style="padding:14px 24px 0;">
+            <div style="border:1px solid #E2DDD3;border-radius:11px;overflow:hidden;background:#FFFFFF;">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
+                <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">To</span>
+                <input defaultValue="outreach@vastanddown.org" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
+                <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">Subject</span>
+                <input defaultValue="Referral and introduction — veteran needs housing + SUD support" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
+              </div>
+              <textarea id="referral-draft" style="display:block;width:100%;min-height:222px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">Hello VA Stand Down Outreach team,
+
+I'm reaching out on behalf of Marcus (52), an Army veteran who served two combat tours. Three weeks ago he lost his apartment following a relapse, and he's now sleeping near the train depot. He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away — understandably, he's wary of being passed from place to place.
+
+Your integrated veteran housing and substance-use program is the right fit for where he is right now. Marcus wants help. He needs one door that won't close on him.
+
+Could you confirm an intake slot for today? I can bring him in this afternoon.
+
+With gratitude,
+Leilani Kahale
+Outreach Coordinator, Hawaiʻi Department of Health</textarea>
+          </div>
+          <div style="margin:16px 24px 0;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+            <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#0E7A66;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">✓</div>
+            <div style="min-width:0;">
+              <div style="font-size:13.5px;font-weight:600;color:#16242A;">Reviewed by you before anything is sent</div>
+              <div style="font-size:12.5px;color:#6B7A7C;line-height:1.45;margin-top:2px;">Kōkua never contacts an organization without your approval. Edit anything above.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px 22px;">
+            <button onClick="{{ closeReferral }}" style="background:none;border:none;color:#7C8888;font-size:13.5px;font-weight:600;cursor:pointer;padding:8px 4px;" style-hover="color:#16242A;">Cancel</button>
+            <div style="display:flex;gap:10px;">
+              <button onClick="{{ focusDraft }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:10px 17px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Edit draft</button>
+              <button onClick="{{ approveSend }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:10px 20px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">Approve &amp; send <span style="font-size:15px;">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="{{ sendingDisplay }}">
+          <div style="padding:64px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
+            <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to VA Stand Down Outreach…</div>
+            <div style="font-size:13px;color:#7C8888;">Delivering your reviewed referral securely.</div>
+          </div>
+        </div>
+
+        <div style="{{ sentDisplay }}">
+          <div style="padding:46px 40px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#E9F1EC;border:1.5px solid #2E9B6E;color:#1C7A55;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;">✓</div>
+            <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Referral sent</h3>
+            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">VA Stand Down Outreach received your introduction and accepted the referral.</p>
+            <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">Marcus has a bed tonight.</p>
+            <div style="display:flex;align-items:center;gap:9px;margin:22px 0 24px;">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Sent</span>
+              <span style="width:14px;height:1px;background:#D2E5DA;"></span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Received</span>
+              <span style="width:14px;height:1px;background:#D2E5DA;"></span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Accepted</span>
+            </div>
+            <button onClick="{{ closeReferral }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer;" style-hover="background:#0B6655;">Back to matches</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showSignals&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
+  &quot;showLegend&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
+  &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
+}">
+class Component extends DCLogic {
+  MARCUS_TEXT = "Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'";
+
+  getOrgs = () => ({
+    va: {
+      name: 'VA Stand Down Outreach',
+      tagline: 'Veteran-specific · integrated SUD + housing',
+      location: '0.6 mi · Iwilei, Honolulu',
+      website: 'vastanddown.org',
+      poc: 'James Akana', pocRole: 'Veteran Intake Lead',
+      phone: '(808) 555-0142',
+      capacity: '3 beds open today',
+      services: ['Veteran housing', 'Substance-use treatment', 'PTSD & mental health', 'VA benefits navigation', 'Peer support'],
+      helped: 137,
+      past: [
+        { initials: 'R.T.', label: 'Navy veteran, 48', outcome: 'Housed + enrolled in SUD program', time: '2 weeks ago' },
+        { initials: 'D.M.', label: 'Army veteran, 61', outcome: 'Transitional housing + PTSD care', time: '1 month ago' },
+        { initials: 'K.W.', label: 'Marine veteran, 39', outcome: 'Detox completed, now in stable housing', time: '2 months ago' },
+      ],
+    },
+    harbor: {
+      name: 'Harbor Light Recovery Center',
+      tagline: 'Strong on substance use · not veteran-specialized',
+      location: '1.4 mi · Kakaʻako',
+      website: 'harborlighthi.org',
+      poc: 'Tina Lopez', pocRole: 'Admissions Coordinator',
+      phone: '(808) 555-0178',
+      capacity: 'Waitlist 5–7 days',
+      services: ['Residential SUD treatment', 'Outpatient recovery', 'Group counseling', 'Relapse prevention'],
+      helped: 204,
+      past: [
+        { initials: 'A.S.', label: 'Resident, 34', outcome: 'Completed 90-day program, sober 8 months', time: '3 weeks ago' },
+        { initials: 'J.P.', label: 'Resident, 52', outcome: 'Outpatient recovery, employed', time: '6 weeks ago' },
+        { initials: 'M.K.', label: 'Resident, 29', outcome: 'Graduated to sober-living housing', time: '2 months ago' },
+      ],
+    },
+    downtown: {
+      name: 'Downtown Family Shelter',
+      tagline: 'General shelter · no clinical support',
+      location: '0.9 mi · Chinatown',
+      website: 'downtownfamilyshelter.org',
+      poc: 'Grace Tanaka', pocRole: 'Shelter Manager',
+      phone: '(808) 555-0119',
+      capacity: 'Beds available tonight',
+      services: ['Emergency shelter', 'Family housing', 'Meals & basic needs', 'Case management referral'],
+      helped: 318,
+      past: [
+        { initials: 'L.C.', label: 'Family of four', outcome: 'Sheltered, transitioned to rental aid', time: '1 week ago' },
+        { initials: 'B.N.', label: 'Adult, 45', outcome: 'Emergency shelter, job placement', time: '3 weeks ago' },
+        { initials: 'S.R.', label: 'Single parent, 31', outcome: 'Housed with childcare support', time: '5 weeks ago' },
+      ],
+    },
+  });
+
+  state = { stage: 'matched', referralOpen: false, referralStage: 'draft', ocrStage: 'idle', ocrThumb: null, ocrName: '', detail: null, detailShown: false };
+
+  openVa = () => this.setState({ detail: this.getOrgs().va, detailShown: true });
+  openHarbor = () => this.setState({ detail: this.getOrgs().harbor, detailShown: true });
+  openDowntown = () => this.setState({ detail: this.getOrgs().downtown, detailShown: true });
+  closeDetail = () => this.setState({ detail: null, detailShown: false });
+  backdropDetail = (e) => { if (e.target === e.currentTarget) this.setState({ detail: null, detailShown: false }); };
+  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft' });
+
+  triggerUpload = () => { const i = document.getElementById('notes-file'); if (i) i.click(); };
+  onFile = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      this.setState({ ocrStage: 'reading', ocrThumb: ev.target.result, ocrName: f.name });
+      clearTimeout(this._ocr);
+      this._ocr = setTimeout(() => {
+        const el = document.getElementById('intake-notes');
+        if (el) { el.value = this.MARCUS_TEXT; }
+        this.setState({ ocrStage: 'done' });
+      }, 1700);
+    };
+    reader.readAsDataURL(f);
+    e.target.value = '';
+  };
+  removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '' });
+
+  findMatches = () => {
+    clearTimeout(this._t);
+    this.setState({ stage: 'analyzing' });
+    this._t = setTimeout(() => this.setState({ stage: 'matched' }), 1400);
+  };
+  openReferral = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
+  closeReferral = () => this.setState({ referralOpen: false });
+  backdropReferral = (e) => { if (e.target === e.currentTarget) this.setState({ referralOpen: false }); };
+  approveSend = () => {
+    clearTimeout(this._t2);
+    this.setState({ referralStage: 'sending' });
+    this._t2 = setTimeout(() => this.setState({ referralStage: 'sent' }), 1700);
+  };
+  focusDraft = () => {
+    const el = document.getElementById('referral-draft');
+    if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; }
+  };
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._ocr); }
+
+  renderVals() {
+    const st = this.state;
+    const matched = st.stage === 'matched';
+    const d = st.detail || {};
+    return {
+      detailOpen: st.detailShown,
+      detailName: d.name,
+      detailTagline: d.tagline,
+      detailLocation: d.location,
+      detailWebsite: d.website,
+      detailWebsiteHref: d.website ? 'https://' + d.website : '#',
+      detailPoc: d.poc,
+      detailPocRole: d.pocRole,
+      detailPhone: d.phone,
+      detailCapacity: d.capacity,
+      detailServices: d.services || [],
+      detailHelped: d.helped,
+      detailPast: d.past || [],
+      openVa: this.openVa,
+      openHarbor: this.openHarbor,
+      openDowntown: this.openDowntown,
+      closeDetail: this.closeDetail,
+      backdropDetail: this.backdropDetail,
+      backdropReferral: this.backdropReferral,
+      referralFromDetail: this.referralFromDetail,
+      isAnalyzing: st.stage === 'analyzing',
+      isMatched: matched,
+      referralOpen: st.referralOpen,
+      draftDisplay: { display: st.referralStage === 'draft' ? 'block' : 'none' },
+      sendingDisplay: { display: st.referralStage === 'sending' ? 'block' : 'none' },
+      sentDisplay: { display: st.referralStage === 'sent' ? 'block' : 'none' },
+      showSignals: (this.props.showSignals ?? true) && matched,
+      showLegend: this.props.showLegend ?? true,
+      showProximity: this.props.showProximity ?? true,
+      ocrIdle: st.ocrStage === 'idle',
+      ocrReading: st.ocrStage === 'reading',
+      ocrDone: st.ocrStage === 'done',
+      ocrThumbEl: st.ocrThumb ? React.createElement('img', { src: st.ocrThumb, style: { flex: 'none', width: '38px', height: '38px', borderRadius: '7px', objectFit: 'cover', border: '1px solid #DCE8E3' } }) : null,
+      ocrName: st.ocrName,
+      triggerUpload: this.triggerUpload,
+      onFile: this.onFile,
+      removeOcr: this.removeOcr,
+      findMatches: this.findMatches,
+      openReferral: this.openReferral,
+      closeReferral: this.closeReferral,
+      approveSend: this.approveSend,
+      focusDraft: this.focusDraft,
+      stop: this.stop,
+    };
+  }
+}
+</script>
+</body>
+</html>

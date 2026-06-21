@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;scroll-behavior:smooth;}
+  body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#F4F1EB;}
+  #how,#solution{scroll-margin-top:86px;}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#F4F1EB;font-family:'Public Sans',system-ui,sans-serif;color:#16242A;">
+
+  <nav style="position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(244,241,235,0.82);backdrop-filter:blur(10px);border-bottom:1px solid #E6E1D7;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:#0E7A66;">
+        <div style="width:12px;height:12px;border-radius:50%;border:2.5px solid #FFFFFF;"></div>
+      </div>
+      <span style="font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Kōkua</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px;">
+      <a href="#solution" style="text-decoration:none;color:#46555A;font-size:14px;font-weight:600;">How it works</a>
+      <a href="Kōkua%20Console.dc.html" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;background:#0E7A66;color:#FFFFFF;font-size:14px;font-weight:600;padding:9px 18px;border-radius:9px;" style-hover="background:#0B6655;">Open the console <span style="font-size:15px;">→</span></a>
+    </div>
+  </nav>
+
+  <section style="max-width:1180px;margin:0 auto;padding:78px 40px 88px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:60px;align-items:center;">
+    <div>
+      <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#0E7A66;font-weight:700;">Community care matching · Hawaiʻi</div>
+      <h1 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:56px;line-height:1.05;letter-spacing:-0.025em;font-weight:600;color:#16242A;text-wrap:balance;">Help that finds the right door, the first time.</h1>
+      <p style="margin:24px 0 0;font-size:18px;line-height:1.62;color:#46555A;max-width:31em;">Community health workers carry people through their worst days. Kōkua matches each person to the organizations that genuinely fit their situation — and drafts the introduction — so no one has to be passed around.</p>
+      <div style="display:flex;align-items:center;gap:24px;margin-top:32px;">
+        <a href="Kōkua%20Console.dc.html" style="display:inline-flex;align-items:center;gap:9px;text-decoration:none;background:#0E7A66;color:#FFFFFF;font-size:15px;font-weight:600;padding:14px 26px;border-radius:11px;box-shadow:0 4px 14px -4px rgba(14,122,102,0.5);" style-hover="background:#0B6655;">Open the console <span style="font-size:16px;">→</span></a>
+        <a href="#problem" style="text-decoration:none;color:#16242A;font-size:15px;font-weight:600;border-bottom:1.5px solid #C9C2B4;padding-bottom:2px;" style-hover="border-color:#0E7A66;color:#0E7A66;">See the problem</a>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <svg viewBox="0 0 480 320" style="width:100%;height:auto;max-width:520px;font-family:'Public Sans',sans-serif;">
+        <text x="16" y="26" font-size="11" letter-spacing="2.5" fill="#9AA6A4" font-weight="700">TODAY</text>
+        <line x1="53" y1="78" x2="142" y2="56" stroke="#D8D2C6" stroke-width="2"/>
+        <line x1="158" y1="56" x2="228" y2="96" stroke="#D8D2C6" stroke-width="2"/>
+        <line x1="244" y1="96" x2="314" y2="56" stroke="#D8D2C6" stroke-width="2"/>
+        <line x1="330" y1="56" x2="400" y2="96" stroke="#D8D2C6" stroke-width="2"/>
+        <line x1="416" y1="96" x2="452" y2="96" stroke="#D8D2C6" stroke-width="2" stroke-dasharray="2 5"/>
+        <circle cx="44" cy="78" r="9" fill="#0E7A66"/>
+        <text x="44" y="103" font-size="11" fill="#7C8888" text-anchor="middle">Marcus</text>
+        <circle cx="150" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+        <text x="150" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        <circle cx="236" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+        <text x="236" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        <circle cx="322" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+        <text x="322" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        <circle cx="408" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+        <text x="408" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        <text x="460" y="92" font-size="14" fill="#B7BEBB" text-anchor="middle">?</text>
+        <text x="240" y="142" font-size="12" fill="#9AA6A4" text-anchor="middle">Four shelters already turned him away.</text>
+        <line x1="16" y1="180" x2="464" y2="180" stroke="#E6E1D7" stroke-width="1"/>
+        <text x="16" y="212" font-size="11" letter-spacing="2.5" fill="#0E7A66" font-weight="700">WITH KŌKUA</text>
+        <circle cx="44" cy="252" r="9" fill="#0E7A66"/>
+        <text x="44" y="277" font-size="11" fill="#7C8888" text-anchor="middle">Marcus</text>
+        <line x1="53" y1="252" x2="285" y2="252" stroke="#0E7A66" stroke-width="2.5"/>
+        <circle cx="300" cy="252" r="13" fill="#0E7A66"/>
+        <text x="300" y="257" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">✓</text>
+        <text x="322" y="248" font-size="13" fill="#16242A" font-weight="700">94% compatibility</text>
+        <text x="322" y="267" font-size="11" fill="#7C8888">VA Stand Down Outreach</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="problem" style="max-width:1180px;margin:0 auto;padding:40px 40px 92px;">
+    <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#9AA6A4;font-weight:700;">The problem</div>
+    <h2 style="margin:16px 0 0;font-family:'Source Serif 4',serif;font-size:40px;line-height:1.1;letter-spacing:-0.02em;font-weight:600;color:#16242A;max-width:18em;text-wrap:balance;">Meeting someone in crisis is the easy part.</h2>
+    <p style="margin:20px 0 0;font-size:17px;line-height:1.65;color:#46555A;max-width:42em;">Then comes the maze. Dozens of organizations, each with different eligibility rules and capacity that changes by the day. Finding the one that fits — today, for this person — can take hours of phone calls. And every wrong turn costs something that's hard to win back: their trust.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:64px;border-top:1px solid #E6E1D7;">
+      <div style="padding:30px 30px 8px 0;">
+        <span style="display:inline-block;width:12px;height:12px;border:2px solid #0E7A66;border-radius:50%;"></span>
+        <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">Different eligibility</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Veteran-only. Women-only. Sober-only. The rules rarely match the person standing in front of you.</p>
+      </div>
+      <div style="padding:30px 30px 8px;border-left:1px solid #E6E1D7;">
+        <span style="display:inline-block;width:11px;height:11px;border:2px solid #0E7A66;transform:rotate(45deg);"></span>
+        <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">Shifting capacity</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Beds open and close by the hour. Yesterday's answer is already wrong by the time you call.</p>
+      </div>
+      <div style="padding:30px 0 8px 30px;border-left:1px solid #E6E1D7;">
+        <span style="display:inline-block;width:11px;height:11px;background:#0E7A66;"></span>
+        <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">No shared map</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">The network lives in one worker's memory. When they're out, the knowledge walks out the door too.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="solution" style="background:#14302B;color:#EAF3F0;">
+    <div style="max-width:1180px;margin:0 auto;padding:90px 40px;display:grid;grid-template-columns:0.92fr 1.08fr;gap:60px;align-items:center;">
+      <div>
+        <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#4FA98F;font-weight:700;">The shift</div>
+        <h2 style="margin:16px 0 0;font-family:'Source Serif 4',serif;font-size:40px;line-height:1.12;letter-spacing:-0.02em;font-weight:600;color:#F3F0E8;text-wrap:balance;">Kōkua reads the whole situation — and finds the fit.</h2>
+        <p style="margin:22px 0 0;font-size:17px;line-height:1.66;color:#B6C7C1;max-width:34em;">From a photo of handwritten notes or a few typed lines, Kōkua tags what matters — veteran status, clinical needs, housing, eligibility, proximity — then scores compatibility against every nearby resource. Ranked, with the reasoning shown, so the worker stays in command.</p>
+      </div>
+      <div style="display:flex;justify-content:center;">
+        <svg viewBox="0 0 520 360" style="width:100%;height:auto;max-width:560px;font-family:'Public Sans',sans-serif;">
+          <line x1="150" y1="70" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
+          <line x1="150" y1="140" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
+          <line x1="150" y1="210" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
+          <line x1="150" y1="280" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
+          <line x1="150" y1="210" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" opacity="0.14"/>
+          <line x1="150" y1="280" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" opacity="0.14"/>
+          <line x1="150" y1="280" x2="370" y2="300" stroke="#CFE0DA" stroke-width="1.5" opacity="0.12"/>
+          <text x="132" y="74" font-size="13" fill="#AFC4BD" text-anchor="end">Veteran</text>
+          <circle cx="150" cy="70" r="5" fill="#4FA98F"/>
+          <text x="132" y="144" font-size="13" fill="#AFC4BD" text-anchor="end">Untreated PTSD</text>
+          <circle cx="150" cy="140" r="5" fill="#4FA98F"/>
+          <text x="132" y="214" font-size="13" fill="#AFC4BD" text-anchor="end">Substance use</text>
+          <circle cx="150" cy="210" r="5" fill="#4FA98F"/>
+          <text x="132" y="284" font-size="13" fill="#AFC4BD" text-anchor="end">Housing loss</text>
+          <circle cx="150" cy="280" r="5" fill="#4FA98F"/>
+          <circle cx="370" cy="96" r="10" fill="#34BD95"/>
+          <text x="370" y="101" font-size="11" fill="#0B2A23" text-anchor="middle" font-weight="700">✓</text>
+          <text x="390" y="92" font-size="14" fill="#EAF3F0" font-weight="700">VA Stand Down</text>
+          <text x="390" y="110" font-size="12" fill="#34BD95" font-weight="600">94% compatibility</text>
+          <circle cx="370" cy="210" r="6" fill="#C79A3A"/>
+          <text x="390" y="206" font-size="13" fill="#C9D6D1">Harbor Light Recovery</text>
+          <text x="390" y="223" font-size="12" fill="#D7B873">71%</text>
+          <circle cx="370" cy="300" r="6" fill="#C0705E"/>
+          <text x="390" y="296" font-size="13" fill="#C9D6D1">Downtown Shelter</text>
+          <text x="390" y="313" font-size="12" fill="#D49B8C">58%</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" style="max-width:1180px;margin:0 auto;padding:92px 40px;">
+    <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#9AA6A4;font-weight:700;">How it works</div>
+    <h2 style="margin:16px 0 0;font-family:'Source Serif 4',serif;font-size:38px;line-height:1.12;letter-spacing:-0.02em;font-weight:600;color:#16242A;">Three steps. The worker decides every one.</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid #E6E1D7;">
+      <div style="padding:34px 32px 0 0;">
+        <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">01</div>
+        <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Describe</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Snap a photo of your handwritten notes or type a few lines. Kōkua turns it into structured needs.</p>
+      </div>
+      <div style="padding:34px 32px 0;border-left:1px solid #E6E1D7;">
+        <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">02</div>
+        <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Match</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">A compatibility model ranks nearby organizations by how well they truly fit — not just who has a bed.</p>
+      </div>
+      <div style="padding:34px 0 0 32px;border-left:1px solid #E6E1D7;">
+        <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">03</div>
+        <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Refer</h3>
+        <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Approve an AI-drafted introduction email. You always review before anything is sent.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:860px;margin:0 auto;padding:40px 40px 104px;text-align:center;">
+    <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#9AA6A4;font-weight:700;">The point</div>
+    <p style="margin:22px 0 0;font-family:'Source Serif 4',serif;font-size:46px;line-height:1.12;letter-spacing:-0.02em;font-weight:600;color:#16242A;text-wrap:balance;">Marcus has a bed tonight.</p>
+    <p style="margin:20px auto 0;font-size:17px;line-height:1.65;color:#46555A;max-width:32em;">The right match, made in minutes, by the worker who actually knows him. That's the whole product — and it's ready for Hawaiʻi today, built to scale to every county after.</p>
+    <a href="Kōkua%20Console.dc.html" style="display:inline-flex;align-items:center;gap:9px;text-decoration:none;background:#0E7A66;color:#FFFFFF;font-size:15px;font-weight:600;padding:14px 28px;border-radius:11px;margin-top:34px;box-shadow:0 4px 14px -4px rgba(14,122,102,0.5);" style-hover="background:#0B6655;">Open the console <span style="font-size:16px;">→</span></a>
+  </section>
+
+  <footer style="border-top:1px solid #E6E1D7;">
+    <div style="max-width:1180px;margin:0 auto;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <div style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#0E7A66;"><div style="width:10px;height:10px;border-radius:50%;border:2px solid #FFFFFF;"></div></div>
+        <span style="font-size:13px;color:#7C8888;">Kōkua · Community care matching · Built for Hawaiʻi, ready to scale.</span>
+      </div>
+      <a href="Kōkua%20Console.dc.html" style="text-decoration:none;color:#0E7A66;font-size:13.5px;font-weight:600;">Open the console →</a>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>
