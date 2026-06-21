@@ -1,0 +1,6 @@
+
+backend/.env
+frontend-ui/uploads/
+
+**/__pycache__/
+*.pyc
