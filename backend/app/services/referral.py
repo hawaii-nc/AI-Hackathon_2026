@@ -18,7 +18,7 @@ client = genai.Client(api_key=GEMINI_API_KEY) if (genai and GEMINI_API_KEY) else
 def generate_referral(client_profile: dict, shelter: dict) -> str:
     """Formal referral letter (used by the /referral route)."""
     response = client.models.generate_content(
-        model='gemini-2.0-flash',
+        model='gemini-2.5-flash',
         contents=f'You are a professional social worker assistant generating referral letters. Write clearly, professionally, and with zero bias. Do not include race, ethnicity, religion, or any protected characteristics. Focus only on service needs and resource fit. Client needs: {client_profile.get("needs")} Urgency: {client_profile.get("urgency")} Has children: {client_profile.get("has_children")} Veteran: {client_profile.get("veteran")} Referring to: Organization: {shelter.get("name")} Address: {shelter.get("address")}, {shelter.get("city")} Phone: {shelter.get("phone")} Type: {shelter.get("type")} Write a professional referral letter.'
     )
     return response.text
@@ -119,7 +119,7 @@ def _llm_draft(client_profile: dict, shelter: dict, sender: dict) -> dict:
         "and a signature."
     )
     response = client.models.generate_content(
-        model='gemini-2.0-flash',
+        model='gemini-2.5-flash',
         contents=prompt,
     )
     raw = _strip_code_fences(response.text)
