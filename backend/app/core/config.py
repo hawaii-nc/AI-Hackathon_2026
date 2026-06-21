@@ -14,5 +14,6 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 # Server-side writes (e.g. patient_raw) use this when present — it bypasses RLS.
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+
 GOOGLE_PROJECT_ID = os.getenv("GOOGLE_PROJECT_ID")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")

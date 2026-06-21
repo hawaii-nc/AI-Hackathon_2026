@@ -1,0 +1,214 @@
+===========================================================================
+HANDOVER - Confidence / Compatibility Scoring + Score-Aware Email
+===========================================================================
+Project:            C:\Users\ninja\Desktop\AI-Hackathon_2026  (backend = Python/FastAPI)
+Supabase project:   krzfxnarxnhdjsqvjprg
+Last updated:       2026-06-21
+
+
+---------------------------------------------------------------------------
+WHAT THIS FEATURE DOES
+---------------------------------------------------------------------------
+For every patient (from the handwritten-note image scanner) and every shelter
+(service), score how well they fit on two axes, save the results as two tables,
+and let a case worker fire a Gemini-drafted referral email to a *selected*
+shelter that cross-references the patient's info and the parameter match.
+
+Pipeline:
+
+  patient_raw (OCR text)   --extract-->  structured patient params
+  services_parameters.csv  --load----->  structured service params
+                     \                    /
+                      \--- scoring.py ---/   per (patient x service):
+                            confidence    = UNWEIGHTED mean of matched rules (0-100)
+                            compatibility = WEIGHTED mean (PARAM_WEIGHTS)     (0-100)
+                                  |
+                                  v
+              score_store.py  -> CSVs + .sql files + Supabase tables
+                                  |
+                                  v
+      referral.py draft_patient_referral_email() -> Gemini email for chosen shelter
+
+- confidence    = "how many of the parameters we could check actually line up"
+                  (every rule counts equally).
+- compatibility = same comparison, but each rule has an arbitrary importance
+                  weight (gender/age/sobriety/DV ~9-10, pets ~3). Edit
+                  PARAM_WEIGHTS in backend/app/services/scoring.py to tune.
+- Each rule evaluates to 1.0 (match) / 0.0 (hard mismatch) / None (n/a or
+  unknown -> skipped from BOTH scores). Rules live in scoring.RULES.
+
+
+---------------------------------------------------------------------------
+CURRENT STATUS
+---------------------------------------------------------------------------
+WORKS + VERIFIED (offline and with live Gemini)
+  - Offline scoring end-to-end (heuristic param extraction) -> writes CSVs + SQL.
+  - Live Gemini patient param extraction (param_source: "ai").
+  - Live Gemini score-aware email (draft_patient_referral_email, status: "ai")
+    - references patient facts + matched intake factors, never prints raw scores.
+  - The matrices differentiate correctly (e.g. active-substance-use patient is
+    penalized at sobriety-required shelters; a woman scores 0 at a men-only shelter).
+  - All new/modified files byte-compile.
+
+NOT DONE / BLOCKED
+  - Creating + filling the Supabase tables from Python is blocked on ONE missing
+    credential (see THE BLOCKER + NEXT STEPS). The code is written and ready;
+    --push just has no DDL credential to use.
+  - Real patient data: the demo uses 3 MOCK patients. The live path
+    (score_service.load_patients_from_supabase) reads patient_raw but needs the
+    `supabase` package installed.
+  - No frontend wiring yet.
+
+
+---------------------------------------------------------------------------
+THE BLOCKER (read this first)
+---------------------------------------------------------------------------
+DDL (CREATE TABLE) cannot go through the `supabase` Python client or ANY API key
+- not the anon key, not the service-role key. PostgREST (the data API) only does
+rows/cells (select/insert/update/upsert), never table creation. This is NOT a
+permission you can toggle.
+
+To create tables from Python you must use ONE of two *different* credentials,
+added to backend/.env. The code auto-detects whichever is present
+(score_store.run_sql -> prefers DB URL, then Management API):
+
+  Option A - SUPABASE_ACCESS_TOKEN  (Management API personal access token)
+    * No install needed (uses httpx, already installed).
+    * Account-wide token. Get at:
+        https://supabase.com/dashboard/account/tokens
+    * .env line:
+        SUPABASE_ACCESS_TOKEN=sbp_xxxxxxxxxxxxxxxx
+
+  Option B - SUPABASE_DB_URL  (direct Postgres connection URI)
+    * Needs:  pip install psycopg2-binary
+    * Project-scoped. Dashboard -> Settings -> Database -> Connection string -> URI.
+    * .env line:
+        SUPABASE_DB_URL=postgresql://postgres:<db-password>@db.krzfxnarxnhdjsqvjprg.supabase.co:5432/postgres
+    * If db.<ref>.supabase.co hangs on Windows (IPv6-only on some projects), use
+      the "Session pooler" URI shown on that same Database settings page instead.
+
+As of this handover, backend/.env contains ONLY SUPABASE_URL and SUPABASE_ANON_KEY
+- neither DDL credential, nor the service-role key, is in the file yet.
+
+
+---------------------------------------------------------------------------
+NEXT STEPS (to finish)
+---------------------------------------------------------------------------
+1. Pick a credential and add it to backend/.env (see THE BLOCKER above).
+
+2. Create + fill the tables (one command, run from backend/):
+       python score_patients_local.py --push                 # layout=charts (default)
+       python score_patients_local.py --push --layout matrix # patients-as-rows instead
+       python score_patients_local.py --push --layout all     # both layouts
+   --push runs score_store.create_and_fill_tables(), which builds the generated
+   create+insert SQL and runs it via the credential above. Re-runnable (upserts).
+
+3. (Optional) Use real patients instead of mocks:  pip install supabase
+   then call score_service.compute_and_store(), or POST /api/scores/compute
+   (needs the full FastAPI server, which also needs `supabase` to boot).
+
+4. (Optional) Wire the frontend to POST /api/referral/email-for-service
+   (body: service_name + patient_name or patient dict; send: true to email).
+
+
+---------------------------------------------------------------------------
+TABLE LAYOUTS (two options, both generated)
+---------------------------------------------------------------------------
+"matrix"  (backend/sql/score_seed.sql, tables: confidence / compatibility)
+    rows = patients, columns = services. Column names are sanitized
+    (maui_rescue_mission); the service_columns lookup table maps id -> human name.
+
+"charts"  (backend/sql/compatibility_chart.sql, tables: "confidence chart" /
+           "compatibility chart")
+    rows = services, columns = profile names. This is the layout last requested
+    (services down the first column, profile names as the header row).
+    NOTE: a table name with a space MUST be double-quoted everywhere:
+        select * from "compatibility chart";
+    Unquoted is a syntax error (this is what made an earlier manual paste "fail").
+
+CSV mirrors (always written, no network needed):
+    backend/confidence_scores.csv, backend/compatibility_scores.csv
+    (first column "patient", one column per service).
+
+
+---------------------------------------------------------------------------
+FILES
+---------------------------------------------------------------------------
+NEW (this session)
+  backend/app/services/service_params.py
+      Load services_parameters.csv -> service params.
+  backend/app/services/patient_params.py
+      OCR text -> structured patient params (Gemini + keyword-heuristic fallback).
+      extract_patient_params(ocr_text, name, use_llm).
+  backend/app/services/scoring.py
+      Rules engine. PARAM_WEIGHTS, RULES, score_patient_service, build_matrices.
+  backend/app/services/score_store.py
+      Persistence. CSV writers, DDL/seed/chart SQL generators, and the DDL runners
+      (run_sql_via_postgres, run_sql_via_management_api, run_sql, create_and_fill_tables).
+  backend/app/services/score_service.py
+      Orchestration (load patients/services, compute, store, single-pair scoring).
+  backend/score_patients_local.py
+      Offline demo CLI (mock patients). Flags: --llm, --supabase, --push, --layout,
+      --email "<service>", --patient "<name>", --top N.
+  Generated: backend/sql/score_tables.sql, backend/sql/score_seed.sql,
+             backend/sql/compatibility_chart.sql,
+             backend/confidence_scores.csv, backend/compatibility_scores.csv.
+
+MODIFIED
+  backend/app/services/referral.py
+      Added draft_patient_referral_email() + helpers (_patient_to_profile,
+      _fit_lines, _llm_draft_patient). Existing draft_referral_email untouched.
+  backend/app/api/routes.py
+      Added POST /api/scores/compute and POST /api/referral/email-for-service
+      + request models. Existing routes untouched.
+  backend/app/core/config.py
+      Added SUPABASE_DB_URL, SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_REF.
+
+
+---------------------------------------------------------------------------
+HOW TO RUN / TEST  (from backend/, global Python 3.12 - the .venv is broken)
+---------------------------------------------------------------------------
+  python score_patients_local.py
+      offline, heuristic params
+  python score_patients_local.py --llm
+      Gemini param extraction
+  python score_patients_local.py --llm --email "Maui Rescue Mission" --patient "Maria Santos"
+      draft a score-aware email (saved to backend/outbox/, nothing sent)
+  python score_patients_local.py --push
+      create + fill tables (needs a DDL credential in .env)
+
+
+---------------------------------------------------------------------------
+ENVIRONMENT GOTCHAS
+---------------------------------------------------------------------------
+- backend/.venv is broken (no python.exe) -> use global Python 3.12 (`python`).
+- Global Python HAS: google.genai, dotenv, fastapi, httpx, requests.
+  Global Python is MISSING: supabase, psycopg2/psycopg, sqlalchemy, asyncpg.
+  => the full FastAPI server won't boot locally without `pip install supabase`;
+     the standalone score_patients_local.py works fine.
+- GEMINI_API_KEY in .env WORKS now (gemini-2.5-flash) - the old "quota 0 / 429"
+  is no longer happening. Both param extraction and email drafting verified live.
+- The anon key in .env (sb_publishable_...) returns 401 Invalid API key from
+  PostgREST (both apikey-only and apikey+Bearer). It looks stale - grab a fresh
+  key from Dashboard -> Settings -> API. This would also affect the existing app's
+  Supabase reads.
+- Console is cp1252 - keep print() output ASCII (no emoji/em-dashes); emoji is
+  fine inside UTF-8 files.
+- .env is gitignored; safe to store secrets there.
+
+
+---------------------------------------------------------------------------
+QUICK REFERENCE - key functions
+---------------------------------------------------------------------------
+- Build both matrices:
+    scoring.build_matrices(patients, services)
+    -> {services, patients, confidence{patient}{service}, compatibility{patient}{service}}
+- Score one pair (with per-rule breakdown):
+    scoring.score_patient_service(patient, service)
+- Create + fill Supabase tables:
+    score_store.create_and_fill_tables(matrices, layout="charts"|"matrix"|"all")
+- Run arbitrary SQL (auto-pick credential):
+    score_store.run_sql(sql)
+- Draft score-aware email:
+    referral.draft_patient_referral_email(patient, shelter, scores=..., sender=..., use_llm=True)
+===========================================================================
