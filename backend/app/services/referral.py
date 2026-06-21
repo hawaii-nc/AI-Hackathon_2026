@@ -1,16 +1,22 @@
 import json
 
-from google import genai
+# Import is crash-proof: if the package isn't installed, the module still loads
+# and the placeholder path below is used instead of erroring.
+try:
+    from google import genai
+except ModuleNotFoundError:
+    genai = None
+
 from app.core.config import GEMINI_API_KEY
 
-# Only build a real client if we actually have a key. This lets the module be
-# imported (and the template fallback used) on a laptop with no .env, so the
-# whole flow can be tested locally without keys or AWS.
-client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+# Only build a real client if the package AND a key are both present. Lets the
+# module be imported (and the placeholder used) with no key / no quota / no
+# package, so the email flow never hard-fails locally.
+client = genai.Client(api_key=GEMINI_API_KEY) if (genai and GEMINI_API_KEY) else None
 
 
 def generate_referral(client_profile: dict, shelter: dict) -> str:
-    """Original behaviour: a formal referral letter (kept for the /referral route)."""
+    """Formal referral letter (used by the /referral route)."""
     response = client.models.generate_content(
         model='gemini-2.0-flash',
         contents=f'You are a professional social worker assistant generating referral letters. Write clearly, professionally, and with zero bias. Do not include race, ethnicity, religion, or any protected characteristics. Focus only on service needs and resource fit. Client needs: {client_profile.get("needs")} Urgency: {client_profile.get("urgency")} Has children: {client_profile.get("has_children")} Veteran: {client_profile.get("veteran")} Referring to: Organization: {shelter.get("name")} Address: {shelter.get("address")}, {shelter.get("city")} Phone: {shelter.get("phone")} Type: {shelter.get("type")} Write a professional referral letter.'
@@ -29,7 +35,7 @@ DEFAULT_SENDER = {
 
 
 def _strip_code_fences(text: str) -> str:
-    """Gemini often wraps JSON in ```json ... ``` fences; remove them safely."""
+    """Remove ```json ... ``` fences if the model wraps its JSON in them."""
     t = (text or "").strip()
     if t.startswith("```"):
         lines = t.splitlines()
@@ -41,13 +47,11 @@ def _strip_code_fences(text: str) -> str:
 
 
 def _placeholder_email(client_profile: dict, shelter: dict, sender: dict) -> dict:
-    """Placeholder used when Gemini is unavailable (no key / quota / network).
+    """Placeholder used when the LLM is unavailable (no key / quota / network).
 
-    This is intentionally NOT a finished email. It is clearly marked as a
-    placeholder so a case worker reviews and completes the message before
-    sending — the known facts on file are listed to make that quick. This
-    keeps the flow working offline without ever producing AI-quality prose
-    that could be sent by mistake.
+    Intentionally NOT a finished email — it's clearly marked so a case worker
+    reviews and completes it before sending. The known facts are listed to make
+    that quick.
     """
     needs = client_profile.get("needs")
     if isinstance(needs, list):
@@ -63,9 +67,9 @@ def _placeholder_email(client_profile: dict, shelter: dict, sender: dict) -> dic
 
     subject = f"[DRAFT - needs review] Housing referral inquiry - {org_name}"
     body = (
-        "[PLACEHOLDER - the AI drafting service (Gemini) was unavailable, so this "
-        "email was NOT written by AI. Please review the details below and complete "
-        "the message before sending.]\n\n"
+        "[PLACEHOLDER - the AI drafting service was unavailable, so this email "
+        "was NOT written by AI. Please review the details below and complete the "
+        "message before sending.]\n\n"
         f"To: {org_name}{(' (' + org_desc + ')') if org_desc else ''}\n\n"
         "Referral details on file:\n"
         f"  - Needs: {needs or 'not specified'}\n"
@@ -122,7 +126,6 @@ def _llm_draft(client_profile: dict, shelter: dict, sender: dict) -> dict:
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
-        # Model didn't return clean JSON — use the whole response as the body.
         return {
             "subject": f"Housing referral inquiry - {shelter.get('name', '')}".strip(" -"),
             "body": response.text,
@@ -137,17 +140,15 @@ def draft_referral_email(
 ) -> dict:
     """Draft an email to a housing home asking if they can take a client.
 
-    Returns a ready-to-send envelope:
-        {to_email, to_name, from_email, from_name, subject, body, status}
+    Returns: {to_email, to_name, from_email, from_name, subject, body, status}
 
     `status` is "ai" when Gemini wrote the draft, or "placeholder" when Gemini
-    was unavailable (no key, quota, or network) — in that case the body is a
-    clearly-marked placeholder for a case worker to complete, never an
+    was unavailable (no key, quota, network, or package) — in that case the body
+    is a clearly-marked placeholder for a case worker to complete, never an
     AI-quality email that could be sent by mistake.
 
-    Pulls nothing from the network itself — pass dicts you already fetched
-    from Supabase (or anywhere). Pass use_llm=False to force the placeholder
-    path and skip the API call entirely.
+    Pulls nothing from the network itself — pass dicts you already fetched from
+    Supabase (or anywhere). Pass use_llm=False to force the placeholder path.
     """
     sender = {**DEFAULT_SENDER, **(sender or {})}
 
