@@ -4,15 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script src="./services-data.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400..700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   *{box-sizing:border-box;}
@@ -26,13 +25,16 @@
   #match-map{position:relative;z-index:0;isolation:isolate;}
   #match-map .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,0.75);}
   #match-map .leaflet-bar a{color:#16242A;}
+  #send-map{position:relative;z-index:0;isolation:isolate;}
+  #send-map .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,0.75);}
+  #send-map .leaflet-bar a{color:#16242A;}
 </style>
 </helmet>
 <div style="min-height:100vh;background:#F4F1EB;font-family:'Public Sans',system-ui,sans-serif;color:#19272B;">
 
   <header style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#FFFFFF;border-bottom:1px solid #E6E1D7;">
     <div style="display:flex;align-items:center;gap:13px;">
-      <a href="index.html" style="display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;">
+      <a href="Kōkua%20Landing.dc.html" style="display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;">
         <div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:#0E7A66;">
           <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #FFFFFF;"></div>
         </div>
@@ -43,20 +45,7 @@
       </a>
       <span style="margin-left:4px;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:4px 10px;border-radius:20px;cursor:default;">Hawaiʻi <span style="font-size:9px;opacity:0.6;">▾</span></span>
     </div>
-    <div style="display:flex;align-items:center;gap:18px;">
-      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#7C8888;">
-        <span style="width:7px;height:7px;border-radius:50%;background:#2E9B6E;"></span>
-        <span>Network live · 24 partner orgs</span>
-      </div>
-      <div style="width:1px;height:24px;background:#E6E1D7;"></div>
-      <div style="display:flex;align-items:center;gap:11px;">
-        <div style="text-align:right;line-height:1.25;">
-          <div style="font-size:13px;font-weight:600;color:#16242A;">Leilani Kahale</div>
-          <div style="font-size:11.5px;color:#7C8888;">Outreach Coordinator · DOH</div>
-        </div>
-        <div style="width:36px;height:36px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">LK</div>
-      </div>
-    </div>
+    
   </header>
 
   <div style="background:#FFFFFF;border-bottom:1px solid #E6E1D7;padding:0 28px;">
@@ -65,6 +54,8 @@
         <button onClick="{{ goIntake }}" style="{{ stepIntakeStyle }}"><span style="font-size:14px;">①</span> Describe the situation</button>
         <span style="width:26px;height:1px;background:#D8D2C6;"></span>
         <button onClick="{{ goMatches }}" style="{{ stepMatchesStyle }}"><span style="font-size:14px;">②</span> Review matches</button>
+        <span style="width:26px;height:1px;background:#D8D2C6;"></span>
+        <button onClick="{{ goSend }}" style="{{ stepSendStyle }}"><span style="font-size:14px;">③</span> Send referrals<sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}"><span style="margin-left:2px;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#0E7A66;color:#FFFFFF;font-size:11px;font-weight:700;">{{ selCount }}</span></sc-if></button>
       </div>
       <div style="font-size:12px;color:#9AA6A4;">{{ stepHint }}</div>
     </div>
@@ -73,13 +64,14 @@
   <main style="max-width:1340px;margin:0 auto;padding:26px 28px 40px;">
 
     <sc-if value="{{ isIntake }}" hint-placeholder-val="{{ true }}">
-      <div style="max-width:680px;margin:0 auto;animation:kpage 0.22s ease;">
+      <div style="max-width:680px;margin:0 auto;animation:kpage 0.22s ease;display:flex;flex-direction:column;gap:20px;">
+
         <section style="width:100%;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:26px;box-shadow:0 1px 2px rgba(20,40,40,0.04);">
           <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Intake · Step 1</div>
           <h2 style="margin:7px 0 0;font-family:'Source Serif 4',serif;font-size:25px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Describe the situation</h2>
           <p style="margin:6px 0 18px;font-size:13.5px;color:#7C8888;line-height:1.5;">Capture the situation <span style="color:#16242A;font-weight:600;">either way below</span> — you don't need to do both. One is enough; more detail sharpens the match.</p>
 
-          <input type="file" id="notes-file" accept="image/*" onChange="{{ onFile }}" style="display:none;" />
+          <input type="file" id="notes-file" accept="image/*" onChange="{{ onFile }}" style="display:none;">
 
           <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
             <span style="flex:none;width:18px;height:18px;border-radius:50%;background:#0E7A66;color:#FFFFFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</span>
@@ -111,7 +103,7 @@
             <div style="display:flex;align-items:center;gap:11px;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:11px;padding:10px 12px;margin-bottom:12px;">
               {{ ocrThumbEl }}
               <div style="min-width:0;flex:1;">
-                <div style="font-size:12.5px;font-weight:600;color:#16242A;display:flex;align-items:center;gap:6px;"><span style="color:#1C7A55;font-weight:700;">✓</span> {{ ocrNote }}</div>
+                <div style="font-size:12.5px;font-weight:600;color:#16242A;display:flex;align-items:center;gap:6px;"><span style="color:#1C7A55;font-weight:700;">✓</span> Transcribed from photo</div>
                 <div style="font-size:11.5px;color:#7C8888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ ocrName }}</div>
               </div>
               <button onClick="{{ removeOcr }}" style="flex:none;background:none;border:none;color:#9AA6A4;font-size:14px;cursor:pointer;padding:4px;" style-hover="color:#16242A;">✕</button>
@@ -131,10 +123,6 @@
 
           <textarea id="intake-notes" style="width:100%;min-height:172px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:14px;line-height:1.6;color:#2A363A;border:1px solid #E2DDD3;border-radius:11px;padding:14px;background:#FBFAF7;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);">Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'</textarea>
 
-          <sc-if value="{{ apiErrorShown }}" hint-placeholder-val="{{ false }}">
-            <div style="margin-top:12px;display:flex;align-items:center;gap:9px;background:#FBEFE9;border:1px solid #ECD3C7;border-radius:10px;padding:10px 13px;font-size:12.5px;color:#9E4B39;">{{ apiError }}</div>
-          </sc-if>
-
           <sc-if value="{{ showSignals }}" hint-placeholder-val="{{ true }}">
             <div style="margin-top:16px;">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px;">
@@ -142,9 +130,11 @@
                 <div style="font-size:10.5px;color:#B7BEBB;white-space:nowrap;">auto-tagged on match</div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:7px;">
-                <sc-for list="{{ subjectTags }}" as="tag" hint-placeholder-count="5">
-                  <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">{{ tag }}</span>
-                </sc-for>
+                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Veteran</span>
+                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Substance use</span>
+                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Housing loss</span>
+                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Untreated PTSD</span>
+                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Turned away repeatedly</span>
               </div>
             </div>
           </sc-if>
@@ -152,6 +142,68 @@
           <button onClick="{{ findMatches }}" style="width:100%;height:47px;margin-top:18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14.5px;font-weight:600;border-radius:10px;cursor:pointer;box-shadow:0 2px 7px -1px rgba(14,122,102,0.42);" style-hover="background:#0B6655;">Generate attributes &amp; find matches <span style="font-size:16px;">→</span></button>
           <p style="margin:11px 0 0;text-align:center;font-size:11.5px;color:#9AA6A4;">Tags the situation, then ranks matches · you always make the call.</p>
         </section>
+
+        <section style="width:100%;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,40,0.04);">
+          <div style="padding:18px 22px;border-bottom:1px solid #EEE9DF;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Previously logged individuals</div>
+              <p style="margin:4px 0 0;font-size:13px;color:#7C8888;line-height:1.4;">Select someone to add notes or view referral history before logging a new case.</p>
+            </div>
+            <span style="flex:none;font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">{{ prevPeopleCount }} on file</span>
+          </div>
+          <sc-for list="{{ prevPeople }}" as="person" hint-placeholder-count="3">
+            <div style="border-bottom:1px solid #F1EEE6;">
+              <div onClick="{{ person.toggle }}" style="display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;" style-hover="background:#F8F6F1;">
+                <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">{{ person.initials }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span style="font-size:14px;font-weight:600;color:#16242A;">{{ person.name }}</span>
+                    <sc-if value="{{ person.hasBadge }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;background:{{ person.badgeBg }};color:{{ person.badgeColor }};border:1px solid {{ person.badgeBorder }};">{{ person.badgeLabel }}</span>
+                    </sc-if>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;">
+                    <sc-for list="{{ person.attrs }}" as="attr" hint-placeholder-count="2">
+                      <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:5px;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;">{{ attr }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="flex:none;text-align:right;">
+                  <div style="font-size:11.5px;color:#9AA6A4;white-space:nowrap;">{{ person.referralCount }} past referral{{ person.referralSuffix }}</div>
+                  <div style="font-size:15px;color:#C2CBC8;margin-top:4px;line-height:1;">{{ person.chevron }}</div>
+                </div>
+              </div>
+              <sc-if value="{{ person.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#F8F7F3;border-top:1px solid #EEE9DF;padding:16px 20px 18px;">
+                  <div style="margin-bottom:15px;">
+                    <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:#9AA6A4;margin-bottom:9px;">Past referrals</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                      <sc-for list="{{ person.pastReferrals }}" as="ref" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:9px;">
+                          <div style="flex:none;width:7px;height:7px;border-radius:50%;background:#2E9B6E;margin-top:4px;"></div>
+                          <div style="flex:1;min-width:0;">
+                            <div style="font-size:13px;font-weight:600;color:#16242A;">{{ ref.org }}</div>
+                            <div style="font-size:12px;color:#7C8888;margin-top:2px;line-height:1.4;">{{ ref.outcome }}</div>
+                          </div>
+                          <div style="flex:none;font-size:11.5px;color:#A7AFAC;white-space:nowrap;">{{ ref.date }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:#9AA6A4;margin-bottom:8px;">Add notes</div>
+                    <textarea value="{{ person.notes }}" onChange="{{ person.onNotes }}" placeholder="Add new information, updates, or observations…" style="width:100%;min-height:96px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.55;color:#2A363A;border:1px solid #E2DDD3;border-radius:9px;padding:11px 13px;background:#FFFFFF;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);"></textarea>
+                  </div>
+                  <div style="display:flex;gap:9px;margin-top:11px;justify-content:flex-end;">
+                    <button onClick="{{ person.skip }}" style="display:inline-flex;align-items:center;background:#FFFFFF;color:#7C8888;border:1px solid #D8D2C6;font-family:'Public Sans',sans-serif;font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;cursor:pointer;" style-hover="background:#F6F4EF;color:#16242A;">Skip — no new info</button>
+                    <button onClick="{{ person.save }}" style="display:inline-flex;align-items:center;gap:7px;background:#0E7A66;color:#FFFFFF;border:none;font-family:'Public Sans',sans-serif;font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer;" style-hover="background:#0B6655;">Save notes ✓</button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </section>
+
       </div>
     </sc-if>
 
@@ -164,7 +216,7 @@
               <h2 style="margin:0;font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Matches</h2>
               <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">{{ matchCountLabel }}</span>
             </div>
-            <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility for {{ subjectName }} · click any match for contact, services &amp; why it fits.</p>
+            <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility · check the boxes to build an outreach batch, or open a match for full details.</p>
           </div>
           <button onClick="{{ goIntake }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;cursor:pointer;white-space:nowrap;" style-hover="background:#F6F4EF;"><span style="font-size:15px;">←</span> Edit situation</button>
         </div>
@@ -173,7 +225,7 @@
           <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:54px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
             <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
             <div style="font-size:15px;font-weight:600;color:#16242A;">Analyzing the situation…</div>
-            <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">Generating attributes from the intake, then scoring compatibility across 24 partner organizations.</div>
+            <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">Generating attributes from the intake, then scoring compatibility across 214 partner organizations.</div>
           </div>
         </sc-if>
 
@@ -184,7 +236,7 @@
               <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px;">
                 <div>
                   <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Match locations</div>
-                  <p style="margin:4px 0 0;font-size:12.5px;color:#7C8888;">{{ mapHint }}</p>
+                  <p style="margin:4px 0 0;font-size:12.5px;color:#7C8888;">Around the train depot, Honolulu · tap a pin for details.</p>
                 </div>
                 <div style="display:flex;align-items:center;gap:13px;font-size:11.5px;color:#7C8888;">
                   <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:50%;background:#2E9B6E;"></span>Strong</span>
@@ -195,76 +247,222 @@
               <div id="match-map" style="height:300px;border-radius:11px;overflow:hidden;border:1px solid #E6E1D7;background:#EAE7DF;"></div>
             </div>
 
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-              <div style="display:inline-flex;background:#EFECE4;border:1px solid #E2DDD3;border-radius:10px;padding:3px;gap:3px;">
-                <button onClick="{{ showTop }}" style="{{ segTopStyle }}">Top matches</button>
-                <button onClick="{{ showAll }}" style="{{ segAllStyle }}">Full database</button>
-              </div>
-              <div style="font-size:12px;color:#9AA6A4;">{{ segHint }}</div>
-            </div>
-
-            <sc-if value="{{ isTop }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;flex-direction:column;gap:14px;">
-                <sc-for list="{{ topMatches }}" as="org" hint-placeholder-count="3">
-                  <article onClick="{{ org.open }}" style="{{ org.cardStyle }}" style-hover="background:#F6FAF8;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <sc-for list="{{ directory }}" as="org" hint-placeholder-count="6">
+                <article onClick="{{ org.open }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:13px;padding:15px 18px;cursor:pointer;display:flex;align-items:flex-start;gap:14px;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 18px -14px rgba(20,40,40,0.4);">
+                  <button onClick="{{ org.sel.onClick }}" title="Add to outreach batch" style="{{ org.sel.boxBtnStyle }}">{{ org.sel.mark }}</button>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-                      <div style="min-width:0;">
-                        <div style="{{ org.badgeStyle }}">Recommended match</div>
-                        <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ org.name }}</h3>
-                        <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">{{ org.tagline }}</p>
-                        <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:{{ org.dotColor }};"></span>{{ org.location }}</p>
-                      </div>
-                      <div style="text-align:right;flex:none;">
-                        <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;line-height:1;color:{{ org.scoreColor }};">{{ org.scoreLabel }}</div>
-                        <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                        <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:{{ org.barWidth }};height:100%;background:{{ org.barColor }};"></div></div>
-                      </div>
-                    </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-                      <sc-for list="{{ org.chips }}" as="chip" hint-placeholder-count="3">
-                        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};"><span style="font-weight:700;">{{ chip.sym }}</span> {{ chip.text }}</span>
-                      </sc-for>
-                    </div>
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-                      <div style="font-size:12.5px;color:#7C8888;">{{ org.footnote }}</div>
-                      <button onClick="{{ org.refer }}" style="{{ org.referBtnStyle }}">Draft referral <span style="font-size:15px;">→</span></button>
-                    </div>
-                  </article>
-                </sc-for>
-              </div>
-            </sc-if>
-
-            <sc-if value="{{ isAll }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <sc-for list="{{ directory }}" as="org" hint-placeholder-count="6">
-                  <article onClick="{{ org.open }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:13px;padding:15px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 18px -14px rgba(20,40,40,0.4);">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-                      <div style="min-width:0;">
+                      <div style="min-width:0;flex:1;">
                         <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
                           <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ org.name }}</h3>
                           <span style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:{{ org.fitBg }};color:{{ org.fitColor }};border:1px solid {{ org.fitBorder }};">{{ org.fitLabel }}</span>
-                          <span style="{{ org.windowBadgeStyle }}">{{ org.windowBadge }}</span>
                         </div>
                         <p style="margin:4px 0 0;font-size:13px;color:#5A6A70;line-height:1.45;">{{ org.tagline }}</p>
                         <p style="margin:5px 0 0;display:flex;align-items:center;gap:7px;font-size:11.5px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:{{ org.dotColor }};"></span>{{ org.location }}</p>
                         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
                           <sc-for list="{{ org.chips }}" as="chip" hint-placeholder-count="3">
-                            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};"><span style="font-weight:700;">{{ chip.sym }}</span> {{ chip.text }}</span>
+                            <span style="display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};">{{ chip.text }}</span>
                           </sc-for>
                         </div>
                       </div>
-                      <div style="text-align:right;flex:none;">
+                      <div style="text-align:right;flex:none;position:relative;" onMouseEnter="{{ org.confEnter }}" onMouseLeave="{{ org.confLeave }}">
                         <div style="font-family:'Source Serif 4',serif;font-size:27px;font-weight:600;line-height:1;color:{{ org.scoreColor }};">{{ org.scoreLabel }}</div>
                         <div style="font-size:10px;color:#9AA6A4;margin-top:3px;letter-spacing:0.05em;text-transform:uppercase;">Compatibility</div>
                         <div style="width:108px;height:5px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:8px;margin-left:auto;"><div style="height:100%;width:{{ org.barWidth }};background:{{ org.barColor }};"></div></div>
+                        <div style="width:108px;height:1px;background:#EEE9DF;margin:10px 0 10px auto;"></div>
+                        <div style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:600;line-height:1;color:{{ org.confColor }};">{{ org.confidenceLabel }}</div>
+                        <div style="font-size:10px;color:#9AA6A4;margin-top:3px;letter-spacing:0.05em;text-transform:uppercase;display:inline-block;border-bottom:1px dashed #C8CFCD;padding-bottom:1px;cursor:help;">Data confidence</div>
+                        <div style="width:108px;height:5px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:6px;margin-left:auto;"><div style="height:100%;width:{{ org.confBarWidth }};background:{{ org.confColor }};"></div></div>
+                        <sc-if value="{{ org.confTipOpen }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ stop }}" style="position:absolute;right:calc(100% + 10px);top:0;width:234px;background:#16242A;color:#FFFFFF;border-radius:10px;padding:13px 15px;z-index:30;box-shadow:0 6px 22px rgba(0,0,0,0.35);text-align:left;">
+                            <div style="font-size:10.5px;font-weight:700;color:#9AA6A4;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Collect to raise confidence:</div>
+                            <sc-for list="{{ org.unknownParams }}" as="up" hint-placeholder-count="2">
+                              <div style="display:flex;align-items:flex-start;gap:7px;padding:3px 0;font-size:12.5px;color:#D9F0EA;"><span style="color:#2E9B6E;font-weight:700;flex:none;margin-top:1px;">→</span>{{ up }}</div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
                       </div>
                     </div>
-                  </article>
-                </sc-for>
-              </div>
-            </sc-if>
+                    <sc-if value="{{ org.hasUnknown }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:11px;padding-top:10px;border-top:1px solid #F1EEE6;">
+                        <div style="font-size:10.5px;font-weight:600;color:#8A6312;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:7px;">Missing client data:</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                          <sc-for list="{{ org.unknownParams }}" as="up" hint-placeholder-count="2">
+                            <span style="display:inline-flex;align-items:center;gap:5px;background:#FEF9EC;color:#8A6312;border:1px solid #F0DFA0;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:6px;">? {{ up }}</span>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ org.lowConfidence }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:10px;background:#FEF3C7;border:1px solid #F3D968;border-radius:8px;padding:9px 12px;display:flex;align-items:flex-start;gap:9px;">
+                        <span style="flex:none;font-size:15px;color:#92400E;line-height:1.3;">⚠</span>
+                        <div>
+                          <span style="font-size:12.5px;font-weight:600;color:#92400E;">Low data confidence</span>
+                          <span style="font-size:12.5px;color:#92400E;"> — results may be inaccurate. Collect more information about this individual to improve match accuracy.</span>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </article>
+              </sc-for>
+            </div>
 
           </div>
+        </sc-if>
+
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSend }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:16px;animation:kpage 0.22s ease;">
+
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <h2 style="margin:0;font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Send referrals</h2>
+              <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">{{ selCount }} selected</span>
+            </div>
+            <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Pick the organizations to contact, edit each draft, and send the whole batch from this screen.</p>
+          </div>
+          <button onClick="{{ goMatches }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;cursor:pointer;white-space:nowrap;" style-hover="background:#F6F4EF;"><span style="font-size:15px;">←</span> Back to matches</button>
+        </div>
+
+        <sc-if value="{{ noSelection }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:48px 40px;text-align:center;">
+            <div style="font-size:15px;font-weight:600;color:#16242A;">No organizations selected yet</div>
+            <p style="margin:7px auto 16px;font-size:13px;color:#7C8888;max-width:380px;line-height:1.55;">Check organizations on the matches screen — or in the list below — to add them to your outreach batch.</p>
+            <button onClick="{{ goMatches }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;cursor:pointer;" style-hover="background:#0B6655;">Go to matches</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+
+          <div style="{{ sendComposeDisplay }}">
+
+            <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(20,40,40,0.04);margin-bottom:16px;">
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px;">
+                <div>
+                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Outreach map</div>
+                  <p style="margin:4px 0 0;font-size:12.5px;color:#7C8888;">All organizations shown · selected ones are ringed in teal. Tap a pin to add or remove it.</p>
+                </div>
+              </div>
+              <div id="send-map" style="height:280px;border-radius:11px;overflow:hidden;border:1px solid #E6E1D7;background:#EAE7DF;"></div>
+            </div>
+
+            <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:16px 18px;margin-bottom:18px;">
+              <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;margin-bottom:12px;">Organizations to contact</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ pickRows }}" as="row" hint-placeholder-count="4">
+                  <button onClick="{{ row.sel.onClick }}" style="{{ row.rowStyle }}">
+                    <span style="{{ row.sel.boxStyle }}">{{ row.sel.mark }}</span>
+                    <span style="flex:1;min-width:0;text-align:left;">
+                      <span style="display:block;font-size:14px;font-weight:600;color:#16242A;">{{ row.name }}</span>
+                      <span style="display:block;font-size:12px;color:#8A9492;">{{ row.tagline }}</span>
+                    </span>
+                    <span style="flex:none;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:{{ row.scoreColor }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ row.dotColor }};"></span>{{ row.scoreLabel }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;margin:0 2px 12px;">Your referral drafts · {{ selCount }}</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ batch }}" as="d" hint-placeholder-count="2">
+                <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,40,0.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #EFEBE2;background:#FBFAF7;">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                      <span style="display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:26px;padding:0 8px;border-radius:7px;background:#E7F1EE;color:#0E7A66;font-size:13px;font-weight:700;">{{ d.scoreLabel }}</span>
+                      <span style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;color:#16242A;">{{ d.name }}</span>
+                    </div>
+                    <button onClick="{{ d.remove }}" style="flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:#9AA6A4;font-size:12.5px;font-weight:600;cursor:pointer;padding:6px;" style-hover="color:#9E4B39;">Remove ✕</button>
+                  </div>
+                  <div style="padding:4px 16px 0;">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1EEE6;">
+                      <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">To</span>
+                      <input value="{{ d.to }}" onChange="{{ d.onTo }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1EEE6;">
+                      <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">Subject</span>
+                      <input value="{{ d.subject }}" onChange="{{ d.onSubject }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;">
+                    </div>
+                    <textarea value="{{ d.body }}" onChange="{{ d.onBody }}" style="display:block;width:100%;min-height:150px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.6;color:#2A363A;border:none;outline:none;padding:12px 0 14px;background:#FFFFFF;" style-focus="outline:none;"></textarea>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="position:sticky;bottom:0;margin-top:18px;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;box-shadow:0 -2px 18px -10px rgba(20,40,40,0.3);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#E7F1EE;color:#0E7A66;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;">✓</div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ sendBarTitle }}</div>
+                  <div style="font-size:12px;color:#7C8888;">Nothing is sent until you approve here · edit any draft above.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button onClick="{{ clearSel }}" style="display:inline-flex;align-items:center;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:11px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Clear</button>
+                <button onClick="{{ reviewAll }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">{{ reviewLabel }} <span style="font-size:15px;">→</span></button>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="{{ sendReviewDisplay }}">
+            <div style="margin-bottom:14px;">
+              <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Final review</div>
+              <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Review every email before it's sent</h3>
+              <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">These are the exact {{ selCount }} messages that will go out. Go back to edit any of them.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ batch }}" as="d" hint-placeholder-count="2">
+                <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,40,0.04);">
+                  <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #EFEBE2;background:#FBFAF7;">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:26px;padding:0 8px;border-radius:7px;background:#E7F1EE;color:#0E7A66;font-size:13px;font-weight:700;">{{ d.scoreLabel }}</span>
+                    <span style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;color:#16242A;">{{ d.name }}</span>
+                  </div>
+                  <div style="padding:14px 16px;">
+                    <div style="display:flex;gap:10px;font-size:13px;margin-bottom:7px;"><span style="width:58px;flex:none;font-size:11px;font-weight:600;color:#9AA6A4;text-transform:uppercase;letter-spacing:0.06em;padding-top:1px;">To</span><span style="font-weight:500;color:#2A363A;">{{ d.to }}</span></div>
+                    <div style="display:flex;gap:10px;font-size:13px;margin-bottom:12px;"><span style="width:58px;flex:none;font-size:11px;font-weight:600;color:#9AA6A4;text-transform:uppercase;letter-spacing:0.06em;padding-top:1px;">Subject</span><span style="font-weight:600;color:#16242A;">{{ d.subject }}</span></div>
+                    <div style="white-space:pre-wrap;font-size:13.5px;line-height:1.6;color:#2A363A;border-top:1px solid #F1EEE6;padding-top:12px;">{{ d.body }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="position:sticky;bottom:0;margin-top:18px;background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;box-shadow:0 -2px 18px -10px rgba(20,40,40,0.3);">
+              <div style="font-size:13px;color:#7C8888;">{{ selCount }} emails ready · nothing has been sent yet.</div>
+              <div style="display:flex;gap:10px;">
+                <button onClick="{{ backToEdit }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:11px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;"><span style="font-size:15px;">←</span> Edit drafts</button>
+                <button onClick="{{ sendAll }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">{{ sendAllLabel }} <span style="font-size:15px;">→</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div style="{{ sendSendingDisplay }}">
+            <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:54px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
+              <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+              <div style="font-size:15px;font-weight:600;color:#16242A;">Sending {{ selCount }} referrals…</div>
+              <div style="font-size:13px;color:#7C8888;max-width:380px;line-height:1.55;">Delivering each reviewed introduction securely to its organization.</div>
+            </div>
+          </div>
+
+          <div style="{{ sendSentDisplay }}">
+            <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+              <div style="width:56px;height:56px;border-radius:50%;background:#E9F1EC;border:1.5px solid #2E9B6E;color:#1C7A55;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;">✓</div>
+              <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ sentCount }} referrals sent</h3>
+              <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:400px;">Each organization received your introduction. You'll be notified here as they respond.</p>
+              <div style="width:100%;max-width:440px;margin:22px 0 24px;display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ batch }}" as="d" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#F7FAF8;border:1px solid #E3EDE8;border-radius:10px;padding:10px 14px;">
+                    <span style="font-size:13.5px;font-weight:600;color:#16242A;">{{ d.name }}</span>
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;"><span style="font-weight:700;">✓</span> Sent</span>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ finishSend }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer;" style-hover="background:#0B6655;">Back to matches</button>
+            </div>
+          </div>
+
         </sc-if>
 
       </div>
@@ -290,20 +488,21 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:18px 0 0;background:#EFEBE2;border-top:1px solid #EFEBE2;border-bottom:1px solid #EFEBE2;">
           <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Address</div>
-            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailAddress }}</div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Website</div>
+            <a href="{{ detailWebsiteHref }}" target="_blank" rel="noopener" onClick="{{ stop }}" style="display:inline-block;margin-top:4px;font-size:13.5px;font-weight:600;color:#0E7A66;text-decoration:none;" style-hover="text-decoration:underline;">{{ detailWebsite }} ↗</a>
+          </div>
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Point of contact</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPoc }}</div>
+            <div style="font-size:12px;color:#7C8888;">{{ detailPocRole }}</div>
           </div>
           <div style="background:#FBFAF7;padding:14px 26px;">
             <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Phone</div>
             <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPhone }}</div>
           </div>
           <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Service type</div>
-            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailType }}</div>
-          </div>
-          <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Compatibility</div>
-            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#1C7A55;">{{ detailScore }}</div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Current capacity</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailCapacity }}</div>
           </div>
         </div>
 
@@ -317,18 +516,23 @@
         </div>
 
         <div style="padding:22px 26px 0;">
-          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;margin-bottom:12px;">Why this fits {{ subjectName }}</div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;">
+            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">People helped here</div>
+            <div style="font-size:12px;color:#7C8888;">{{ detailHelped }} placed in the last 12 months</div>
+          </div>
           <div style="display:flex;flex-direction:column;gap:2px;">
-            <sc-for list="{{ detailFactors }}" as="f" hint-placeholder-count="3">
+            <sc-for list="{{ detailPast }}" as="person" hint-placeholder-count="3">
               <div style="display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid #F1EEE6;">
-                <div style="flex:none;width:30px;height:30px;border-radius:50%;background:{{ f.bg }};color:{{ f.color }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">{{ f.sym }}</div>
+                <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">{{ person.initials }}</div>
                 <div style="min-width:0;flex:1;">
-                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ f.text }}</div>
+                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ person.label }}</div>
+                  <div style="font-size:12.5px;color:#7C8888;line-height:1.4;">{{ person.outcome }}</div>
                 </div>
+                <div style="flex:none;font-size:11.5px;color:#A7AFAC;white-space:nowrap;">{{ person.time }}</div>
               </div>
             </sc-for>
           </div>
-          <p style="margin:10px 0 0;font-size:11px;color:#B7BEBB;">Match factors compare the intake against this service's published intake criteria.</p>
+          <p style="margin:10px 0 0;font-size:11px;color:#B7BEBB;">Names anonymized to protect client privacy.</p>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 26px 24px;">
@@ -349,30 +553,40 @@
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
               <div>
                 <div style="font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Draft referral · introduction email</div>
-                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ referralHeading }}</h3>
+                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Introduce Marcus to VA Stand Down</h3>
               </div>
               <button onClick="{{ closeReferral }}" style="flex:none;width:32px;height:32px;border-radius:50%;border:1px solid #E6E1D7;background:#FFFFFF;color:#7C8888;font-size:16px;line-height:1;cursor:pointer;" style-hover="background:#F6F4EF;">✕</button>
             </div>
-            <div style="margin-top:11px;font-size:12px;color:#9AA6A4;">AI-drafted introduction, tailored to {{ subjectName }}'s intake. Edit anything before sending.</div>
+            <div style="margin-top:11px;font-size:12px;color:#9AA6A4;">AI-drafted introduction, tailored to Marcus's intake. Edit anything before sending.</div>
           </div>
           <div style="padding:14px 24px 0;">
             <div style="border:1px solid #E2DDD3;border-radius:11px;overflow:hidden;background:#FFFFFF;">
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">To</span>
-                <input value="{{ referralTo }}" readOnly="{{ true }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
+                <input defaultValue="outreach@vastanddown.org" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;">
               </div>
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">Subject</span>
-                <input value="{{ referralSubject }}" readOnly="{{ true }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
+                <input defaultValue="Referral and introduction — veteran needs housing + SUD support" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;">
               </div>
-              <textarea id="referral-draft" style="display:block;width:100%;min-height:230px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">{{ referralBody }}</textarea>
+              <textarea id="referral-draft" style="display:block;width:100%;min-height:222px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">Hello VA Stand Down Outreach team,
+
+I'm reaching out on behalf of Marcus (52), an Army veteran who served two combat tours. Three weeks ago he lost his apartment following a relapse, and he's now sleeping near the train depot. He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away — understandably, he's wary of being passed from place to place.
+
+Your integrated veteran housing and substance-use program is the right fit for where he is right now. Marcus wants help. He needs one door that won't close on him.
+
+Could you confirm an intake slot for today? I can bring him in this afternoon.
+
+With gratitude,
+Leilani Kahale
+Outreach Coordinator, Hawaiʻi Department of Health</textarea>
             </div>
-          </div>
-          <div style="margin:16px 24px 0;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
-            <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#0E7A66;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">✓</div>
-            <div style="min-width:0;">
-              <div style="font-size:13.5px;font-weight:600;color:#16242A;">Reviewed by you before anything is sent</div>
-              <div style="font-size:12.5px;color:#6B7A7C;line-height:1.45;margin-top:2px;">Kōkua never contacts an organization without your approval. Edit anything above.</div>
+            <div style="margin:16px 24px 0;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+              <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#0E7A66;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">✓</div>
+              <div style="min-width:0;">
+                <div style="font-size:13.5px;font-weight:600;color:#16242A;">Reviewed by you before anything is sent</div>
+                <div style="font-size:12.5px;color:#6B7A7C;line-height:1.45;margin-top:2px;">Kōkua never contacts an organization without your approval. Edit anything above.</div>
+              </div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px 22px;">
@@ -387,7 +601,7 @@
         <div style="{{ sendingDisplay }}">
           <div style="padding:64px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
             <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
-            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to {{ referralOrgName }}…</div>
+            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to VA Stand Down Outreach…</div>
             <div style="font-size:13px;color:#7C8888;">Delivering your reviewed referral securely.</div>
           </div>
         </div>
@@ -396,8 +610,8 @@
           <div style="padding:46px 40px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
             <div style="width:56px;height:56px;border-radius:50%;background:#E9F1EC;border:1.5px solid #2E9B6E;color:#1C7A55;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;">✓</div>
             <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Referral sent</h3>
-            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">{{ referralOrgName }} received your introduction and accepted the referral.</p>
-            <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">{{ subjectName }} has a bed tonight.</p>
+            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">VA Stand Down Outreach received your introduction and accepted the referral.</p>
+            <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">Marcus has a bed tonight.</p>
             <div style="display:flex;align-items:center;gap:9px;margin:22px 0 24px;">
               <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Sent</span>
               <span style="width:14px;height:1px;background:#D2E5DA;"></span>
@@ -416,379 +630,511 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
-  &quot;showSignals&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
-  &quot;showLegend&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
-  &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
+  &quot;$preview&quot;: {&quot;width&quot;: 1340, &quot;height&quot;: 900},
+  &quot;showSignals&quot;:   {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true,  &quot;tsType&quot;: &quot;boolean&quot;},
+  &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true,  &quot;tsType&quot;: &quot;boolean&quot;}
 }">
 class Component extends DCLogic {
-  // The demo subject, derived from the intake note in the textarea above.
-  SUBJECT = { name: 'Marcus', here: 'near the train depot, Honolulu' };
-  // Where the subject is — the matching anchor point on the map.
+  MARCUS_TEXT = "Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'";
+
   DEPOT = { lat: 21.3158, lng: -157.8628 };
-  // Honolulu-metro "window". A service is only mapped / treated as a local
-  // match when it falls inside this box; everything else (neighbor islands,
-  // Windward side) is out of the window for someone near the depot.
-  WINDOW = { south: 21.255, west: -157.95, north: 21.385, east: -157.79 };
 
-  // Attributes auto-tagged from the intake note (the "extracted" chips).
-  SUBJECT_TAGS = ['Veteran', 'Active substance use', 'Untreated PTSD', 'Housing loss', 'Single adult male', 'Turned away repeatedly'];
+  PREV_PEOPLE = [
+    {
+      id: 'p1', initials: 'JK', name: 'James K.',
+      attrs: ['Veteran', 'Substance use', 'Unstable housing'],
+      pastReferrals: [
+        { org: 'VA Stand Down Outreach', date: '2 mo ago', outcome: 'Enrolled in SUD program · still active' },
+        { org: 'Harbor Light Recovery Center', date: '4 mo ago', outcome: 'Waitlisted · referred to VA Stand Down' },
+      ],
+    },
+    {
+      id: 'p2', initials: 'NA', name: 'Nalani A.',
+      attrs: ['Single parent', 'Housing loss', 'Domestic violence'],
+      pastReferrals: [
+        { org: 'Downtown Family Shelter', date: '1 mo ago', outcome: 'Sheltered · transitioning to rental assistance' },
+      ],
+    },
+    {
+      id: 'p3', initials: 'KM', name: 'Keoki M.',
+      attrs: ['Substance use', 'Mental health', 'Unemployed'],
+      pastReferrals: [
+        { org: 'Ola Community Clinic', date: '3 wk ago', outcome: 'Behavioral health intake completed' },
+        { org: 'Harbor Light Recovery Center', date: '2 mo ago', outcome: 'Completed 30-day residential program' },
+      ],
+    },
+    {
+      id: 'p4', initials: 'MT', name: 'Malia T.',
+      attrs: ['Senior', 'Isolation', 'Chronic illness'],
+      pastReferrals: [
+        { org: 'Kūpuna Care Pālolo', date: '6 wk ago', outcome: 'In-home care arranged' },
+        { org: 'Ola Community Clinic', date: '3 mo ago', outcome: 'Primary care relationship established' },
+      ],
+    },
+  ];
 
-  // Every real service from the Supabase services CSV, joined with live
-  // coordinates/island/contact and pre-scored against the subject. Each row's
-  // `chips` are already the 1-3 most *unique* parameters that match the subject
-  // (plus any hard eligibility mismatch as a warning).
-  SERVICES = window.KOKUA_SERVICES || [];
+  getOrgs = () => this.state.apiOrgs || ({
+    va: {
+      name: 'VA Stand Down Outreach', tagline: 'Veteran-specific · integrated SUD + housing',
+      location: '0.6 mi · Iwilei, Honolulu', lat: 21.3186, lng: -157.8665, score: 94,
+      website: 'vastanddown.org', poc: 'James Akana', pocRole: 'Veteran Intake Lead',
+      phone: '(808) 555-0142', capacity: '3 beds open today',
+      services: ['Veteran housing', 'Substance-use treatment', 'PTSD & mental health', 'VA benefits navigation', 'Peer support'],
+      helped: 137,
+      factors: [{ k: 'good', t: 'Veteran eligibility' }, { k: 'good', t: 'Active SUD program' }, { k: 'good', t: '3 beds open today' }],
+      past: [
+        { initials: 'R.T.', label: 'Navy veteran, 48', outcome: 'Housed + enrolled in SUD program', time: '2 weeks ago' },
+        { initials: 'D.M.', label: 'Army veteran, 61', outcome: 'Transitional housing + PTSD care', time: '1 month ago' },
+        { initials: 'K.W.', label: 'Marine veteran, 39', outcome: 'Detox completed, now in stable housing', time: '2 months ago' },
+      ],
+      confidence: 82,
+      unknownParams: ['DD-214 / military discharge records', 'VA benefits enrollment status'],
+    },
+    harbor: {
+      name: 'Harbor Light Recovery Center', tagline: 'Strong on substance use · not veteran-specialized',
+      location: '1.4 mi · Kakaʻako', lat: 21.2958, lng: -157.8575, score: 71,
+      website: 'harborlighthi.org', poc: 'Tina Lopez', pocRole: 'Admissions Coordinator',
+      phone: '(808) 555-0178', capacity: 'Waitlist 5–7 days',
+      services: ['Residential SUD treatment', 'Outpatient recovery', 'Group counseling', 'Relapse prevention'],
+      helped: 204,
+      factors: [{ k: 'good', t: 'SUD program' }, { k: 'warn', t: 'No veteran services' }, { k: 'warn', t: 'Waitlist 5–7 days' }],
+      past: [
+        { initials: 'A.S.', label: 'Resident, 34', outcome: 'Completed 90-day program, sober 8 months', time: '3 weeks ago' },
+        { initials: 'J.P.', label: 'Resident, 52', outcome: 'Outpatient recovery, employed', time: '6 weeks ago' },
+        { initials: 'M.K.', label: 'Resident, 29', outcome: 'Graduated to sober-living housing', time: '2 months ago' },
+      ],
+      confidence: 68,
+      unknownParams: ['Prior substance-use treatment history', 'Health insurance / Medicaid coverage'],
+    },
+    downtown: {
+      name: 'Downtown Family Shelter', tagline: 'General shelter · no clinical support',
+      location: '0.9 mi · Chinatown', lat: 21.3135, lng: -157.8622, score: 58,
+      website: 'downtownfamilyshelter.org', poc: 'Grace Tanaka', pocRole: 'Shelter Manager',
+      phone: '(808) 555-0119', capacity: 'Beds available tonight',
+      services: ['Emergency shelter', 'Family housing', 'Meals & basic needs', 'Case management referral'],
+      helped: 318,
+      factors: [{ k: 'good', t: 'Beds available' }, { k: 'bad', t: 'No SUD support' }, { k: 'bad', t: 'Not equipped for PTSD' }],
+      past: [
+        { initials: 'L.C.', label: 'Family of four', outcome: 'Sheltered, transitioned to rental aid', time: '1 week ago' },
+        { initials: 'B.N.', label: 'Adult, 45', outcome: 'Emergency shelter, job placement', time: '3 weeks ago' },
+        { initials: 'S.R.', label: 'Single parent, 31', outcome: 'Housed with childcare support', time: '5 weeks ago' },
+      ],
+      confidence: 53,
+      unknownParams: ['State-issued ID / documentation', 'Prior shelter history or bans', 'Income / benefits source'],
+    },
+    kalihivets: {
+      name: 'Kalihi Veterans Drop-In', tagline: 'Veteran day services · no overnight beds',
+      location: '1.3 mi · Kalihi', lat: 21.3340, lng: -157.8720, score: 49,
+      website: 'kalihivets.org', poc: 'Sgt. Ben Oka (ret.)', pocRole: 'Peer Navigator',
+      phone: '(808) 555-0188', capacity: 'Day program · 8a–5p',
+      services: ['Veteran peer support', 'Benefits navigation', 'Job readiness', 'Hot meals'],
+      helped: 159,
+      factors: [{ k: 'good', t: 'Veteran services' }, { k: 'warn', t: 'Day program only' }, { k: 'bad', t: 'No overnight beds' }],
+      past: [
+        { initials: 'P.K.', label: 'Army veteran, 57', outcome: 'Benefits restored, referred to housing', time: '2 weeks ago' },
+        { initials: 'T.H.', label: 'Veteran, 44', outcome: 'Job placement after readiness program', time: '1 month ago' },
+      ],
+      confidence: 74,
+      unknownParams: ['Discharge characterization (honorable required)', 'VA ID card / enrollment status'],
+    },
+    ola: {
+      name: 'Ola Community Clinic', tagline: 'Walk-in primary & behavioral health',
+      location: '1.1 mi · Kalihi', lat: 21.3290, lng: -157.8680, score: 41,
+      website: 'olaclinic.org', poc: 'Dr. Nani Soares', pocRole: 'Clinic Director',
+      phone: '(808) 555-0153', capacity: 'Same-day walk-ins',
+      services: ['Primary care', 'Behavioral health', 'Medication refills', 'Referral coordination'],
+      helped: 412,
+      factors: [{ k: 'good', t: 'Walk-in medical' }, { k: 'warn', t: 'No housing' }, { k: 'bad', t: 'No SUD beds' }],
+      past: [
+        { initials: 'C.V.', label: 'Adult, 38', outcome: 'Re-started meds, linked to therapy', time: '1 week ago' },
+        { initials: 'N.A.', label: 'Adult, 50', outcome: 'Behavioral health intake completed', time: '4 weeks ago' },
+      ],
+      confidence: 61,
+      unknownParams: ['Current medications list', 'Health insurance / Medicaid status'],
+    },
+    nextstep: {
+      name: 'Next Step Shelter', tagline: 'Low-barrier emergency shelter',
+      location: '1.0 mi · Kakaʻako', lat: 21.2935, lng: -157.8520, score: 35,
+      website: 'nextstephi.org', poc: 'Ray Felipe', pocRole: 'Intake Specialist',
+      phone: '(808) 555-0166', capacity: 'At capacity · waitlist',
+      services: ['Emergency shelter', 'Meals', 'Storage & hygiene', 'Benefits sign-up'],
+      helped: 286,
+      factors: [{ k: 'good', t: 'Low-barrier intake' }, { k: 'bad', t: 'At capacity' }, { k: 'bad', t: 'No clinical care' }],
+      past: [
+        { initials: 'E.M.', label: 'Adult, 41', outcome: 'Sheltered, moved to transitional housing', time: '2 weeks ago' },
+        { initials: 'F.D.', label: 'Adult, 33', outcome: 'Benefits enrollment, ID recovered', time: '5 weeks ago' },
+      ],
+      confidence: 44,
+      unknownParams: ['State ID / documentation status', 'Prior shelter bans', 'Criminal background check'],
+    },
+    wahine: {
+      name: 'Wahine Recovery House', tagline: 'Women-only residential recovery',
+      location: '2.2 mi · Mōʻiliʻili', lat: 21.2965, lng: -157.8270, score: 22,
+      website: 'wahinerecovery.org', poc: 'Malia Fonoti', pocRole: 'Program Director',
+      phone: '(808) 555-0171', capacity: 'Beds for women only',
+      services: ['Residential SUD', 'Trauma-informed care', 'Childcare on site', 'Aftercare'],
+      helped: 98,
+      factors: [{ k: 'good', t: 'SUD + trauma care' }, { k: 'bad', t: 'Women only — ineligible' }],
+      past: [
+        { initials: 'H.L.', label: 'Resident, 36', outcome: 'Completed program, reunified with kids', time: '3 weeks ago' },
+        { initials: 'V.S.', label: 'Resident, 28', outcome: 'In aftercare, sober 5 months', time: '2 months ago' },
+      ],
+      confidence: 31,
+      unknownParams: ['Gender identity confirmation (women-only program)', 'Childcare needs assessment'],
+    },
+    kupuna: {
+      name: 'Kūpuna Care Pālolo', tagline: 'Senior wraparound services',
+      location: '3.0 mi · Pālolo', lat: 21.2995, lng: -157.7990, score: 16,
+      website: 'kupunacare.org', poc: 'Henry Lum', pocRole: 'Care Coordinator',
+      phone: '(808) 555-0190', capacity: 'Seniors 60+ only',
+      services: ['Senior housing', 'In-home support', 'Meals on wheels', 'Health navigation'],
+      helped: 221,
+      factors: [{ k: 'good', t: 'Wraparound care' }, { k: 'bad', t: 'Seniors 60+ only — ineligible' }],
+      past: [
+        { initials: 'G.O.', label: 'Kupuna, 72', outcome: 'Placed in senior housing', time: '2 weeks ago' },
+        { initials: 'W.C.', label: 'Kupuna, 68', outcome: 'In-home care arranged', time: '6 weeks ago' },
+      ],
+      confidence: 24,
+      unknownParams: ['Age verification (60+ required)', 'Medicare / Medicaid enrollment status'],
+    },
+  });
+
+  TOP_KEYS = this.state.apiTopKeys || ['va', 'harbor', 'downtown'];
 
   CHIP = {
     good: { bg: '#E9F1EC', color: '#1C7A55', border: '#D2E5DA', sym: '✓' },
     warn: { bg: '#F5EEDD', color: '#8A6312', border: '#E7D9B8', sym: '⚠' },
-    bad: { bg: '#F3E7E3', color: '#9E4B39', border: '#E6CFC7', sym: '✕' },
+    bad:  { bg: '#F3E7E3', color: '#9E4B39', border: '#E6CFC7', sym: '✕' },
     info: { bg: '#EEF2F0', color: '#3E4F53', border: '#E0E6E2', sym: '' },
   };
 
   fit = (score) => {
-    if (score >= 80) return { color: '#2E9B6E', label: 'Strong fit', bg: '#E9F1EC', fg: '#1C7A55', border: '#D2E5DA' };
+    if (score >= 80) return { color: '#2E9B6E', label: 'Strong fit',  bg: '#E9F1EC', fg: '#1C7A55', border: '#D2E5DA' };
     if (score >= 60) return { color: '#C79A3A', label: 'Partial fit', bg: '#F5EEDD', fg: '#8A6312', border: '#E7D9B8' };
     if (score >= 40) return { color: '#C0705E', label: 'Limited fit', bg: '#F3E7E3', fg: '#9E4B39', border: '#E6CFC7' };
     return { color: '#9AA6A4', label: 'Low fit', bg: '#EEEBE3', fg: '#6E7976', border: '#E0DCD2' };
   };
 
-  state = { page: 'intake', view: 'top', stage: 'matched', referralOpen: false, referralStage: 'draft', ocrStage: 'idle', ocrThumb: null, ocrName: '', ocrNote: '', detail: null, detailShown: false, referralOrg: null, apiError: '' };
+  confColor = (c) => c >= 70 ? '#2E9B6E' : (c >= 50 ? '#C79A3A' : '#C0705E');
 
-  // ─── helpers ────────────────────────────────────────────────────────────
-  inWindow = (o) => {
-    if (o.lat == null || o.lng == null) return false;
-    const w = this.WINDOW;
-    return o.lat >= w.south && o.lat <= w.north && o.lng >= w.west && o.lng <= w.east;
+  state = {
+    page: 'intake', stage: 'matched', referralOpen: false, referralStage: 'draft',
+    ocrStage: 'idle', ocrThumb: null, ocrName: '', detail: null, detailShown: false,
+    selected: [], sendStage: 'compose', drafts: {},
+    expandedPerson: null, personNotes: {}, personStatus: {},
+    confTip: null,
   };
 
-  distMi = (lat, lng) => {
-    if (lat == null || lng == null) return null;
-    const R = 3958.8, toRad = (d) => d * Math.PI / 180;
-    const dLat = toRad(lat - this.DEPOT.lat), dLng = toRad(lng - this.DEPOT.lng);
-    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(this.DEPOT.lat)) * Math.cos(toRad(lat)) * Math.sin(dLng / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  goIntake  = () => this.setState({ page: 'intake' });
+  goMatches = () => this.setState({ page: 'matches' });
+  goSend    = () => { if ((this.state.selected || []).length) this.setState({ page: 'send' }); };
+
+  toggleOrg = (key) => {
+    this.setState((s) => {
+      const cur = s.selected || [];
+      const has = cur.includes(key);
+      const selected = has ? cur.filter((k) => k !== key) : cur.concat([key]);
+      const next = { selected };
+      if (!has && cur.length === 0) { next.page = 'send'; next.sendStage = 'compose'; }
+      return next;
+    });
   };
+  clearSel   = () => this.setState({ selected: [] });
+  sendAll    = () => { clearTimeout(this._t3); this.setState({ sendStage: 'sending' }); this._t3 = setTimeout(() => this.setState({ sendStage: 'sent' }), 1800); };
+  finishSend = () => this.setState({ page: 'matches', selected: [], sendStage: 'compose' });
 
-  fmtPhone = (p) => {
-    const d = (p || '').replace(/[^0-9]/g, '').replace(/^1/, '');
-    return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : (p || '—');
-  };
-
-  chipObjs = (chips) => (chips || []).map((c) => {
-    const s = this.CHIP[c.k] || this.CHIP.info;
-    return { text: c.t, sym: s.sym, bg: s.bg, color: s.color, border: s.border };
-  });
-
-  // Build a display org from a raw service row.
-  toOrg = (s) => {
-    const f = this.fit(s.score);
-    const inWin = this.inWindow(s);
-    const d = this.distMi(s.lat, s.lng);
-    const loc = inWin && d != null
-      ? `${d.toFixed(1)} mi · ${s.city}`
-      : `${s.city}, ${s.island}`;
+  buildToggle = (key) => {
+    const on = (this.state.selected || []).includes(key);
     return {
-      ...s,
-      fitc: f, inWin, distMi: d,
-      tagline: `${s.typeLabel} · ${s.city}, ${s.island}`,
-      location: loc,
-      scoreLabel: Math.round(s.score) + '%', scoreColor: f.fg,
-      barWidth: s.score + '%', barColor: f.color, dotColor: f.color,
-      fitLabel: f.label, fitBg: f.bg, fitColor: f.fg, fitBorder: f.border,
-      chips: this.chipObjs(s.chips),
-      phoneFmt: this.fmtPhone(s.phone),
+      on,
+      onClick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.toggleOrg(key); },
+      mark: on ? '✓' : '',
+      label: on ? 'Added to outreach' : 'Add to outreach',
+      btnStyle: { display: 'inline-flex', alignItems: 'center', gap: '8px', background: on ? '#E7F1EE' : '#FFFFFF', color: on ? '#0E7A66' : '#46555A', border: '1px solid ' + (on ? '#0E7A66' : '#D8D2C6'), fontFamily: "'Public Sans',sans-serif", fontSize: '13px', fontWeight: 600, padding: '8px 13px', borderRadius: '9px', cursor: 'pointer', whiteSpace: 'nowrap' },
+      boxStyle: { flex: 'none', width: '18px', height: '18px', borderRadius: '5px', border: '2px solid ' + (on ? '#0E7A66' : '#C2CBC8'), background: on ? '#0E7A66' : '#FFFFFF', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700 },
+      boxBtnStyle: { flex: 'none', width: '26px', height: '26px', marginTop: '2px', borderRadius: '7px', border: '2px solid ' + (on ? '#0E7A66' : '#C2CBC8'), background: on ? '#0E7A66' : '#FFFFFF', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 700, cursor: 'pointer', padding: 0 },
     };
   };
 
-  orgs = () => this.SERVICES.map(this.toOrg).sort((a, b) => b.score - a.score);
-  orgByKey = (k) => this.orgs().find((o) => o.key === k);
+  draftBody    = (o) => 'Hello ' + o.name + ' team,\n\n' +
+    "I'm reaching out on behalf of a client our outreach team is supporting — an Army veteran who recently lost his housing following a relapse and is currently unsheltered. He lives with PTSD and has been without his medication for several months.\n\n" +
+    'Given your services — ' + (o.tagline || '').toLowerCase() + ' — I believe you may be able to help. Could you let me know whether you have an intake slot available, ideally today?\n\n' +
+    'With gratitude,\nLeilani Kahale\nOutreach Coordinator, Hawaiʻi Department of Health';
+  draftDefaults = (key) => { const o = this.getOrgs()[key]; return { to: 'intake@' + o.website, subject: 'Referral — veteran needs housing + SUD support', body: this.draftBody(o) }; };
+  getDraftVal   = (key) => { const def = this.draftDefaults(key); const d = (this.state.drafts || {})[key] || {}; return { to: d.to !== undefined ? d.to : def.to, subject: d.subject !== undefined ? d.subject : def.subject, body: d.body !== undefined ? d.body : def.body }; };
+  setDraftField = (key, field, value) => this.setState((s) => ({ drafts: Object.assign({}, s.drafts, { [key]: Object.assign({}, (s.drafts || {})[key], { [field]: value }) }) }));
+  reviewAll     = () => this.setState({ sendStage: 'review' });
+  backToEdit    = () => this.setState({ sendStage: 'compose' });
 
-  // In-window services, best first. These are the actionable local matches.
-  windowMatches = () => this.orgs().filter((o) => o.inWin)
-    .sort((a, b) => b.score - a.score || b.conf - a.conf || b.n - a.n);
+  buildDraft = (key) => {
+    const o = this.getOrgs()[key]; const f = this.fit(o.score); const v = this.getDraftVal(key);
+    return {
+      key, name: o.name, scoreLabel: o.score + '%', scoreColor: f.fg,
+      to: v.to, subject: v.subject, body: v.body,
+      onTo:      (e) => this.setDraftField(key, 'to',      e.target.value),
+      onSubject: (e) => this.setDraftField(key, 'subject', e.target.value),
+      onBody:    (e) => this.setDraftField(key, 'body',    e.target.value),
+      remove: () => this.toggleOrg(key),
+    };
+  };
 
-  // ─── navigation ─────────────────────────────────────────────────────────
-  goIntake = () => this.setState({ page: 'intake' });
-  goMatches = () => this.setState({ page: 'matches' });
-  showTop = () => this.setState({ view: 'top' });
-  showAll = () => this.setState({ view: 'all' });
-
-  openByKey = (k) => { const o = this.orgByKey(k); if (o) this.setState({ detail: o, detailShown: true }); };
-  closeDetail = () => this.setState({ detail: null, detailShown: false });
+  openByKey    = (k) => { const o = this.getOrgs()[k]; if (o) this.setState({ detail: o, detailShown: true }); };
+  closeDetail  = () => this.setState({ detail: null, detailShown: false });
   backdropDetail = (e) => { if (e.target === e.currentTarget) this.setState({ detail: null, detailShown: false }); };
+  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft' });
 
-  // ─── intake: photo upload (never blocks; backend is best-effort) ─────────
+  togglePerson  = (id) => this.setState((s) => ({ expandedPerson: s.expandedPerson === id ? null : id }));
+  setPersonNote = (id, val) => this.setState((s) => ({ personNotes: Object.assign({}, s.personNotes, { [id]: val }) }));
+  savePerson    = (id) => this.setState((s) => ({ personStatus: Object.assign({}, s.personStatus, { [id]: 'saved' }), expandedPerson: null }));
+  skipPerson    = (id) => this.setState((s) => ({ personStatus: Object.assign({}, s.personStatus, { [id]: 'skipped' }), expandedPerson: null }));
+
   triggerUpload = () => { const i = document.getElementById('notes-file'); if (i) i.click(); };
   onFile = async (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    const thumb = await new Promise((res) => {
-      const r = new FileReader();
-      r.onload = (ev) => res(ev.target.result);
-      r.readAsDataURL(f);
-    });
-    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name, apiError: '' });
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const thumb = await new Promise((res) => { const r = new FileReader(); r.onload = (ev) => res(ev.target.result); r.readAsDataURL(f); });
+    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name });
     try {
       const formData = new FormData();
       formData.append('file', f);
-      const ctrl = new AbortController();
-      const to = setTimeout(() => ctrl.abort(), 12000);
-      const response = await fetch(this.API + '/api/upload-notes', { method: 'POST', body: formData, signal: ctrl.signal });
-      clearTimeout(to);
-      if (!response.ok) throw new Error('ocr ' + response.status);
+      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/upload-notes', { method: 'POST', body: formData });
       const data = await response.json();
-      const text = (data && data.extracted_text || '').trim();
       const el = document.getElementById('intake-notes');
-      if (el && text) el.value = text;
-      this.setState({ ocrStage: 'done', ocrNote: text ? 'Transcribed from photo' : 'Photo attached' });
+      if (el) el.value = data.extracted_text || '';
+      this.setState({ ocrStage: 'done' });
     } catch (err) {
-      // Transcription unavailable — keep the photo attached and let the user
-      // proceed with typed notes (or the prefilled note). Never get stuck.
-      this.setState({ ocrStage: 'done', ocrNote: 'Photo attached · type or edit notes below' });
+      this.setState({ ocrStage: 'idle', apiError: 'Could not read the photo. Try typing notes instead.' });
     }
     e.target.value = '';
   };
-  removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '', ocrNote: '' });
+  removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '' });
 
-  // ─── intake: generate attributes + find matches ─────────────────────────
-  // Always advances to the matches screen and ranks the real services against
-  // the subject's location. The backend is attempted for live tags but the
-  // matches themselves come from local scoring, so this can never dead-end.
-  findMatches = () => {
+  findMatches = async () => {
     const el = document.getElementById('intake-notes');
     const notes = el ? el.value.trim() : '';
-    const hasPhoto = this.state.ocrStage === 'done';
-    if (!notes && !hasPhoto) {
-      this.setState({ apiError: 'Add a few notes or upload a photo first, then generate matches.' });
-      return;
+    if (!notes) { this.setState({ apiError: 'Add notes or upload a photo before generating matches.' }); return; }
+    this.setState({ page: 'matches', stage: 'analyzing', apiError: '' });
+    try {
+      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/match', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes }),
+      });
+      const data = await response.json();
+      const matches = Array.isArray(data.matches) ? data.matches : [];
+      const baseOrgs = this.getOrgs();
+      const orgKeys = Object.keys(baseOrgs);
+      const newOrgs = {};
+      matches.forEach((m, i) => {
+        const key = orgKeys[i] || String(i);
+        const base = baseOrgs[key] || baseOrgs[orgKeys[0]];
+        newOrgs[key] = { ...base, name: m.name || base.name, score: Math.round(m.match_score || base.score), lat: m.latitude || base.lat, lng: m.longitude || base.lng, tagline: m.type ? m.type.replace(/_/g, ' ') : base.tagline, phone: m.phone || base.phone, location: m.city ? (m.address ? m.address + ', ' + m.city : m.city) : base.location };
+      });
+      const topKeys = matches.slice(0, 3).map((_, i) => orgKeys[i] || String(i));
+      this.setState({ stage: 'matched', tags: data.tags || null, apiOrgs: Object.keys(newOrgs).length ? newOrgs : null, apiTopKeys: topKeys.length ? topKeys : null });
+    } catch (err) {
+      this.setState({ stage: 'idle', apiError: 'Could not generate matches. Check your connection.' });
     }
-    this.setState({ page: 'matches', view: 'top', stage: 'analyzing', apiError: '' });
-    // Best-effort live tag extraction; ignored if it fails.
-    if (notes) {
-      const ctrl = new AbortController();
-      setTimeout(() => ctrl.abort(), 9000);
-      fetch(this.API + '/api/match', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes }), signal: ctrl.signal,
-      }).then((r) => r.ok ? r.json() : null).then((data) => {
-        if (data && data.tags && Array.isArray(data.tags.needs)) {
-          // (optional) could merge live tags here; local scoring already drives matches.
-        }
-      }).catch(() => {});
-    }
-    clearTimeout(this._t);
-    this._t = setTimeout(() => this.setState({ stage: 'matched' }), 900);
   };
-
-  // ─── referral ───────────────────────────────────────────────────────────
-  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft', referralOrg: this.state.detail });
-  openReferralFor = (org) => (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft', referralOrg: org }); };
-  closeReferral = () => this.setState({ referralOpen: false });
+  openReferral    = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
+  closeReferral   = () => this.setState({ referralOpen: false });
   backdropReferral = (e) => { if (e.target === e.currentTarget) this.setState({ referralOpen: false }); };
-  approveSend = () => {
-    clearTimeout(this._t2);
-    this.setState({ referralStage: 'sending' });
-    this._t2 = setTimeout(() => this.setState({ referralStage: 'sent' }), 1700);
-  };
-  focusDraft = () => {
-    const el = document.getElementById('referral-draft');
-    if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; }
-  };
-  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+  approveSend     = () => { clearTimeout(this._t2); this.setState({ referralStage: 'sending' }); this._t2 = setTimeout(() => this.setState({ referralStage: 'sent' }), 1700); };
+  focusDraft      = () => { const el = document.getElementById('referral-draft'); if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; } };
+  stop            = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
 
-  referralEmailFor = (org) => 'intake@' + (org && org.website ? org.website : 'partner.org');
-  draftBody = (org) => {
-    const good = ((org && org.chips) || []).filter((c) => c.k === 'good').map((c) => c.t);
-    const strengths = good.length ? good.slice(0, 3).join(', ').toLowerCase() : 'the support he needs';
-    return `Hello ${org ? org.name : 'team'},\n\n` +
-      `I'm reaching out on behalf of ${this.SUBJECT.name} (52), an Army veteran who served two combat tours. ` +
-      `Three weeks ago he lost his apartment following a relapse, and he's now sleeping ${this.SUBJECT.here}. ` +
-      `He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away.\n\n` +
-      `Your program stood out as a strong match — specifically ${strengths}. That's exactly where ${this.SUBJECT.name} is right now.\n\n` +
-      `Could you confirm an intake slot for today? I can bring him in this afternoon.\n\n` +
-      `With gratitude,\nLeilani Kahale\nOutreach Coordinator, Hawaiʻi Department of Health`;
+  mapPoints = () => {
+    const orgs = this.getOrgs();
+    return Object.keys(orgs).sort((a, b) => orgs[b].score - orgs[a].score).map((k) => Object.assign({ key: k, fitc: this.fit(orgs[k].score) }, orgs[k]));
   };
 
-  // ─── map ────────────────────────────────────────────────────────────────
-  // Renders the subject + every service that currently sits inside the map's
-  // visible window. As the user pans/zooms, markers are re-filtered so the map
-  // only ever shows services that are actually in the window.
-  refreshMarkers = () => {
+  mapKey = () => this.state.page + '|' + (this.state.selected || []).join(',');
+
+  renderMarkers = () => {
     if (!this._map || !window.L) return;
     if (!this._layer) this._layer = L.layerGroup().addTo(this._map);
     this._layer.clearLayers();
+    const sel = this.state.selected || [];
+    const isSend = this.state.page === 'send';
+    const coords = [[this.DEPOT.lat, this.DEPOT.lng]];
 
     L.marker([this.DEPOT.lat, this.DEPOT.lng], {
       icon: L.divIcon({ className: '', iconSize: [22, 22], iconAnchor: [11, 11], html:
         '<div style="width:18px;height:18px;border-radius:50%;background:#16242A;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);"></div>' }),
-    }).addTo(this._layer).bindTooltip(this.SUBJECT.name + ' · ' + this.SUBJECT.here, { direction: 'top', offset: [0, -10] });
+    }).addTo(this._layer).bindTooltip('Client · near the train depot', { direction: 'top', offset: [0, -10] });
 
-    const bounds = this._map.getBounds();
-    const best = (this.windowMatches()[0] || {}).key;
-    this.orgs().forEach((p) => {
-      if (p.lat == null || p.lng == null) return;
-      if (!bounds.contains([p.lat, p.lng])) return;   // only what's in the window
-      const recommended = p.key === best;
-      const sz = recommended ? 40 : 32;
+    this.mapPoints().forEach((p) => {
+      const isSel = sel.includes(p.key);
+      const recommended = p.key === 'va';
+      const sz = isSel ? 42 : (recommended ? 40 : 32);
+      const ring = isSel ? '0 0 0 3px #0E7A66, 0 3px 9px rgba(0,0,0,.4)' : '0 3px 8px rgba(0,0,0,.35)';
       const icon = L.divIcon({
         className: '', iconSize: [sz, sz + 6], iconAnchor: [sz / 2, sz + 6],
-        html:
-          '<div style="position:relative;width:' + sz + 'px;height:' + sz + 'px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:' + p.fitc.color + ';border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.35);cursor:pointer;">' +
-          '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);color:#fff;font-family:\'Public Sans\',sans-serif;font-size:' + (recommended ? 12 : 10) + 'px;font-weight:700;">' + Math.round(p.score) + '</span></div>',
+        html: '<div style="position:relative;width:' + sz + 'px;height:' + sz + 'px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:' + p.fitc.color + ';border:2.5px solid #fff;box-shadow:' + ring + ';opacity:' + ((isSend && !isSel) ? '0.45' : '1') + ';cursor:pointer;">' +
+              '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);color:#fff;font-family:\'Public Sans\',sans-serif;font-size:' + (isSel || recommended ? 12 : 10) + 'px;font-weight:700;">' + p.score + '</span></div>',
       });
       const m = L.marker([p.lat, p.lng], { icon, riseOnHover: true }).addTo(this._layer);
-      m.bindTooltip(p.name + ' · ' + Math.round(p.score) + '%', { direction: 'top', offset: [0, -(sz + 2)] });
-      m.on('click', () => this.openByKey(p.key));
+      m.bindTooltip(p.name + ' · ' + p.score + '%' + (isSend ? (isSel ? ' · tap to remove' : ' · tap to add') : ''), { direction: 'top', offset: [0, -(sz + 2)] });
+      m.on('click', () => { if (isSend) this.toggleOrg(p.key); else this.openByKey(p.key); });
+      coords.push([p.lat, p.lng]);
     });
+
+    this._map.fitBounds(coords, { padding: [44, 44], maxZoom: 15 });
+    this._renderedKey = this.mapKey();
   };
 
   ensureMap = () => {
-    if (this.state.page !== 'matches' || this.state.stage !== 'matched') return;
-    const el = document.getElementById('match-map');
+    const page = this.state.page;
+    let elId = null;
+    if (page === 'matches' && this.state.stage === 'matched') elId = 'match-map';
+    else if (page === 'send' && (this.state.selected || []).length) elId = 'send-map';
+    if (!elId) return;
+    const el = document.getElementById(elId);
     if (!el) return;
     if (!window.L) { clearTimeout(this._mapWait); this._mapWait = setTimeout(this.ensureMap, 120); return; }
-    if (el._kInit) { if (this._map) this._map.invalidateSize(); this.refreshMarkers(); return; }
-    el._kInit = true;
+    if (el._kInit && this._map && this._mapEl === el) {
+      if (this._renderedKey !== this.mapKey()) this.renderMarkers();
+      try { this._map.invalidateSize(); } catch (e) {}
+      return;
+    }
     if (this._map) { try { this._map.remove(); } catch (e) {} this._map = null; this._layer = null; }
+    el._kInit = true; this._mapEl = el;
     const map = L.map(el, { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap contributors © CARTO',
     }).addTo(map);
-    this._map = map; this._layer = null;
-    // Fit to the subject + the in-window matches (keeps neighbor islands out).
-    const coords = [[this.DEPOT.lat, this.DEPOT.lng]];
-    this.windowMatches().forEach((o) => { if (o.lat != null) coords.push([o.lat, o.lng]); });
-    if (coords.length > 1) map.fitBounds(coords, { padding: [44, 44], maxZoom: 14 });
-    else map.setView([this.DEPOT.lat, this.DEPOT.lng], 13);
-    map.on('moveend', this.refreshMarkers);
-    this.refreshMarkers();
-    setTimeout(() => { try { map.invalidateSize(); } catch (e) {} this.refreshMarkers(); }, 80);
+    this._map = map; this._layer = null; this._renderedKey = null;
+    this.renderMarkers();
+    setTimeout(() => { try { map.invalidateSize(); } catch (e) {} }, 80);
   };
 
-  componentDidMount() { this.ensureMap(); }
-  componentDidUpdate() { this.ensureMap(); }
+  componentDidMount()    { this.ensureMap(); }
+  componentDidUpdate()   { this.ensureMap(); }
   componentWillUnmount() {
-    clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._mapWait);
+    clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._t3); clearTimeout(this._ocr); clearTimeout(this._mapWait);
     if (this._map) { try { this._map.remove(); } catch (e) {} }
   }
 
   renderVals() {
     const st = this.state;
     const matched = st.stage === 'matched';
-    const orgs = this.orgs();
-    const wins = this.windowMatches();
-    const bestKey = (wins[0] || {}).key;
-
-    // Top matches = the in-window services (the subject's local options), top 3.
-    const topMatches = wins.slice(0, 3).map((o) => {
-      const recommended = o.key === bestKey;
-      const cardStyle = {
-        background: '#FFFFFF',
-        border: recommended ? '1.5px solid #0E7A66' : '1px solid #E6E1D7',
-        borderRadius: '14px', padding: '20px 22px 18px', cursor: 'pointer',
-        boxShadow: recommended ? '0 12px 32px -18px rgba(14,122,102,0.5)' : '0 1px 2px rgba(20,40,40,0.04)',
-      };
-      const badgeStyle = recommended
-        ? { display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#0E7A66', color: '#FFFFFF', fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', padding: '4px 9px', borderRadius: '6px', marginBottom: '11px' }
-        : { display: 'none' };
-      const referBtnStyle = recommended
-        ? { display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#0E7A66', color: '#FFFFFF', border: 'none', fontSize: '14px', fontWeight: 600, padding: '11px 20px', borderRadius: '9px', cursor: 'pointer', boxShadow: '0 1px 2px rgba(14,122,102,0.3)' }
-        : { display: 'inline-flex', alignItems: 'center', gap: '7px', background: '#FFFFFF', color: '#16242A', border: '1px solid #D8D2C6', fontSize: '13.5px', fontWeight: 600, padding: '9px 16px', borderRadius: '9px', cursor: 'pointer' };
-      return {
-        ...o, recommended, cardStyle, badgeStyle, referBtnStyle,
-        footnote: recommended ? ('Top match on the priority factors for ' + this.SUBJECT.name + '.') : (Math.round(o.distMi) + ' mi from ' + this.SUBJECT.name + ' · ' + o.typeLabel),
-        open: () => this.openByKey(o.key),
-        refer: this.openReferralFor(o),
-      };
-    });
-
-    // Full database = every service, in-window first then the rest, by score.
-    const directory = orgs.slice().sort((a, b) => (b.inWin - a.inWin) || (b.score - a.score)).map((o) => ({
-      ...o,
-      windowBadge: o.inWin ? 'In window' : o.island,
-      windowBadgeStyle: o.inWin
-        ? 'font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:#E7F1EE;color:#0E7A66;border:1px solid #CDE6DF;'
-        : 'font-size:10px;font-weight:600;letter-spacing:0.04em;padding:2px 8px;border-radius:6px;background:#EFECE4;color:#9AA6A4;border:1px solid #E2DDD3;',
-      open: () => this.openByKey(o.key),
-    }));
-
     const d = st.detail || {};
-    const detailFactors = ((d.chips) || []).map((c) => {
-      const isGood = c.k === 'good';
-      return { text: c.text, sym: isGood ? '✓' : '✕', bg: isGood ? '#E9F1EC' : '#F3E7E3', color: isGood ? '#1C7A55' : '#9E4B39' };
+    const orgs = this.getOrgs();
+    const selected = st.selected || [];
+    const hasSelection = selected.length > 0;
+    const selCount = selected.length;
+    const plural = selCount === 1 ? '' : 's';
+    const batch = selected.map((k) => this.buildDraft(k));
+
+    const allRanked = Object.keys(orgs).sort((a, b) => orgs[b].score - orgs[a].score);
+
+    const pickRows = allRanked.map((k) => {
+      const o = orgs[k]; const f = this.fit(o.score); const on = selected.includes(k);
+      return {
+        key: k, name: o.name, tagline: o.tagline, scoreLabel: o.score + '%', scoreColor: f.fg, dotColor: f.color,
+        sel: this.buildToggle(k),
+        rowStyle: { display: 'flex', alignItems: 'center', gap: '12px', width: '100%', textAlign: 'left', background: on ? '#F4FAF8' : '#FFFFFF', border: '1px solid ' + (on ? '#BFD8CF' : '#E6E1D7'), borderRadius: '11px', padding: '11px 14px', cursor: 'pointer', fontFamily: "'Public Sans',sans-serif" },
+      };
     });
 
-    const r = st.referralOrg || wins[0] || orgs[0] || {};
+    const directory = allRanked.map((k) => {
+      const o = orgs[k]; const f = this.fit(o.score);
+      const conf = o.confidence || 70;
+      const cc = this.confColor(conf);
+      const unknownParams = o.unknownParams || [];
+      return {
+        key: k, name: o.name, tagline: o.tagline, location: o.location,
+        scoreLabel: o.score + '%', scoreColor: f.fg, barWidth: o.score + '%', barColor: f.color, dotColor: f.color,
+        fitLabel: f.label, fitBg: f.bg, fitColor: f.fg, fitBorder: f.border,
+        chips: (o.factors || []).map((fc) => { const c = this.CHIP[fc.k] || this.CHIP.info; return { text: (c.sym ? c.sym + ' ' : '') + fc.t, bg: c.bg, color: c.color, border: c.border }; }),
+        open: () => this.openByKey(k),
+        sel: this.buildToggle(k),
+        confidenceLabel: conf + '%',
+        confColor: cc,
+        confBarWidth: conf + '%',
+        unknownParams,
+        hasUnknown: unknownParams.length > 0,
+        lowConfidence: conf < 60,
+        confTipOpen: st.confTip === k,
+        confEnter: (e) => { e.stopPropagation(); this.setState({ confTip: k }); },
+        confLeave: (e) => { e.stopPropagation(); this.setState({ confTip: null }); },
+      };
+    });
 
-    const stepBase = { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', borderRadius: '9px', border: 'none', fontFamily: "'Public Sans',sans-serif", fontSize: '13px', fontWeight: 600, cursor: 'pointer' };
-    const stepOn = Object.assign({}, stepBase, { background: '#E7F1EE', color: '#0E7A66' });
-    const stepOff = Object.assign({}, stepBase, { background: 'transparent', color: '#8A9492' });
-    const segBase = { padding: '7px 16px', borderRadius: '8px', border: 'none', fontFamily: "'Public Sans',sans-serif", fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' };
-    const segOn = Object.assign({}, segBase, { background: '#FFFFFF', color: '#16242A', boxShadow: '0 1px 2px rgba(20,40,40,0.12)' });
-    const segOff = Object.assign({}, segBase, { background: 'transparent', color: '#7C8888' });
+    const prevPeople = this.PREV_PEOPLE.map((p) => {
+      const expanded = st.expandedPerson === p.id;
+      const notes    = (st.personNotes  || {})[p.id] || '';
+      const status   = (st.personStatus || {})[p.id];
+      const hasBadge = !!status;
+      return {
+        ...p,
+        expanded,
+        notes,
+        hasBadge,
+        badgeLabel:  status === 'saved'   ? '✓ Saved' : '— Skipped',
+        badgeBg:     status === 'saved'   ? '#E9F1EC'  : '#EFECE4',
+        badgeColor:  status === 'saved'   ? '#1C7A55'  : '#7C8888',
+        badgeBorder: status === 'saved'   ? '#D2E5DA'  : '#E2DDD3',
+        chevron: expanded ? '▲' : '▼',
+        referralCount:  p.pastReferrals.length,
+        referralSuffix: p.pastReferrals.length === 1 ? '' : 's',
+        toggle: () => this.togglePerson(p.id),
+        onNotes: (e) => this.setPersonNote(p.id, e.target.value),
+        save: (e) => { e.stopPropagation(); this.savePerson(p.id); },
+        skip: (e) => { e.stopPropagation(); this.skipPerson(p.id); },
+      };
+    });
+
+    const stepBase       = { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', borderRadius: '9px', border: 'none', fontFamily: "'Public Sans',sans-serif", fontSize: '13px', fontWeight: 600, cursor: 'pointer' };
+    const stepOn         = Object.assign({}, stepBase, { background: '#E7F1EE', color: '#0E7A66' });
+    const stepOff        = Object.assign({}, stepBase, { background: 'transparent', color: '#8A9492' });
+    const stepSendReady  = Object.assign({}, stepBase, { background: 'transparent', color: '#0E7A66' });
 
     return {
-      subjectName: this.SUBJECT.name,
-      subjectTags: this.SUBJECT_TAGS,
-      isIntake: st.page === 'intake',
-      isMatches: st.page === 'matches',
-      goIntake: this.goIntake,
-      goMatches: this.goMatches,
-      stepIntakeStyle: st.page === 'intake' ? stepOn : stepOff,
-      stepMatchesStyle: st.page === 'matches' ? stepOn : stepOff,
-      stepHint: st.page === 'intake' ? 'Step 1 of 2 · capture the situation' : 'Step 2 of 2 · review & refer',
-
-      isTop: st.view === 'top',
-      isAll: st.view === 'all',
-      showTop: this.showTop,
-      showAll: this.showAll,
-      segTopStyle: st.view === 'top' ? segOn : segOff,
-      segAllStyle: st.view === 'all' ? segOn : segOff,
-      matchCountLabel: st.view === 'all' ? (orgs.length + ' in network') : (wins.length + ' near ' + this.SUBJECT.name),
-      segHint: st.view === 'all' ? 'Every organization · in-window first, ranked by fit' : 'Local options inside the map window · ranked by fit',
-      mapHint: 'Around the train depot, Honolulu · ' + wins.length + ' services in the window · tap a pin for details.',
-      topMatches,
-      directory,
-
-      detailOpen: st.detailShown,
-      detailName: d.name, detailTagline: d.tagline, detailLocation: d.location,
-      detailAddress: d.address || '—', detailPhone: d.phoneFmt || '—', detailType: d.typeLabel || '—',
-      detailScore: d.score != null ? (Math.round(d.score) + '%') : '—',
-      detailServices: d.services || [], detailFactors,
-      closeDetail: this.closeDetail, backdropDetail: this.backdropDetail, backdropReferral: this.backdropReferral,
-      referralFromDetail: this.referralFromDetail,
+      isIntake:   st.page === 'intake',
+      isMatches:  st.page === 'matches',
+      isSend:     st.page === 'send',
+      hasSelection, noSelection: !hasSelection, selCount, sentCount: selCount,
+      batch, pickRows, directory,
+      goIntake: this.goIntake, goMatches: this.goMatches, goSend: this.goSend,
+      clearSel: this.clearSel, sendAll: this.sendAll, finishSend: this.finishSend,
+      sendBarTitle: 'Send ' + selCount + ' referral' + plural + ' in one batch',
+      reviewLabel: 'Review ' + selCount + ' email' + plural,
+      sendAllLabel: 'Confirm & send all ' + selCount,
+      reviewAll: this.reviewAll, backToEdit: this.backToEdit,
+      sendComposeDisplay:  { display: st.sendStage === 'compose'  ? 'block' : 'none' },
+      sendReviewDisplay:   { display: st.sendStage === 'review'   ? 'block' : 'none' },
+      sendSendingDisplay:  { display: st.sendStage === 'sending'  ? 'block' : 'none' },
+      sendSentDisplay:     { display: st.sendStage === 'sent'     ? 'block' : 'none' },
+      stepIntakeStyle:  st.page === 'intake'   ? stepOn : stepOff,
+      stepMatchesStyle: st.page === 'matches'  ? stepOn : stepOff,
+      stepSendStyle:    st.page === 'send'     ? stepOn : (hasSelection ? stepSendReady : stepOff),
+      stepHint: st.page === 'intake' ? 'Step 1 of 3 · capture the situation' : (st.page === 'send' ? 'Step 3 of 3 · draft & send' : 'Step 2 of 3 · review & select'),
+      matchCountLabel: Object.keys(orgs).length + ' in network',
       isAnalyzing: st.stage === 'analyzing',
       isMatched: matched,
-
+      detailOpen: st.detailShown,
+      detailName: d.name, detailTagline: d.tagline, detailLocation: d.location,
+      detailWebsite: d.website, detailWebsiteHref: d.website ? 'https://' + d.website : '#',
+      detailPoc: d.poc, detailPocRole: d.pocRole, detailPhone: d.phone, detailCapacity: d.capacity,
+      detailServices: d.services || [], detailHelped: d.helped, detailPast: d.past || [],
+      closeDetail: this.closeDetail, backdropDetail: this.backdropDetail, backdropReferral: this.backdropReferral,
+      referralFromDetail: this.referralFromDetail,
       referralOpen: st.referralOpen,
-      referralOrgName: r.name || 'the organization',
-      referralHeading: 'Introduce ' + this.SUBJECT.name + ' to ' + (r.name || 'the organization'),
-      referralTo: this.referralEmailFor(r),
-      referralSubject: 'Referral & introduction — ' + this.SUBJECT.name + ' needs housing + support',
-      referralBody: this.draftBody(r),
-      draftDisplay: { display: st.referralStage === 'draft' ? 'block' : 'none' },
+      draftDisplay:   { display: st.referralStage === 'draft'   ? 'block' : 'none' },
       sendingDisplay: { display: st.referralStage === 'sending' ? 'block' : 'none' },
-      sentDisplay: { display: st.referralStage === 'sent' ? 'block' : 'none' },
-
+      sentDisplay:    { display: st.referralStage === 'sent'    ? 'block' : 'none' },
       showSignals: (this.props.showSignals ?? true) && matched,
-      showLegend: this.props.showLegend ?? true,
       showProximity: this.props.showProximity ?? true,
       ocrIdle: st.ocrStage === 'idle', ocrReading: st.ocrStage === 'reading', ocrDone: st.ocrStage === 'done',
       ocrThumbEl: st.ocrThumb ? React.createElement('img', { src: st.ocrThumb, style: { flex: 'none', width: '38px', height: '38px', borderRadius: '7px', objectFit: 'cover', border: '1px solid #DCE8E3' } }) : null,
-      ocrName: st.ocrName, ocrNote: st.ocrNote || 'Transcribed from photo',
+      ocrName: st.ocrName,
       triggerUpload: this.triggerUpload, onFile: this.onFile, removeOcr: this.removeOcr,
       findMatches: this.findMatches,
-      apiError: st.apiError, apiErrorShown: !!st.apiError,
-      openReferral: this.openReferralFor, closeReferral: this.closeReferral, approveSend: this.approveSend, focusDraft: this.focusDraft,
+      openReferral: this.openReferral, closeReferral: this.closeReferral, approveSend: this.approveSend, focusDraft: this.focusDraft,
       stop: this.stop,
+      prevPeople,
+      prevPeopleCount: this.PREV_PEOPLE.length,
     };
   }
 }
-</script>
-<script>
-  // Backend base URL (best-effort; the console works fully offline if it's down).
-  Component.prototype.API = 'http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com';
 </script>
 </body>
 </html>
