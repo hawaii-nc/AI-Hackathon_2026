@@ -5,11 +5,23 @@ from app.services.referral import _strip_code_fences
 import numpy as np
 import json
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+# Build the client only when a key is present, so importing this module (and
+# starting the API) never hard-fails just because GEMINI_API_KEY is unset.
+# genai.Client(api_key=None) raises ValueError, which would crash app startup.
+client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+
+
+def _require_client():
+    if client is None:
+        raise RuntimeError(
+            "GEMINI_API_KEY is not set — add it to backend/.env to enable "
+            "matching/tag extraction."
+        )
+    return client
 
 def get_embedding(text: str) -> list:
-    result = client.models.embed_content(
-        model='text-embedding-004',
+    result = _require_client().models.embed_content(
+        model='gemini-embedding-001',
         contents=text
     )
     return result.embeddings[0].values
@@ -33,8 +45,8 @@ def match_client_to_shelters(client_needs: str, island: str = None, top_k: int =
     return scored[:top_k]
 
 def extract_client_tags(raw_notes: str) -> dict:
-    response = client.models.generate_content(
-        model='gemini-2.0-flash',
+    response = _require_client().models.generate_content(
+        model='gemini-2.5-flash',
         contents=f'You are a case worker assistant. Extract structured tags from social worker notes. Return JSON with these fields only: needs (list: housing/mental_health/substance_abuse/medical/food/domestic_violence/employment), urgency (low/medium/high/critical), languages (list), has_children (bool), veteran (bool), summary (one sentence). Be factual and unbiased. Return only valid JSON no extra text. Notes: {raw_notes}'
     )
     cleaned = _strip_code_fences(response.text)
