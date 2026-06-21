@@ -107,7 +107,11 @@
         <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#46555A;font-weight:600;">Type the notes</span>
       </div>
 
-      <textarea id="intake-notes" style="width:100%;min-height:196px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:14px;line-height:1.6;color:#2A363A;border:1px solid #E2DDD3;border-radius:11px;padding:14px;background:#FBFAF7;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);">Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'</textarea>
+      <textarea id="intake-notes" onInput="{{ onNotesInput }}" style="width:100%;min-height:196px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:14px;line-height:1.6;color:#2A363A;border:1px solid #E2DDD3;border-radius:11px;padding:14px;background:#FBFAF7;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);">Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'</textarea>
+
+      <sc-if value="{{ hasApiError }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;padding:12px 14px;border:1px solid #E2C1B8;background:#FBF2EF;border-radius:11px;color:#9E4B39;font-size:13px;line-height:1.5;">{{ apiError }}</div>
+      </sc-if>
 
       <sc-if value="{{ showSignals }}" hint-placeholder-val="{{ true }}">
         <div style="margin-top:16px;">
@@ -116,11 +120,9 @@
             <div style="font-size:10.5px;color:#B7BEBB;white-space:nowrap;">auto-tagged on match</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:7px;">
-            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Veteran</span>
-            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Substance use</span>
-            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Housing loss</span>
-            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Untreated PTSD</span>
-            <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Turned away repeatedly</span>
+            <sc-for list="{{ tagChips }}" as="tag" hint-placeholder-count="5">
+              <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">{{ tag }}</span>
+            </sc-for>
           </div>
         </div>
       </sc-if>
@@ -135,7 +137,7 @@
         <div>
           <div style="display:flex;align-items:center;gap:10px;">
             <h2 style="margin:0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Matches</h2>
-            <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">3 found</span>
+            <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">{{ matchCount }} found</span>
           </div>
           <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility for this situation · updated just now</p>
           <p style="margin:7px 0 0;font-size:11.5px;color:#A7AFAC;display:flex;align-items:center;gap:6px;"><span style="font-size:13px;">↗</span> Click any match to see contact, point person &amp; people helped there.</p>
@@ -153,85 +155,44 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ showEmptyMatches }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:54px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+          <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+          <div style="font-size:15px;font-weight:600;color:#16242A;">Generate matches to see ranked shelters here.</div>
+          <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">The backend will return tags and ranked shelter options once the intake is submitted.</div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ isMatched }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:14px;">
-
-          <article onClick="{{ openVa }}" style="background:#FFFFFF;border:1.5px solid #0E7A66;border-radius:14px;padding:20px 22px 18px;box-shadow:0 12px 32px -18px rgba(14,122,102,0.5);cursor:pointer;" style-hover="background:#F4FAF8;box-shadow:0 16px 38px -16px rgba(14,122,102,0.6);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-              <div style="min-width:0;">
-                <div style="display:inline-flex;align-items:center;gap:6px;background:#0E7A66;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 9px;border-radius:6px;margin-bottom:11px;">Recommended match</div>
-                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">VA Stand Down Outreach</h3>
-                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Veteran-specific · integrated SUD + housing</p>
-                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#2E9B6E;"></span>0.6 mi · Iwilei, Honolulu</p>
-                </sc-if>
+          <sc-for list="{{ matchCards }}" as="card" hint-placeholder-count="3">
+            <article data-match-id="{{ card.id }}" onClick="{{ openMatch }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+                <div style="min-width:0;">
+                  <div style="display:inline-flex;align-items:center;gap:6px;background:#0E7A66;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 9px;border-radius:6px;margin-bottom:11px;">{{ card.badgeText }}</div>
+                  <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ card.name }}</h3>
+                  <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">{{ card.subtitle }}</p>
+                  <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#2E9B6E;"></span>{{ card.locationLine }}</p>
+                  </sc-if>
+                </div>
+                <div style="text-align:right;flex:none;">
+                  <div style="font-family:'Source Serif 4',serif;font-size:36px;font-weight:600;color:#1C7A55;line-height:1;">{{ card.scoreLabel }}</div>
+                  <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
+                  <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:{{ card.scoreWidth }};height:100%;background:#2E9B6E;"></div></div>
+                </div>
               </div>
-              <div style="text-align:right;flex:none;">
-                <div style="font-family:'Source Serif 4',serif;font-size:36px;font-weight:600;color:#1C7A55;line-height:1;">94%</div>
-                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:94%;height:100%;background:#2E9B6E;"></div></div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+                <sc-for list="{{ card.tags }}" as="pill" hint-placeholder-count="3">
+                  <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;">{{ pill }}</span>
+                </sc-for>
               </div>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Veteran eligibility</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Active substance-use program</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> 3 beds open today</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-              <div style="font-size:12.5px;color:#7C8888;">Top match on every priority factor for Marcus.</div>
-              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">Draft referral <span style="font-size:15px;">→</span></button>
-            </div>
-          </article>
-
-          <article onClick="{{ openHarbor }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-              <div style="min-width:0;">
-                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Harbor Light Recovery Center</h3>
-                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Strong on substance use · not veteran-specialized</p>
-                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C79A3A;"></span>1.4 mi · Kakaʻako</p>
-                </sc-if>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
+                <div style="font-size:12.5px;color:#7C8888;">{{ card.summary }}</div>
+                <button data-match-id="{{ card.id }}" onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
               </div>
-              <div style="text-align:right;flex:none;">
-                <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#8A6312;line-height:1;">71%</div>
-                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:71%;height:100%;background:#C79A3A;"></div></div>
-              </div>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> SUD program</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> No veteran services</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> Waitlist 5–7 days</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
-            </div>
-          </article>
-
-          <article onClick="{{ openDowntown }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-              <div style="min-width:0;">
-                <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Downtown Family Shelter</h3>
-                <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">General shelter · no clinical support</p>
-                <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                  <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C0705E;"></span>0.9 mi · Chinatown</p>
-                </sc-if>
-              </div>
-              <div style="text-align:right;flex:none;">
-                <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#9E4B39;line-height:1;">58%</div>
-                <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:58%;height:100%;background:#C0705E;"></div></div>
-              </div>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Beds available</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> No substance-use support</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> Not equipped for PTSD</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-              <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
-            </div>
-          </article>
+            </article>
+          </sc-for>
 
         </div>
       </sc-if>
@@ -317,12 +278,20 @@
     <div style="position:fixed;inset:0;background:rgba(16,26,29,0.5);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:28px;z-index:55;animation:kfade 0.18s ease;">
       <div onClick="{{ stop }}" style="width:648px;max-width:94vw;max-height:88vh;overflow:auto;background:#FFFFFF;border-radius:16px;box-shadow:0 30px 80px -20px rgba(10,20,22,0.55);animation:kmodal 0.22s cubic-bezier(.2,.8,.2,1);">
 
+        <div style="{{ generatingDisplay }}">
+          <div style="padding:64px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
+            <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
+            <div style="font-size:15px;font-weight:600;color:#16242A;">Generating referral draft…</div>
+            <div style="font-size:13px;color:#7C8888;">Creating a shelter-specific introduction from the intake and selected match.</div>
+          </div>
+        </div>
+
         <div style="{{ draftDisplay }}">
           <div style="padding:22px 24px 0;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
               <div>
                 <div style="font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Draft referral · introduction email</div>
-                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Introduce Marcus to VA Stand Down</h3>
+                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Introduce Marcus to {{ selectedMatchName }}</h3>
               </div>
               <button onClick="{{ closeReferral }}" style="flex:none;width:32px;height:32px;border-radius:50%;border:1px solid #E6E1D7;background:#FFFFFF;color:#7C8888;font-size:16px;line-height:1;cursor:pointer;" style-hover="background:#F6F4EF;">✕</button>
             </div>
@@ -332,23 +301,13 @@
             <div style="border:1px solid #E2DDD3;border-radius:11px;overflow:hidden;background:#FFFFFF;">
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">To</span>
-                <input defaultValue="outreach@vastanddown.org" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
+                <input defaultValue="{{ selectedMatchContact }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
               </div>
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">Subject</span>
-                <input defaultValue="Referral and introduction — veteran needs housing + SUD support" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
+                <input defaultValue="Referral and introduction — housing + support needs" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
               </div>
-              <textarea id="referral-draft" style="display:block;width:100%;min-height:222px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">Hello VA Stand Down Outreach team,
-
-I'm reaching out on behalf of Marcus (52), an Army veteran who served two combat tours. Three weeks ago he lost his apartment following a relapse, and he's now sleeping near the train depot. He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away — understandably, he's wary of being passed from place to place.
-
-Your integrated veteran housing and substance-use program is the right fit for where he is right now. Marcus wants help. He needs one door that won't close on him.
-
-Could you confirm an intake slot for today? I can bring him in this afternoon.
-
-With gratitude,
-Leilani Kahale
-Outreach Coordinator, Hawaiʻi Department of Health</textarea>
+              <textarea id="referral-draft" onInput="{{ onReferralDraftInput }}" style="display:block;width:100%;min-height:222px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">{{ referralDraft }}</textarea>
           </div>
           <div style="margin:16px 24px 0;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
             <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#0E7A66;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">✓</div>
@@ -369,7 +328,7 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
         <div style="{{ sendingDisplay }}">
           <div style="padding:64px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
             <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
-            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to VA Stand Down Outreach…</div>
+            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to {{ selectedMatchName }}…</div>
             <div style="font-size:13px;color:#7C8888;">Delivering your reviewed referral securely.</div>
           </div>
         </div>
@@ -378,7 +337,7 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
           <div style="padding:46px 40px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
             <div style="width:56px;height:56px;border-radius:50%;background:#E9F1EC;border:1.5px solid #2E9B6E;color:#1C7A55;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;">✓</div>
             <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Referral sent</h3>
-            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">VA Stand Down Outreach received your introduction and accepted the referral.</p>
+            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">{{ selectedMatchName }} received your introduction and accepted the referral.</p>
             <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">Marcus has a bed tonight.</p>
             <div style="display:flex;align-items:center;gap:9px;margin:22px 0 24px;">
               <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Sent</span>
@@ -402,8 +361,117 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
   &quot;showLegend&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
   &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
 }">
+const API_BASE = 'https://your-api-domain.com';
+
 class Component extends DCLogic {
   MARCUS_TEXT = "Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'";
+
+  state = {
+    stage: 'idle',
+    referralOpen: false,
+    referralStage: 'idle',
+    ocrStage: 'idle',
+    ocrThumb: null,
+    ocrName: '',
+    detail: null,
+    detailShown: false,
+    apiError: '',
+    tags: null,
+    matches: [],
+    selectedMatch: null,
+    referralDraft: '',
+    notesText: this.MARCUS_TEXT,
+  };
+
+  getApiUrl = (path) => `${API_BASE.replace(/\/$/, '')}${path}`;
+
+  getNotesEl = () => document.getElementById('intake-notes');
+
+  getNotesText = () => {
+    const el = this.getNotesEl();
+    return (el ? el.value : this.state.notesText || '').trim();
+  };
+
+  setNotesText = (text) => {
+    const el = this.getNotesEl();
+    if (el) {
+      el.value = text || '';
+    }
+    this.setState({ notesText: text || '' });
+  };
+
+  getSelectedMatch = () => this.state.selectedMatch || this.state.matches[0] || null;
+
+  readErrorMessage = async (response) => {
+    try {
+      const payload = await response.json();
+      if (payload && typeof payload.detail === 'string') return payload.detail;
+      if (payload && typeof payload.message === 'string') return payload.message;
+      return `Request failed with status ${response.status}`;
+    } catch {
+      return `Request failed with status ${response.status}`;
+    }
+  };
+
+  formatApiError = (error) => error instanceof Error ? error.message : 'Something went wrong while talking to the API.';
+
+  buildClientProfile = () => {
+    const tags = this.state.tags || {};
+    return {
+      notes: this.getNotesText(),
+      ...tags,
+    };
+  };
+
+  buildMatchCards = () => {
+    return (this.state.matches || []).slice(0, 3).map((match, index) => {
+      const score = Number(match.match_score ?? 0);
+      const safeScore = Math.max(0, Math.min(100, Math.round(score)));
+      const locationParts = [match.city, match.island].filter(Boolean);
+      const subtitleParts = [match.type, match.county_coc].filter(Boolean);
+      const tags = [match.type, match.city, match.island].filter(Boolean).slice(0, 3);
+      return {
+        id: String(match.id ?? `${match.name}-${index}`),
+        name: match.name || 'Unnamed shelter',
+        subtitle: subtitleParts.join(' · ') || 'Shelter match',
+        locationLine: locationParts.join(' · ') || match.address || 'Location not listed',
+        scoreLabel: `${safeScore}%`,
+        scoreWidth: `${safeScore}%`,
+        badgeText: index === 0 ? 'Recommended match' : `Rank ${index + 1}`,
+        tags,
+        summary: match.address ? `${match.address}${match.zip ? `, ${match.zip}` : ''}` : 'Click to draft a referral.',
+        match,
+      };
+    });
+  };
+
+  buildTagChips = () => {
+    const tags = this.state.tags || {};
+    const chips = [];
+    if (Array.isArray(tags.needs)) chips.push(...tags.needs.map((item) => String(item).replace(/_/g, ' ')));
+    if (tags.urgency) chips.push(`Urgency: ${tags.urgency}`);
+    if (Array.isArray(tags.languages) && tags.languages.length) chips.push(`Language: ${tags.languages.join(', ')}`);
+    if (typeof tags.has_children === 'boolean') chips.push(tags.has_children ? 'Has children' : 'No children listed');
+    if (typeof tags.veteran === 'boolean') chips.push(tags.veteran ? 'Veteran' : 'Non-veteran');
+    if (tags.summary) chips.push(tags.summary);
+    return chips;
+  };
+
+  buildReferralDraft = (match, referralText) => {
+    const shelterName = match?.name || 'the selected shelter';
+    const notes = this.getNotesText();
+    return referralText || [
+      `Hello ${shelterName} team,`,
+      '',
+      'I\'m reaching out on behalf of the client described in the intake notes below.',
+      '',
+      notes,
+      '',
+      'Please let me know if you can confirm an intake slot and next steps.',
+      '',
+      'Mahalo,'
+    ].join('\n');
+  };
 
   getOrgs = () => ({
     va: {
@@ -456,44 +524,131 @@ class Component extends DCLogic {
     },
   });
 
-  state = { stage: 'matched', referralOpen: false, referralStage: 'draft', ocrStage: 'idle', ocrThumb: null, ocrName: '', detail: null, detailShown: false };
-
+  openMatch = (e) => {
+    const matchId = e && e.currentTarget && e.currentTarget.dataset ? e.currentTarget.dataset.matchId : null;
+    const selectedMatch = matchId ? (this.state.matches || []).find((item, index) => String(item.id ?? `${item.name}-${index}`) === String(matchId)) : null;
+    if (!selectedMatch) return;
+    this.setState({ detail: selectedMatch, detailShown: true, selectedMatch });
+  };
   openVa = () => this.setState({ detail: this.getOrgs().va, detailShown: true });
   openHarbor = () => this.setState({ detail: this.getOrgs().harbor, detailShown: true });
   openDowntown = () => this.setState({ detail: this.getOrgs().downtown, detailShown: true });
   closeDetail = () => this.setState({ detail: null, detailShown: false });
   backdropDetail = (e) => { if (e.target === e.currentTarget) this.setState({ detail: null, detailShown: false }); };
-  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft' });
+  referralFromDetail = () => {
+    const selectedMatch = this.state.detail || this.getSelectedMatch();
+    if (!selectedMatch) return;
+    this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'generating', selectedMatch });
+    void this.generateReferral(selectedMatch);
+  };
 
   triggerUpload = () => { const i = document.getElementById('notes-file'); if (i) i.click(); };
-  onFile = (e) => {
+  onFile = async (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
+    this.setState({ apiError: '', ocrStage: 'reading' });
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      this.setState({ ocrStage: 'reading', ocrThumb: ev.target.result, ocrName: f.name });
-      clearTimeout(this._ocr);
-      this._ocr = setTimeout(() => {
-        const el = document.getElementById('intake-notes');
-        if (el) { el.value = this.MARCUS_TEXT; }
-        this.setState({ ocrStage: 'done' });
-      }, 1700);
+    reader.onload = async (ev) => {
+      this.setState({ ocrThumb: ev.target.result, ocrName: f.name });
+      try {
+        const formData = new FormData();
+        formData.append('file', f);
+        const response = await fetch(this.getApiUrl('/api/upload-notes'), {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error(await this.readErrorMessage(response));
+        }
+        const data = await response.json();
+        this.setNotesText(data.extracted_text || '');
+        this.setState({
+          ocrStage: 'done',
+          tags: data.tags || null,
+        });
+      } catch (error) {
+        this.setState({
+          ocrStage: 'idle',
+          ocrThumb: null,
+          ocrName: '',
+          apiError: `Could not transcribe the uploaded photo. ${this.formatApiError(error)}`,
+        });
+      }
     };
     reader.readAsDataURL(f);
     e.target.value = '';
   };
   removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '' });
 
-  findMatches = () => {
-    clearTimeout(this._t);
-    this.setState({ stage: 'analyzing' });
-    this._t = setTimeout(() => this.setState({ stage: 'matched' }), 1400);
+  findMatches = async () => {
+    const notes = this.getNotesText();
+    if (!notes) {
+      this.setState({ apiError: 'Add notes or upload a photo before generating matches.' });
+      return;
+    }
+    this.setState({ stage: 'analyzing', apiError: '', referralOpen: false, referralStage: 'idle' });
+    try {
+      const response = await fetch(this.getApiUrl('/api/match'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes }),
+      });
+      if (!response.ok) {
+        throw new Error(await this.readErrorMessage(response));
+      }
+      const data = await response.json();
+      this.setState({
+        stage: 'matched',
+        tags: data.tags || null,
+        matches: Array.isArray(data.matches) ? data.matches : [],
+        selectedMatch: null,
+      });
+    } catch (error) {
+      this.setState({
+        stage: 'idle',
+        apiError: `Could not generate matches. ${this.formatApiError(error)}`,
+      });
+    }
   };
-  openReferral = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
+  generateReferral = async (match) => {
+    try {
+      const response = await fetch(this.getApiUrl('/api/referral'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_profile: this.buildClientProfile(),
+          shelter: match,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(await this.readErrorMessage(response));
+      }
+      const data = await response.json();
+      this.setState({
+        referralStage: 'draft',
+        referralDraft: this.buildReferralDraft(match, data.referral),
+      });
+    } catch (error) {
+      this.setState({
+        referralStage: 'draft',
+        apiError: `Could not generate the referral draft. ${this.formatApiError(error)}`,
+      });
+    }
+  };
+  openReferral = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const matchId = e && e.currentTarget && e.currentTarget.dataset ? e.currentTarget.dataset.matchId : null;
+    const selectedMatch = matchId ? (this.state.matches || []).find((item, index) => String(item.id ?? `${item.name}-${index}`) === String(matchId)) : this.getSelectedMatch();
+    if (!selectedMatch) {
+      this.setState({ apiError: 'Select a match before drafting a referral.' });
+      return;
+    }
+    this.setState({ referralOpen: true, selectedMatch, referralStage: 'generating', referralDraft: '', apiError: '' });
+    void this.generateReferral(selectedMatch);
+  };
   closeReferral = () => this.setState({ referralOpen: false });
   backdropReferral = (e) => { if (e.target === e.currentTarget) this.setState({ referralOpen: false }); };
   approveSend = () => {
-    clearTimeout(this._t2);
     this.setState({ referralStage: 'sending' });
     this._t2 = setTimeout(() => this.setState({ referralStage: 'sent' }), 1700);
   };
@@ -503,29 +658,49 @@ class Component extends DCLogic {
   };
   stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
 
-  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._ocr); }
+  componentWillUnmount() { clearTimeout(this._t2); }
 
   renderVals() {
     const st = this.state;
-    const matched = st.stage === 'matched';
+    const matched = st.stage === 'matched' && (st.matches || []).length > 0;
     const d = st.detail || {};
+    const selectedMatch = st.selectedMatch || this.getSelectedMatch() || {};
+    const tagChips = this.buildTagChips();
+    const matchCards = this.buildMatchCards();
     return {
       detailOpen: st.detailShown,
-      detailName: d.name,
-      detailTagline: d.tagline,
-      detailLocation: d.location,
-      detailWebsite: d.website,
-      detailWebsiteHref: d.website ? 'https://' + d.website : '#',
-      detailPoc: d.poc,
-      detailPocRole: d.pocRole,
-      detailPhone: d.phone,
-      detailCapacity: d.capacity,
-      detailServices: d.services || [],
-      detailHelped: d.helped,
+      detailName: d.name || selectedMatch.name,
+      detailTagline: d.tagline || selectedMatch.type || 'Shelter match',
+      detailLocation: d.location || [selectedMatch.city, selectedMatch.island].filter(Boolean).join(' · ') || selectedMatch.address || '',
+      detailWebsite: d.website || selectedMatch.website || 'Not provided',
+      detailWebsiteHref: (d.website || selectedMatch.website) ? 'https://' + (d.website || selectedMatch.website) : '#',
+      detailPoc: d.poc || selectedMatch.contact_name || 'Contact not listed',
+      detailPocRole: d.pocRole || selectedMatch.contact_role || selectedMatch.type || '',
+      detailPhone: d.phone || selectedMatch.phone || '',
+      detailCapacity: d.capacity || selectedMatch.capacity || '',
+      detailServices: d.services || selectedMatch.services || [],
+      detailHelped: d.helped || '',
       detailPast: d.past || [],
-      openVa: this.openVa,
-      openHarbor: this.openHarbor,
-      openDowntown: this.openDowntown,
+      apiError: st.apiError,
+      hasApiError: Boolean(st.apiError),
+      tagChips,
+      matchCards,
+      matchCount: matchCards.length,
+      hasMatches: matched,
+      showEmptyMatches: st.stage !== 'analyzing' && !matched,
+      selectedMatchName: selectedMatch.name || 'Selected shelter',
+      selectedMatchSubtitle: [selectedMatch.type, selectedMatch.county_coc].filter(Boolean).join(' · ') || 'Referral draft',
+      selectedMatchLocation: [selectedMatch.city, selectedMatch.island].filter(Boolean).join(' · ') || selectedMatch.address || '',
+      selectedMatchPhone: selectedMatch.phone || '',
+      selectedMatchContact: selectedMatch.phone || selectedMatch.website || 'Contact not listed',
+      selectedMatchScore: selectedMatch.match_score != null ? `${Math.round(Number(selectedMatch.match_score))}%` : '',
+      referralDraft: st.referralDraft || '',
+      referralGenerating: st.referralStage === 'generating',
+      referralDraftReady: st.referralStage === 'draft',
+      referralSending: st.referralStage === 'sending',
+      referralSent: st.referralStage === 'sent',
+      referralKey: selectedMatch.id || selectedMatch.name || 'referral-draft',
+      openMatch: this.openMatch,
       closeDetail: this.closeDetail,
       backdropDetail: this.backdropDetail,
       backdropReferral: this.backdropReferral,
@@ -534,6 +709,7 @@ class Component extends DCLogic {
       isMatched: matched,
       referralOpen: st.referralOpen,
       draftDisplay: { display: st.referralStage === 'draft' ? 'block' : 'none' },
+      generatingDisplay: { display: st.referralStage === 'generating' ? 'block' : 'none' },
       sendingDisplay: { display: st.referralStage === 'sending' ? 'block' : 'none' },
       sentDisplay: { display: st.referralStage === 'sent' ? 'block' : 'none' },
       showSignals: (this.props.showSignals ?? true) && matched,
@@ -546,6 +722,8 @@ class Component extends DCLogic {
       ocrName: st.ocrName,
       triggerUpload: this.triggerUpload,
       onFile: this.onFile,
+      onNotesInput: (e) => this.setState({ notesText: e.target.value }),
+      onReferralDraftInput: (e) => this.setState({ referralDraft: e.target.value }),
       removeOcr: this.removeOcr,
       findMatches: this.findMatches,
       openReferral: this.openReferral,
