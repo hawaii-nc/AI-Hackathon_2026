@@ -23,9 +23,9 @@ def load_services(csv_path=None) -> list[dict]:
 
 def load_patients_from_supabase(use_llm: bool = True) -> list[dict]:
     """Read every patient_raw row and extract structured params from its OCR text."""
-    from app.services.supabase_client import supabase, PATIENT_TABLE, NAME_COLUMN, DATA_COLUMNS
+    from app.services.supabase_client import get_supabase, PATIENT_TABLE, NAME_COLUMN, DATA_COLUMNS
 
-    rows = supabase.table(PATIENT_TABLE).select("*").execute().data or []
+    rows = get_supabase().table(PATIENT_TABLE).select("*").execute().data or []
     patients = []
     for row in rows:
         name = (row.get(NAME_COLUMN) or "").strip()

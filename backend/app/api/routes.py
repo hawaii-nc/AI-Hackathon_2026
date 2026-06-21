@@ -163,10 +163,10 @@ def _resolve_patient(req: ServiceEmailRequest) -> dict:
     if not req.patient_name:
         raise HTTPException(status_code=400, detail='Provide patient or patient_name.')
     from app.services.supabase_client import (
-        supabase, PATIENT_TABLE, NAME_COLUMN, DATA_COLUMNS, _normalize_name,
+        get_supabase, PATIENT_TABLE, NAME_COLUMN, DATA_COLUMNS, _normalize_name,
     )
     from app.services.patient_params import combine_patient_submissions
-    rows = supabase.table(PATIENT_TABLE).select('*').execute().data or []
+    rows = get_supabase().table(PATIENT_TABLE).select('*').execute().data or []
     target = req.patient_name.strip()
     row = next((r for r in rows if _normalize_name(r.get(NAME_COLUMN)) == _normalize_name(target)), None)
     if row is None:
