@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+content = '''from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.api.routes import router
@@ -31,3 +31,7 @@ app.include_router(router, prefix="/api")
 @app.get("/")
 def root():
     return {"status": "online", "message": "Unhoused Matchmaker API is live"}
+'''
+with open("app/main.py", "w", encoding="utf-8", newline="\n") as f:
+    f.write(content)
+print("Done")
