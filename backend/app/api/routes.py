@@ -52,6 +52,17 @@ class ServiceEmailRequest(BaseModel):
     use_llm: bool = True
     send: bool = False
 
+
+class RawEmailRequest(BaseModel):
+    # Send the EXACT message the case worker reviewed in the UI — no re-drafting.
+    # to_email is the address typed into the referral draft's "To" field.
+    to_email: str
+    subject: str = ""
+    body: str = ""
+    to_name: str = None
+    from_email: str = None
+    from_name: str = None
+
 # Upload a photo of handwritten notes
 @router.post('/upload-notes')
 async def upload_notes(file: UploadFile = File(...)):
@@ -226,3 +237,29 @@ async def referral_email_for_service(request: ServiceEmailRequest):
         result['delivery'] = delivery
 
     return result
+
+
+# Send a referral email EXACTLY as reviewed in the UI (recipient + subject +
+# body come straight from the draft the case worker edited). Honors the typed
+# "To" address — no server-side re-drafting. Actual delivery depends on the
+# server's EMAIL_BACKEND (console = save to outbox only; smtp = real send).
+@router.post('/referral/send')
+async def referral_send(request: RawEmailRequest):
+    to_email = (request.to_email or "").strip()
+    if not to_email:
+        raise HTTPException(status_code=400, detail='to_email is required.')
+
+    try:
+        delivery = await run_in_threadpool(
+            send_email,
+            to_email=to_email,
+            subject=request.subject or "",
+            body=request.body or "",
+            from_email=request.from_email or "referrals@example.org",
+            from_name=request.from_name,
+            to_name=request.to_name,
+        )
+    except Exception as exc:  # SMTP auth/connection/etc.
+        raise HTTPException(status_code=502, detail=f'Email send failed: {exc}')
+
+    return delivery
