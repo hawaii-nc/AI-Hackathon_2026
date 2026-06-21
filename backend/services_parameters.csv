@@ -1,0 +1,25 @@
+name,accepts_men,accepts_women,accepts_families_with_children,accepts_singles,accepts_couples,min_age,children_as_primary_client,veteran_preference,requires_sobriety,accepts_active_substance_use,substance_use_services,mental_health_diagnosis_required,mental_health_services_available,domestic_violence_focus,accepts_pets,requires_referral,requires_government_id,housing_first_model,max_stay_days,low_barrier_entry
+HOPE Services Friendly Place,yes,yes,yes,yes,yes,18,no,yes,,,,,no,,no,no,,,
+Affordable Housing & Homeless Alliance,yes,yes,yes,yes,yes,18,no,no,,,,,no,,no,no,,,yes
+HOPE Services - Main Office,yes,yes,yes,yes,yes,18,no,yes,,,,,no,,no,no,,,
+Ka Hale A Ke Ola - West,yes,yes,yes,yes,yes,18,no,no,yes,no,,no,,no,,no,,no,42,no
+Maui Rescue Mission,yes,yes,yes,yes,yes,0,no,no,no,yes,yes,no,no,no,,no,no,yes,,yes
+Keauhou Emergency Shelter,yes,yes,no,yes,yes,18,no,no,no,yes,yes,no,yes,no,yes,no,,yes,,yes
+THE SHELTER,no,yes,yes,no,no,18,no,no,yes,no,no,no,no,no,,yes,,no,365,no
+Hale Mauliola,yes,yes,no,yes,yes,18,no,no,,,,,no,,yes,yes,,,,no
+Women In Need (WIN),no,yes,yes,yes,no,18,no,no,yes,no,yes,no,yes,yes,,no,,no,180,no
+Safe Haven,yes,yes,no,yes,no,18,no,no,,,,,yes,yes,no,,,,yes,,no
+Punawai Rest Stop,yes,yes,yes,yes,yes,0,no,no,no,yes,no,no,no,no,,no,no,yes,,yes
+West Hawaii Emergency Housing Program,yes,yes,yes,yes,yes,18,no,no,,,,,no,,,no,,,,,
+Institute for Human Services - Women & Family,no,yes,yes,no,no,18,no,no,,,,,no,yes,no,,yes,,,no
+YWCA of Kauai,yes,yes,yes,yes,yes,18,no,no,,,,,no,yes,yes,,no,,no,90,no
+Kauai Economic Opportunity (KEO),yes,yes,yes,yes,yes,18,no,no,,,,,no,,,no,,,,,yes
+Ka Hale A Ke Ola - Central,yes,yes,yes,yes,yes,18,no,no,yes,no,,no,,no,,no,,no,42,no
+HOPE Services - Kapiolani 24hr,yes,yes,yes,yes,yes,18,no,no,,,,,no,,,no,,,,,
+Pu'uhonua o Nene,yes,yes,no,yes,yes,18,no,no,,,,,no,yes,no,,no,,,no
+Institute for Human Services - Men's,yes,no,no,yes,no,18,no,no,,,,,no,yes,no,,yes,,,no
+Family Life Center,yes,yes,yes,yes,yes,18,no,no,no,yes,,no,,no,,no,,yes,,yes
+Kauai County Housing Agency,yes,yes,yes,yes,yes,18,no,no,,,,,no,no,no,,yes,,,no
+Ka Lamaku Emergency Shelter,yes,yes,yes,yes,yes,18,no,yes,,,,,no,,,no,,,,,
+Project Hawaii (homeless keiki),yes,yes,yes,no,no,0,yes,no,,,,,no,,,yes,,,,,no
+HOPE Services - Rainbow Dr,yes,no,no,yes,no,18,no,yes,,,,,no,,yes,no,,,,,
