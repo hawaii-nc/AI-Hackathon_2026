@@ -1,6 +1,7 @@
 ﻿from google import genai
 from app.core.config import GEMINI_API_KEY
 from app.services.supabase_client import get_all_shelters
+from app.services.referral import _strip_code_fences
 import numpy as np
 import json
 
@@ -36,7 +37,5 @@ def extract_client_tags(raw_notes: str) -> dict:
         model='gemini-2.0-flash',
         contents=f'You are a case worker assistant. Extract structured tags from social worker notes. Return JSON with these fields only: needs (list: housing/mental_health/substance_abuse/medical/food/domestic_violence/employment), urgency (low/medium/high/critical), languages (list), has_children (bool), veteran (bool), summary (one sentence). Be factual and unbiased. Return only valid JSON no extra text. Notes: {raw_notes}'
     )
-    cleaned = response.text.strip()
-    if cleaned.startswith(''):
-        cleaned = cleaned.split('')[-2] if '' in cleaned else cleaned
+    cleaned = _strip_code_fences(response.text)
     return json.loads(cleaned)

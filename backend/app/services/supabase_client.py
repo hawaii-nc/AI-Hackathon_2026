@@ -11,6 +11,14 @@ def get_shelters_by_island(island: str):
     response = supabase.table('shelters').select('*').eq('island', island).execute()
     return response.data
 
+def get_shelter_by_id(shelter_id: str):
+    response = supabase.table('shelters').select('*').eq('id', shelter_id).single().execute()
+    return response.data
+
+def get_client_by_id(client_id: str):
+    response = supabase.table('clients').select('*').eq('id', client_id).single().execute()
+    return response.data
+
 def save_client_profile(profile: dict):
     response = supabase.table('clients').insert(profile).execute()
     return response.data

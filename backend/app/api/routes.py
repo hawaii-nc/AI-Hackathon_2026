@@ -1,8 +1,15 @@
 ﻿from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.matching import match_client_to_shelters, extract_client_tags
 from app.services.document_ai import process_handwritten_note
-from app.services.referral import generate_referral
-from app.services.supabase_client import save_client_profile, get_client_history, get_all_shelters
+from app.services.referral import generate_referral, draft_referral_email
+from app.services.email_service import send_email
+from app.services.supabase_client import (
+    save_client_profile,
+    get_client_history,
+    get_all_shelters,
+    get_client_by_id,
+    get_shelter_by_id,
+)
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -14,6 +21,15 @@ class MatchRequest(BaseModel):
 class ReferralRequest(BaseModel):
     client_profile: dict
     shelter: dict
+
+class ReferralEmailRequest(BaseModel):
+    # Provide either the ids (pulled from Supabase) or the dicts directly.
+    client_id: str = None
+    shelter_id: str = None
+    client_profile: dict = None
+    shelter: dict = None
+    sender: dict = None
+    send: bool = False  # when False, only draft + return the email
 
 # Upload a photo of handwritten notes
 @router.post('/upload-notes')
@@ -36,6 +52,41 @@ async def match(request: MatchRequest):
 async def referral(request: ReferralRequest):
     letter = generate_referral(request.client_profile, request.shelter)
     return {'referral': letter}
+
+# Draft (and optionally send) a referral email to a housing home
+@router.post('/referral/email')
+async def referral_email(request: ReferralEmailRequest):
+    profile = request.client_profile
+    shelter = request.shelter
+
+    # Pull parameters from Supabase when ids are supplied.
+    if profile is None and request.client_id:
+        profile = get_client_by_id(request.client_id)
+    if shelter is None and request.shelter_id:
+        shelter = get_shelter_by_id(request.shelter_id)
+
+    if not profile or not shelter:
+        raise HTTPException(
+            status_code=400,
+            detail='Provide client_profile + shelter, or client_id + shelter_id.',
+        )
+
+    email = draft_referral_email(profile, shelter, sender=request.sender)
+    result = {'email': email, 'sent': False}
+
+    if request.send:
+        delivery = send_email(
+            to_email=email['to_email'],
+            subject=email['subject'],
+            body=email['body'],
+            from_email=email['from_email'],
+            from_name=email['from_name'],
+            to_name=email['to_name'],
+        )
+        result['sent'] = delivery.get('sent', False)
+        result['delivery'] = delivery
+
+    return result
 
 # Get all shelters
 @router.get('/shelters')
