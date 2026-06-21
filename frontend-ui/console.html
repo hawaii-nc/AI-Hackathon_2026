@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./services-data.js"></script>
 </head>
 <body>
 <x-dc>
@@ -31,7 +32,7 @@
 
   <header style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#FFFFFF;border-bottom:1px solid #E6E1D7;">
     <div style="display:flex;align-items:center;gap:13px;">
-      <a href="Kōkua%20Landing.dc.html" style="display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;">
+      <a href="index.html" style="display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;">
         <div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:#0E7A66;">
           <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #FFFFFF;"></div>
         </div>
@@ -45,7 +46,7 @@
     <div style="display:flex;align-items:center;gap:18px;">
       <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#7C8888;">
         <span style="width:7px;height:7px;border-radius:50%;background:#2E9B6E;"></span>
-        <span>Network live · 214 partner orgs</span>
+        <span>Network live · 24 partner orgs</span>
       </div>
       <div style="width:1px;height:24px;background:#E6E1D7;"></div>
       <div style="display:flex;align-items:center;gap:11px;">
@@ -110,7 +111,7 @@
             <div style="display:flex;align-items:center;gap:11px;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:11px;padding:10px 12px;margin-bottom:12px;">
               {{ ocrThumbEl }}
               <div style="min-width:0;flex:1;">
-                <div style="font-size:12.5px;font-weight:600;color:#16242A;display:flex;align-items:center;gap:6px;"><span style="color:#1C7A55;font-weight:700;">✓</span> Transcribed from photo</div>
+                <div style="font-size:12.5px;font-weight:600;color:#16242A;display:flex;align-items:center;gap:6px;"><span style="color:#1C7A55;font-weight:700;">✓</span> {{ ocrNote }}</div>
                 <div style="font-size:11.5px;color:#7C8888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ ocrName }}</div>
               </div>
               <button onClick="{{ removeOcr }}" style="flex:none;background:none;border:none;color:#9AA6A4;font-size:14px;cursor:pointer;padding:4px;" style-hover="color:#16242A;">✕</button>
@@ -130,6 +131,10 @@
 
           <textarea id="intake-notes" style="width:100%;min-height:172px;resize:vertical;font-family:'Public Sans',sans-serif;font-size:14px;line-height:1.6;color:#2A363A;border:1px solid #E2DDD3;border-radius:11px;padding:14px;background:#FBFAF7;" style-focus="outline:none;border-color:#0E7A66;box-shadow:0 0 0 3px rgba(14,122,102,0.12);">Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'</textarea>
 
+          <sc-if value="{{ apiErrorShown }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;display:flex;align-items:center;gap:9px;background:#FBEFE9;border:1px solid #ECD3C7;border-radius:10px;padding:10px 13px;font-size:12.5px;color:#9E4B39;">{{ apiError }}</div>
+          </sc-if>
+
           <sc-if value="{{ showSignals }}" hint-placeholder-val="{{ true }}">
             <div style="margin-top:16px;">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px;">
@@ -137,11 +142,9 @@
                 <div style="font-size:10.5px;color:#B7BEBB;white-space:nowrap;">auto-tagged on match</div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:7px;">
-                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Veteran</span>
-                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Substance use</span>
-                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Housing loss</span>
-                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Untreated PTSD</span>
-                <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">Turned away repeatedly</span>
+                <sc-for list="{{ subjectTags }}" as="tag" hint-placeholder-count="5">
+                  <span style="display:inline-flex;align-items:center;background:#EEF2F0;color:#3E4F53;border:1px solid #E0E6E2;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;">{{ tag }}</span>
+                </sc-for>
               </div>
             </div>
           </sc-if>
@@ -161,7 +164,7 @@
               <h2 style="margin:0;font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Matches</h2>
               <span style="font-size:12px;font-weight:600;color:#0E7A66;background:#E7F1EE;padding:3px 9px;border-radius:20px;">{{ matchCountLabel }}</span>
             </div>
-            <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility for this situation · click any match for contact, point person &amp; people helped there.</p>
+            <p style="margin:5px 0 0;font-size:13px;color:#7C8888;">Ranked by compatibility for {{ subjectName }} · click any match for contact, services &amp; why it fits.</p>
           </div>
           <button onClick="{{ goIntake }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;cursor:pointer;white-space:nowrap;" style-hover="background:#F6F4EF;"><span style="font-size:15px;">←</span> Edit situation</button>
         </div>
@@ -170,7 +173,7 @@
           <div style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:54px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
             <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
             <div style="font-size:15px;font-weight:600;color:#16242A;">Analyzing the situation…</div>
-            <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">Generating attributes from the intake, then scoring compatibility across 214 partner organizations.</div>
+            <div style="font-size:13px;color:#7C8888;max-width:360px;line-height:1.55;">Generating attributes from the intake, then scoring compatibility across 24 partner organizations.</div>
           </div>
         </sc-if>
 
@@ -181,7 +184,7 @@
               <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px;">
                 <div>
                   <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Match locations</div>
-                  <p style="margin:4px 0 0;font-size:12.5px;color:#7C8888;">Around the train depot, Honolulu · tap a pin for details.</p>
+                  <p style="margin:4px 0 0;font-size:12.5px;color:#7C8888;">{{ mapHint }}</p>
                 </div>
                 <div style="display:flex;align-items:center;gap:13px;font-size:11.5px;color:#7C8888;">
                   <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:50%;background:#2E9B6E;"></span>Strong</span>
@@ -202,84 +205,32 @@
 
             <sc-if value="{{ isTop }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:14px;">
-
-                <article onClick="{{ openVa }}" style="background:#FFFFFF;border:1.5px solid #0E7A66;border-radius:14px;padding:20px 22px 18px;box-shadow:0 12px 32px -18px rgba(14,122,102,0.5);cursor:pointer;" style-hover="background:#F4FAF8;box-shadow:0 16px 38px -16px rgba(14,122,102,0.6);">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-                    <div style="min-width:0;">
-                      <div style="display:inline-flex;align-items:center;gap:6px;background:#0E7A66;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:4px 9px;border-radius:6px;margin-bottom:11px;">Recommended match</div>
-                      <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">VA Stand Down Outreach</h3>
-                      <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Veteran-specific · integrated SUD + housing</p>
-                      <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                        <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#2E9B6E;"></span>0.6 mi · Iwilei, Honolulu</p>
-                      </sc-if>
+                <sc-for list="{{ topMatches }}" as="org" hint-placeholder-count="3">
+                  <article onClick="{{ org.open }}" style="{{ org.cardStyle }}" style-hover="background:#F6FAF8;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+                      <div style="min-width:0;">
+                        <div style="{{ org.badgeStyle }}">Recommended match</div>
+                        <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ org.name }}</h3>
+                        <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">{{ org.tagline }}</p>
+                        <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:{{ org.dotColor }};"></span>{{ org.location }}</p>
+                      </div>
+                      <div style="text-align:right;flex:none;">
+                        <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;line-height:1;color:{{ org.scoreColor }};">{{ org.scoreLabel }}</div>
+                        <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
+                        <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:{{ org.barWidth }};height:100%;background:{{ org.barColor }};"></div></div>
+                      </div>
                     </div>
-                    <div style="text-align:right;flex:none;">
-                      <div style="font-family:'Source Serif 4',serif;font-size:36px;font-weight:600;color:#1C7A55;line-height:1;">94%</div>
-                      <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                      <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:94%;height:100%;background:#2E9B6E;"></div></div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+                      <sc-for list="{{ org.chips }}" as="chip" hint-placeholder-count="3">
+                        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};"><span style="font-weight:700;">{{ chip.sym }}</span> {{ chip.text }}</span>
+                      </sc-for>
                     </div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Veteran eligibility</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Active substance-use program</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> 3 beds open today</span>
-                  </div>
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-                    <div style="font-size:12.5px;color:#7C8888;">Top match on every priority factor for Marcus.</div>
-                    <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:8px;background:#0E7A66;color:#FFFFFF;border:none;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;cursor:pointer;box-shadow:0 1px 2px rgba(14,122,102,0.3);" style-hover="background:#0B6655;">Draft referral <span style="font-size:15px;">→</span></button>
-                  </div>
-                </article>
-
-                <article onClick="{{ openHarbor }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-                    <div style="min-width:0;">
-                      <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Harbor Light Recovery Center</h3>
-                      <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">Strong on substance use · not veteran-specialized</p>
-                      <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                        <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C79A3A;"></span>1.4 mi · Kakaʻako</p>
-                      </sc-if>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
+                      <div style="font-size:12.5px;color:#7C8888;">{{ org.footnote }}</div>
+                      <button onClick="{{ org.refer }}" style="{{ org.referBtnStyle }}">Draft referral <span style="font-size:15px;">→</span></button>
                     </div>
-                    <div style="text-align:right;flex:none;">
-                      <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#8A6312;line-height:1;">71%</div>
-                      <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                      <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:71%;height:100%;background:#C79A3A;"></div></div>
-                    </div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> SUD program</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> No veteran services</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#F5EEDD;color:#8A6312;border:1px solid #E7D9B8;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">⚠</span> Waitlist 5–7 days</span>
-                  </div>
-                  <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-                    <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
-                  </div>
-                </article>
-
-                <article onClick="{{ openDowntown }}" style="background:#FFFFFF;border:1px solid #E6E1D7;border-radius:14px;padding:20px 22px 18px;cursor:pointer;" style-hover="background:#F6FAF8;border-color:#BFD8CF;box-shadow:0 6px 20px -14px rgba(20,40,40,0.4);">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
-                    <div style="min-width:0;">
-                      <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Downtown Family Shelter</h3>
-                      <p style="margin:5px 0 0;font-size:13.5px;color:#5A6A70;line-height:1.45;">General shelter · no clinical support</p>
-                      <sc-if value="{{ showProximity }}" hint-placeholder-val="{{ true }}">
-                        <p style="margin:6px 0 0;display:flex;align-items:center;gap:7px;font-size:12px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:#C0705E;"></span>0.9 mi · Chinatown</p>
-                      </sc-if>
-                    </div>
-                    <div style="text-align:right;flex:none;">
-                      <div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;color:#9E4B39;line-height:1;">58%</div>
-                      <div style="font-size:10.5px;color:#9AA6A4;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">Compatibility</div>
-                      <div style="width:124px;height:6px;border-radius:4px;background:#ECEDE7;overflow:hidden;margin-top:9px;margin-left:auto;"><div style="width:58%;height:100%;background:#C0705E;"></div></div>
-                    </div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#E9F1EC;color:#1C7A55;border:1px solid #D2E5DA;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✓</span> Beds available</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> No substance-use support</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:#F3E7E3;color:#9E4B39;border:1px solid #E6CFC7;font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;"><span style="font-weight:700;">✕</span> Not equipped for PTSD</span>
-                  </div>
-                  <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #EFEBE2;">
-                    <button onClick="{{ openReferral }}" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;color:#16242A;border:1px solid #D8D2C6;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;" style-hover="background:#F6F4EF;">Draft referral</button>
-                  </div>
-                </article>
-
+                  </article>
+                </sc-for>
               </div>
             </sc-if>
 
@@ -292,12 +243,13 @@
                         <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
                           <h3 style="margin:0;font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ org.name }}</h3>
                           <span style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:{{ org.fitBg }};color:{{ org.fitColor }};border:1px solid {{ org.fitBorder }};">{{ org.fitLabel }}</span>
+                          <span style="{{ org.windowBadgeStyle }}">{{ org.windowBadge }}</span>
                         </div>
                         <p style="margin:4px 0 0;font-size:13px;color:#5A6A70;line-height:1.45;">{{ org.tagline }}</p>
                         <p style="margin:5px 0 0;display:flex;align-items:center;gap:7px;font-size:11.5px;color:#9AA6A4;"><span style="width:5px;height:5px;border-radius:50%;background:{{ org.dotColor }};"></span>{{ org.location }}</p>
                         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
                           <sc-for list="{{ org.chips }}" as="chip" hint-placeholder-count="3">
-                            <span style="display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};">{{ chip.text }}</span>
+                            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;background:{{ chip.bg }};color:{{ chip.color }};border:1px solid {{ chip.border }};"><span style="font-weight:700;">{{ chip.sym }}</span> {{ chip.text }}</span>
                           </sc-for>
                         </div>
                       </div>
@@ -338,21 +290,20 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:18px 0 0;background:#EFEBE2;border-top:1px solid #EFEBE2;border-bottom:1px solid #EFEBE2;">
           <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Website</div>
-            <a href="{{ detailWebsiteHref }}" target="_blank" rel="noopener" onClick="{{ stop }}" style="display:inline-block;margin-top:4px;font-size:13.5px;font-weight:600;color:#0E7A66;text-decoration:none;" style-hover="text-decoration:underline;">{{ detailWebsite }} ↗</a>
-          </div>
-          <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Point of contact</div>
-            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPoc }}</div>
-            <div style="font-size:12px;color:#7C8888;">{{ detailPocRole }}</div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Address</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailAddress }}</div>
           </div>
           <div style="background:#FBFAF7;padding:14px 26px;">
             <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Phone</div>
             <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailPhone }}</div>
           </div>
           <div style="background:#FBFAF7;padding:14px 26px;">
-            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Current capacity</div>
-            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailCapacity }}</div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Service type</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#16242A;">{{ detailType }}</div>
+          </div>
+          <div style="background:#FBFAF7;padding:14px 26px;">
+            <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Compatibility</div>
+            <div style="margin-top:4px;font-size:13.5px;font-weight:600;color:#1C7A55;">{{ detailScore }}</div>
           </div>
         </div>
 
@@ -366,23 +317,18 @@
         </div>
 
         <div style="padding:22px 26px 0;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;">
-            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">People helped here</div>
-            <div style="font-size:12px;color:#7C8888;">{{ detailHelped }} placed in the last 12 months</div>
-          </div>
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9AA6A4;font-weight:600;margin-bottom:12px;">Why this fits {{ subjectName }}</div>
           <div style="display:flex;flex-direction:column;gap:2px;">
-            <sc-for list="{{ detailPast }}" as="person" hint-placeholder-count="3">
+            <sc-for list="{{ detailFactors }}" as="f" hint-placeholder-count="3">
               <div style="display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid #F1EEE6;">
-                <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#14302B;color:#EAF3F0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">{{ person.initials }}</div>
+                <div style="flex:none;width:30px;height:30px;border-radius:50%;background:{{ f.bg }};color:{{ f.color }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">{{ f.sym }}</div>
                 <div style="min-width:0;flex:1;">
-                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ person.label }}</div>
-                  <div style="font-size:12.5px;color:#7C8888;line-height:1.4;">{{ person.outcome }}</div>
+                  <div style="font-size:13.5px;font-weight:600;color:#16242A;">{{ f.text }}</div>
                 </div>
-                <div style="flex:none;font-size:11.5px;color:#A7AFAC;white-space:nowrap;">{{ person.time }}</div>
               </div>
             </sc-for>
           </div>
-          <p style="margin:10px 0 0;font-size:11px;color:#B7BEBB;">Names anonymized to protect client privacy.</p>
+          <p style="margin:10px 0 0;font-size:11px;color:#B7BEBB;">Match factors compare the intake against this service's published intake criteria.</p>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 26px 24px;">
@@ -403,33 +349,24 @@
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
               <div>
                 <div style="font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:#9AA6A4;font-weight:600;">Draft referral · introduction email</div>
-                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Introduce Marcus to VA Stand Down</h3>
+                <h3 style="margin:6px 0 0;font-family:'Source Serif 4',serif;font-size:21px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">{{ referralHeading }}</h3>
               </div>
               <button onClick="{{ closeReferral }}" style="flex:none;width:32px;height:32px;border-radius:50%;border:1px solid #E6E1D7;background:#FFFFFF;color:#7C8888;font-size:16px;line-height:1;cursor:pointer;" style-hover="background:#F6F4EF;">✕</button>
             </div>
-            <div style="margin-top:11px;font-size:12px;color:#9AA6A4;">AI-drafted introduction, tailored to Marcus's intake. Edit anything before sending.</div>
+            <div style="margin-top:11px;font-size:12px;color:#9AA6A4;">AI-drafted introduction, tailored to {{ subjectName }}'s intake. Edit anything before sending.</div>
           </div>
           <div style="padding:14px 24px 0;">
             <div style="border:1px solid #E2DDD3;border-radius:11px;overflow:hidden;background:#FFFFFF;">
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">To</span>
-                <input defaultValue="outreach@vastanddown.org" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
+                <input value="{{ referralTo }}" readOnly="{{ true }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;font-weight:500;color:#2A363A;padding:0;" />
               </div>
               <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #EFEBE2;">
                 <span style="font-size:11px;font-weight:600;color:#9AA6A4;width:58px;flex:none;text-transform:uppercase;letter-spacing:0.06em;">Subject</span>
-                <input defaultValue="Referral and introduction — veteran needs housing + SUD support" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
+                <input value="{{ referralSubject }}" readOnly="{{ true }}" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'Public Sans',sans-serif;font-size:13.5px;color:#2A363A;padding:0;" />
               </div>
-              <textarea id="referral-draft" style="display:block;width:100%;min-height:222px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">Hello VA Stand Down Outreach team,
-
-I'm reaching out on behalf of Marcus (52), an Army veteran who served two combat tours. Three weeks ago he lost his apartment following a relapse, and he's now sleeping near the train depot. He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away — understandably, he's wary of being passed from place to place.
-
-Your integrated veteran housing and substance-use program is the right fit for where he is right now. Marcus wants help. He needs one door that won't close on him.
-
-Could you confirm an intake slot for today? I can bring him in this afternoon.
-
-With gratitude,
-Leilani Kahale
-Outreach Coordinator, Hawaiʻi Department of Health</textarea>
+              <textarea id="referral-draft" style="display:block;width:100%;min-height:230px;box-sizing:border-box;resize:vertical;font-family:'Public Sans',sans-serif;font-size:13.5px;line-height:1.62;color:#2A363A;border:none;outline:none;padding:14px;background:#FFFFFF;" style-focus="outline:none;background:#FBFAF7;">{{ referralBody }}</textarea>
+            </div>
           </div>
           <div style="margin:16px 24px 0;background:#F1F6F4;border:1px solid #DCE8E3;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
             <div style="flex:none;width:34px;height:34px;border-radius:50%;background:#0E7A66;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">✓</div>
@@ -450,7 +387,7 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
         <div style="{{ sendingDisplay }}">
           <div style="padding:64px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;">
             <div style="width:38px;height:38px;border-radius:50%;border:3px solid #E2EBE8;border-top-color:#0E7A66;animation:kspin 0.8s linear infinite;"></div>
-            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to VA Stand Down Outreach…</div>
+            <div style="font-size:15px;font-weight:600;color:#16242A;">Sending to {{ referralOrgName }}…</div>
             <div style="font-size:13px;color:#7C8888;">Delivering your reviewed referral securely.</div>
           </div>
         </div>
@@ -459,8 +396,8 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
           <div style="padding:46px 40px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
             <div style="width:56px;height:56px;border-radius:50%;background:#E9F1EC;border:1.5px solid #2E9B6E;color:#1C7A55;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;">✓</div>
             <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:23px;font-weight:600;color:#16242A;letter-spacing:-0.01em;">Referral sent</h3>
-            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">VA Stand Down Outreach received your introduction and accepted the referral.</p>
-            <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">Marcus has a bed tonight.</p>
+            <p style="margin:7px 0 0;font-size:14px;color:#7C8888;line-height:1.5;max-width:380px;">{{ referralOrgName }} received your introduction and accepted the referral.</p>
+            <p style="margin:14px 0 0;font-family:'Source Serif 4',serif;font-size:18px;font-weight:600;color:#16242A;">{{ subjectName }} has a bed tonight.</p>
             <div style="display:flex;align-items:center;gap:9px;margin:22px 0 24px;">
               <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1C7A55;background:#E9F1EC;border:1px solid #D2E5DA;padding:5px 11px;border-radius:20px;"><span style="font-weight:700;">✓</span> Sent</span>
               <span style="width:14px;height:1px;background:#D2E5DA;"></span>
@@ -484,153 +421,23 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
   &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
 }">
 class Component extends DCLogic {
-  MARCUS_TEXT = "Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'";
-
+  // The demo subject, derived from the intake note in the textarea above.
+  SUBJECT = { name: 'Marcus', here: 'near the train depot, Honolulu' };
+  // Where the subject is — the matching anchor point on the map.
   DEPOT = { lat: 21.3158, lng: -157.8628 };
+  // Honolulu-metro "window". A service is only mapped / treated as a local
+  // match when it falls inside this box; everything else (neighbor islands,
+  // Windward side) is out of the window for someone near the depot.
+  WINDOW = { south: 21.255, west: -157.95, north: 21.385, east: -157.79 };
 
-  getOrgs = () => ({
-    va: {
-      name: 'VA Stand Down Outreach',
-      tagline: 'Veteran-specific · integrated SUD + housing',
-      location: '0.6 mi · Iwilei, Honolulu',
-      lat: 21.3186, lng: -157.8665, score: 94,
-      website: 'vastanddown.org',
-      poc: 'James Akana', pocRole: 'Veteran Intake Lead',
-      phone: '(808) 555-0142',
-      capacity: '3 beds open today',
-      services: ['Veteran housing', 'Substance-use treatment', 'PTSD & mental health', 'VA benefits navigation', 'Peer support'],
-      helped: 137,
-      factors: [{ k: 'good', t: 'Veteran eligibility' }, { k: 'good', t: 'Active SUD program' }, { k: 'good', t: '3 beds open today' }],
-      past: [
-        { initials: 'R.T.', label: 'Navy veteran, 48', outcome: 'Housed + enrolled in SUD program', time: '2 weeks ago' },
-        { initials: 'D.M.', label: 'Army veteran, 61', outcome: 'Transitional housing + PTSD care', time: '1 month ago' },
-        { initials: 'K.W.', label: 'Marine veteran, 39', outcome: 'Detox completed, now in stable housing', time: '2 months ago' },
-      ],
-    },
-    harbor: {
-      name: 'Harbor Light Recovery Center',
-      tagline: 'Strong on substance use · not veteran-specialized',
-      location: '1.4 mi · Kakaʻako',
-      lat: 21.2958, lng: -157.8575, score: 71,
-      website: 'harborlighthi.org',
-      poc: 'Tina Lopez', pocRole: 'Admissions Coordinator',
-      phone: '(808) 555-0178',
-      capacity: 'Waitlist 5–7 days',
-      services: ['Residential SUD treatment', 'Outpatient recovery', 'Group counseling', 'Relapse prevention'],
-      helped: 204,
-      factors: [{ k: 'good', t: 'SUD program' }, { k: 'warn', t: 'No veteran services' }, { k: 'warn', t: 'Waitlist 5–7 days' }],
-      past: [
-        { initials: 'A.S.', label: 'Resident, 34', outcome: 'Completed 90-day program, sober 8 months', time: '3 weeks ago' },
-        { initials: 'J.P.', label: 'Resident, 52', outcome: 'Outpatient recovery, employed', time: '6 weeks ago' },
-        { initials: 'M.K.', label: 'Resident, 29', outcome: 'Graduated to sober-living housing', time: '2 months ago' },
-      ],
-    },
-    downtown: {
-      name: 'Downtown Family Shelter',
-      tagline: 'General shelter · no clinical support',
-      location: '0.9 mi · Chinatown',
-      lat: 21.3135, lng: -157.8622, score: 58,
-      website: 'downtownfamilyshelter.org',
-      poc: 'Grace Tanaka', pocRole: 'Shelter Manager',
-      phone: '(808) 555-0119',
-      capacity: 'Beds available tonight',
-      services: ['Emergency shelter', 'Family housing', 'Meals & basic needs', 'Case management referral'],
-      helped: 318,
-      factors: [{ k: 'good', t: 'Beds available' }, { k: 'bad', t: 'No SUD support' }, { k: 'bad', t: 'Not equipped for PTSD' }],
-      past: [
-        { initials: 'L.C.', label: 'Family of four', outcome: 'Sheltered, transitioned to rental aid', time: '1 week ago' },
-        { initials: 'B.N.', label: 'Adult, 45', outcome: 'Emergency shelter, job placement', time: '3 weeks ago' },
-        { initials: 'S.R.', label: 'Single parent, 31', outcome: 'Housed with childcare support', time: '5 weeks ago' },
-      ],
-    },
-    kalihivets: {
-      name: 'Kalihi Veterans Drop-In',
-      tagline: 'Veteran day services · no overnight beds',
-      location: '1.3 mi · Kalihi',
-      lat: 21.3340, lng: -157.8720, score: 49,
-      website: 'kalihivets.org',
-      poc: 'Sgt. Ben Oka (ret.)', pocRole: 'Peer Navigator',
-      phone: '(808) 555-0188',
-      capacity: 'Day program · 8a–5p',
-      services: ['Veteran peer support', 'Benefits navigation', 'Job readiness', 'Hot meals'],
-      helped: 159,
-      factors: [{ k: 'good', t: 'Veteran services' }, { k: 'warn', t: 'Day program only' }, { k: 'bad', t: 'No overnight beds' }],
-      past: [
-        { initials: 'P.K.', label: 'Army veteran, 57', outcome: 'Benefits restored, referred to housing', time: '2 weeks ago' },
-        { initials: 'T.H.', label: 'Veteran, 44', outcome: 'Job placement after readiness program', time: '1 month ago' },
-      ],
-    },
-    ola: {
-      name: 'Ola Community Clinic',
-      tagline: 'Walk-in primary & behavioral health',
-      location: '1.1 mi · Kalihi',
-      lat: 21.3290, lng: -157.8680, score: 41,
-      website: 'olaclinic.org',
-      poc: 'Dr. Nani Soares', pocRole: 'Clinic Director',
-      phone: '(808) 555-0153',
-      capacity: 'Same-day walk-ins',
-      services: ['Primary care', 'Behavioral health', 'Medication refills', 'Referral coordination'],
-      helped: 412,
-      factors: [{ k: 'good', t: 'Walk-in medical' }, { k: 'warn', t: 'No housing' }, { k: 'bad', t: 'No SUD beds' }],
-      past: [
-        { initials: 'C.V.', label: 'Adult, 38', outcome: 'Re-started meds, linked to therapy', time: '1 week ago' },
-        { initials: 'N.A.', label: 'Adult, 50', outcome: 'Behavioral health intake completed', time: '4 weeks ago' },
-      ],
-    },
-    nextstep: {
-      name: 'Next Step Shelter',
-      tagline: 'Low-barrier emergency shelter',
-      location: '1.0 mi · Kakaʻako',
-      lat: 21.2935, lng: -157.8520, score: 35,
-      website: 'nextstephi.org',
-      poc: 'Ray Felipe', pocRole: 'Intake Specialist',
-      phone: '(808) 555-0166',
-      capacity: 'At capacity · waitlist',
-      services: ['Emergency shelter', 'Meals', 'Storage & hygiene', 'Benefits sign-up'],
-      helped: 286,
-      factors: [{ k: 'good', t: 'Low-barrier intake' }, { k: 'bad', t: 'At capacity' }, { k: 'bad', t: 'No clinical care' }],
-      past: [
-        { initials: 'E.M.', label: 'Adult, 41', outcome: 'Sheltered, moved to transitional housing', time: '2 weeks ago' },
-        { initials: 'F.D.', label: 'Adult, 33', outcome: 'Benefits enrollment, ID recovered', time: '5 weeks ago' },
-      ],
-    },
-    wahine: {
-      name: 'Wahine Recovery House',
-      tagline: 'Women-only residential recovery',
-      location: '2.2 mi · Mōʻiliʻili',
-      lat: 21.2965, lng: -157.8270, score: 22,
-      website: 'wahinerecovery.org',
-      poc: 'Malia Fonoti', pocRole: 'Program Director',
-      phone: '(808) 555-0171',
-      capacity: 'Beds for women only',
-      services: ['Residential SUD', 'Trauma-informed care', 'Childcare on site', 'Aftercare'],
-      helped: 98,
-      factors: [{ k: 'good', t: 'SUD + trauma care' }, { k: 'bad', t: 'Women only — ineligible' }],
-      past: [
-        { initials: 'H.L.', label: 'Resident, 36', outcome: 'Completed program, reunified with kids', time: '3 weeks ago' },
-        { initials: 'V.S.', label: 'Resident, 28', outcome: 'In aftercare, sober 5 months', time: '2 months ago' },
-      ],
-    },
-    kupuna: {
-      name: 'Kūpuna Care Pālolo',
-      tagline: 'Senior wraparound services',
-      location: '3.0 mi · Pālolo',
-      lat: 21.2995, lng: -157.7990, score: 16,
-      website: 'kupunacare.org',
-      poc: 'Henry Lum', pocRole: 'Care Coordinator',
-      phone: '(808) 555-0190',
-      capacity: 'Seniors 60+ only',
-      services: ['Senior housing', 'In-home support', 'Meals on wheels', 'Health navigation'],
-      helped: 221,
-      factors: [{ k: 'good', t: 'Wraparound care' }, { k: 'bad', t: 'Seniors 60+ only — ineligible' }],
-      past: [
-        { initials: 'G.O.', label: 'Kupuna, 72', outcome: 'Placed in senior housing', time: '2 weeks ago' },
-        { initials: 'W.C.', label: 'Kupuna, 68', outcome: 'In-home care arranged', time: '6 weeks ago' },
-      ],
-    },
-  });
+  // Attributes auto-tagged from the intake note (the "extracted" chips).
+  SUBJECT_TAGS = ['Veteran', 'Active substance use', 'Untreated PTSD', 'Housing loss', 'Single adult male', 'Turned away repeatedly'];
 
-  TOP_KEYS = ['va', 'harbor', 'downtown'];
+  // Every real service from the Supabase services CSV, joined with live
+  // coordinates/island/contact and pre-scored against the subject. Each row's
+  // `chips` are already the 1-3 most *unique* parameters that match the subject
+  // (plus any hard eligibility mismatch as a warning).
+  SERVICES = window.KOKUA_SERVICES || [];
 
   CHIP = {
     good: { bg: '#E9F1EC', color: '#1C7A55', border: '#D2E5DA', sym: '✓' },
@@ -646,21 +453,72 @@ class Component extends DCLogic {
     return { color: '#9AA6A4', label: 'Low fit', bg: '#EEEBE3', fg: '#6E7976', border: '#E0DCD2' };
   };
 
-  state = { page: 'intake', view: 'top', stage: 'matched', referralOpen: false, referralStage: 'draft', ocrStage: 'idle', ocrThumb: null, ocrName: '', detail: null, detailShown: false };
+  state = { page: 'intake', view: 'top', stage: 'matched', referralOpen: false, referralStage: 'draft', ocrStage: 'idle', ocrThumb: null, ocrName: '', ocrNote: '', detail: null, detailShown: false, referralOrg: null, apiError: '' };
 
+  // ─── helpers ────────────────────────────────────────────────────────────
+  inWindow = (o) => {
+    if (o.lat == null || o.lng == null) return false;
+    const w = this.WINDOW;
+    return o.lat >= w.south && o.lat <= w.north && o.lng >= w.west && o.lng <= w.east;
+  };
+
+  distMi = (lat, lng) => {
+    if (lat == null || lng == null) return null;
+    const R = 3958.8, toRad = (d) => d * Math.PI / 180;
+    const dLat = toRad(lat - this.DEPOT.lat), dLng = toRad(lng - this.DEPOT.lng);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(this.DEPOT.lat)) * Math.cos(toRad(lat)) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  };
+
+  fmtPhone = (p) => {
+    const d = (p || '').replace(/[^0-9]/g, '').replace(/^1/, '');
+    return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : (p || '—');
+  };
+
+  chipObjs = (chips) => (chips || []).map((c) => {
+    const s = this.CHIP[c.k] || this.CHIP.info;
+    return { text: c.t, sym: s.sym, bg: s.bg, color: s.color, border: s.border };
+  });
+
+  // Build a display org from a raw service row.
+  toOrg = (s) => {
+    const f = this.fit(s.score);
+    const inWin = this.inWindow(s);
+    const d = this.distMi(s.lat, s.lng);
+    const loc = inWin && d != null
+      ? `${d.toFixed(1)} mi · ${s.city}`
+      : `${s.city}, ${s.island}`;
+    return {
+      ...s,
+      fitc: f, inWin, distMi: d,
+      tagline: `${s.typeLabel} · ${s.city}, ${s.island}`,
+      location: loc,
+      scoreLabel: Math.round(s.score) + '%', scoreColor: f.fg,
+      barWidth: s.score + '%', barColor: f.color, dotColor: f.color,
+      fitLabel: f.label, fitBg: f.bg, fitColor: f.fg, fitBorder: f.border,
+      chips: this.chipObjs(s.chips),
+      phoneFmt: this.fmtPhone(s.phone),
+    };
+  };
+
+  orgs = () => this.SERVICES.map(this.toOrg).sort((a, b) => b.score - a.score);
+  orgByKey = (k) => this.orgs().find((o) => o.key === k);
+
+  // In-window services, best first. These are the actionable local matches.
+  windowMatches = () => this.orgs().filter((o) => o.inWin)
+    .sort((a, b) => b.score - a.score || b.conf - a.conf || b.n - a.n);
+
+  // ─── navigation ─────────────────────────────────────────────────────────
   goIntake = () => this.setState({ page: 'intake' });
   goMatches = () => this.setState({ page: 'matches' });
   showTop = () => this.setState({ view: 'top' });
   showAll = () => this.setState({ view: 'all' });
 
-  openByKey = (k) => { const o = this.getOrgs()[k]; if (o) this.setState({ detail: o, detailShown: true }); };
-  openVa = () => this.openByKey('va');
-  openHarbor = () => this.openByKey('harbor');
-  openDowntown = () => this.openByKey('downtown');
+  openByKey = (k) => { const o = this.orgByKey(k); if (o) this.setState({ detail: o, detailShown: true }); };
   closeDetail = () => this.setState({ detail: null, detailShown: false });
   backdropDetail = (e) => { if (e.target === e.currentTarget) this.setState({ detail: null, detailShown: false }); };
-  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft' });
 
+  // ─── intake: photo upload (never blocks; backend is best-effort) ─────────
   triggerUpload = () => { const i = document.getElementById('notes-file'); if (i) i.click(); };
   onFile = async (e) => {
     const f = e.target.files && e.target.files[0];
@@ -670,50 +528,62 @@ class Component extends DCLogic {
       r.onload = (ev) => res(ev.target.result);
       r.readAsDataURL(f);
     });
-    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name });
+    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name, apiError: '' });
     try {
       const formData = new FormData();
       formData.append('file', f);
-      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/upload-notes', {
-        method: 'POST',
-        body: formData,
-      });
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 12000);
+      const response = await fetch(this.API + '/api/upload-notes', { method: 'POST', body: formData, signal: ctrl.signal });
+      clearTimeout(to);
+      if (!response.ok) throw new Error('ocr ' + response.status);
       const data = await response.json();
+      const text = (data && data.extracted_text || '').trim();
       const el = document.getElementById('intake-notes');
-      if (el) el.value = data.extracted_text || '';
-      this.setState({ ocrStage: 'done' });
+      if (el && text) el.value = text;
+      this.setState({ ocrStage: 'done', ocrNote: text ? 'Transcribed from photo' : 'Photo attached' });
     } catch (err) {
-      this.setState({ ocrStage: 'idle', apiError: 'Could not read the photo. Try typing notes instead.' });
+      // Transcription unavailable — keep the photo attached and let the user
+      // proceed with typed notes (or the prefilled note). Never get stuck.
+      this.setState({ ocrStage: 'done', ocrNote: 'Photo attached · type or edit notes below' });
     }
     e.target.value = '';
   };
-  removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '' });
+  removeOcr = () => this.setState({ ocrStage: 'idle', ocrThumb: null, ocrName: '', ocrNote: '' });
 
-  findMatches = async () => {
+  // ─── intake: generate attributes + find matches ─────────────────────────
+  // Always advances to the matches screen and ranks the real services against
+  // the subject's location. The backend is attempted for live tags but the
+  // matches themselves come from local scoring, so this can never dead-end.
+  findMatches = () => {
     const el = document.getElementById('intake-notes');
     const notes = el ? el.value.trim() : '';
-    if (!notes) {
-      this.setState({ apiError: 'Add notes or upload a photo before generating matches.' });
+    const hasPhoto = this.state.ocrStage === 'done';
+    if (!notes && !hasPhoto) {
+      this.setState({ apiError: 'Add a few notes or upload a photo first, then generate matches.' });
       return;
     }
-    this.setState({ page: 'matches', stage: 'analyzing', apiError: '' });
-    try {
-      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes }),
-      });
-      const data = await response.json();
-      this.setState({
-        stage: 'matched',
-        tags: data.tags || null,
-        matches: Array.isArray(data.matches) ? data.matches : [],
-      });
-    } catch (err) {
-      this.setState({ stage: 'idle', apiError: 'Could not generate matches. Check your connection.' });
+    this.setState({ page: 'matches', view: 'top', stage: 'analyzing', apiError: '' });
+    // Best-effort live tag extraction; ignored if it fails.
+    if (notes) {
+      const ctrl = new AbortController();
+      setTimeout(() => ctrl.abort(), 9000);
+      fetch(this.API + '/api/match', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes }), signal: ctrl.signal,
+      }).then((r) => r.ok ? r.json() : null).then((data) => {
+        if (data && data.tags && Array.isArray(data.tags.needs)) {
+          // (optional) could merge live tags here; local scoring already drives matches.
+        }
+      }).catch(() => {});
     }
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ stage: 'matched' }), 900);
   };
-  openReferral = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
+
+  // ─── referral ───────────────────────────────────────────────────────────
+  referralFromDetail = () => this.setState({ detail: null, detailShown: false, referralOpen: true, referralStage: 'draft', referralOrg: this.state.detail });
+  openReferralFor = (org) => (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft', referralOrg: org }); };
   closeReferral = () => this.setState({ referralOpen: false });
   backdropReferral = (e) => { if (e.target === e.currentTarget) this.setState({ referralOpen: false }); };
   approveSend = () => {
@@ -727,42 +597,50 @@ class Component extends DCLogic {
   };
   stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
 
-  mapPoints = () => {
-    const orgs = this.getOrgs();
-    const keys = this.state.view === 'all'
-      ? Object.keys(orgs).sort((a, b) => orgs[b].score - orgs[a].score)
-      : this.TOP_KEYS;
-    return keys.map((k) => Object.assign({ key: k, fitc: this.fit(orgs[k].score) }, orgs[k]));
+  referralEmailFor = (org) => 'intake@' + (org && org.website ? org.website : 'partner.org');
+  draftBody = (org) => {
+    const good = ((org && org.chips) || []).filter((c) => c.k === 'good').map((c) => c.t);
+    const strengths = good.length ? good.slice(0, 3).join(', ').toLowerCase() : 'the support he needs';
+    return `Hello ${org ? org.name : 'team'},\n\n` +
+      `I'm reaching out on behalf of ${this.SUBJECT.name} (52), an Army veteran who served two combat tours. ` +
+      `Three weeks ago he lost his apartment following a relapse, and he's now sleeping ${this.SUBJECT.here}. ` +
+      `He lives with PTSD and has been without his medication for several months. Four shelters have already turned him away.\n\n` +
+      `Your program stood out as a strong match — specifically ${strengths}. That's exactly where ${this.SUBJECT.name} is right now.\n\n` +
+      `Could you confirm an intake slot for today? I can bring him in this afternoon.\n\n` +
+      `With gratitude,\nLeilani Kahale\nOutreach Coordinator, Hawaiʻi Department of Health`;
   };
 
-  renderMarkers = () => {
+  // ─── map ────────────────────────────────────────────────────────────────
+  // Renders the subject + every service that currently sits inside the map's
+  // visible window. As the user pans/zooms, markers are re-filtered so the map
+  // only ever shows services that are actually in the window.
+  refreshMarkers = () => {
     if (!this._map || !window.L) return;
     if (!this._layer) this._layer = L.layerGroup().addTo(this._map);
     this._layer.clearLayers();
-    const coords = [[this.DEPOT.lat, this.DEPOT.lng]];
 
     L.marker([this.DEPOT.lat, this.DEPOT.lng], {
       icon: L.divIcon({ className: '', iconSize: [22, 22], iconAnchor: [11, 11], html:
         '<div style="width:18px;height:18px;border-radius:50%;background:#16242A;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);"></div>' }),
-    }).addTo(this._layer).bindTooltip('Marcus · near the train depot', { direction: 'top', offset: [0, -10] });
+    }).addTo(this._layer).bindTooltip(this.SUBJECT.name + ' · ' + this.SUBJECT.here, { direction: 'top', offset: [0, -10] });
 
-    this.mapPoints().forEach((p) => {
-      const recommended = p.key === 'va';
+    const bounds = this._map.getBounds();
+    const best = (this.windowMatches()[0] || {}).key;
+    this.orgs().forEach((p) => {
+      if (p.lat == null || p.lng == null) return;
+      if (!bounds.contains([p.lat, p.lng])) return;   // only what's in the window
+      const recommended = p.key === best;
       const sz = recommended ? 40 : 32;
       const icon = L.divIcon({
         className: '', iconSize: [sz, sz + 6], iconAnchor: [sz / 2, sz + 6],
         html:
           '<div style="position:relative;width:' + sz + 'px;height:' + sz + 'px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:' + p.fitc.color + ';border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.35);cursor:pointer;">' +
-          '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);color:#fff;font-family:\'Public Sans\',sans-serif;font-size:' + (recommended ? 12 : 10) + 'px;font-weight:700;">' + p.score + '</span></div>',
+          '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);color:#fff;font-family:\'Public Sans\',sans-serif;font-size:' + (recommended ? 12 : 10) + 'px;font-weight:700;">' + Math.round(p.score) + '</span></div>',
       });
       const m = L.marker([p.lat, p.lng], { icon, riseOnHover: true }).addTo(this._layer);
-      m.bindTooltip(p.name + ' · ' + p.score + '%', { direction: 'top', offset: [0, -(sz + 2)] });
+      m.bindTooltip(p.name + ' · ' + Math.round(p.score) + '%', { direction: 'top', offset: [0, -(sz + 2)] });
       m.on('click', () => this.openByKey(p.key));
-      coords.push([p.lat, p.lng]);
     });
-
-    this._map.fitBounds(coords, { padding: [44, 44], maxZoom: 15 });
-    this._renderedView = this.state.view;
   };
 
   ensureMap = () => {
@@ -770,41 +648,78 @@ class Component extends DCLogic {
     const el = document.getElementById('match-map');
     if (!el) return;
     if (!window.L) { clearTimeout(this._mapWait); this._mapWait = setTimeout(this.ensureMap, 120); return; }
-    if (el._kInit) { if (this._renderedView !== this.state.view) this.renderMarkers(); if (this._map) this._map.invalidateSize(); return; }
+    if (el._kInit) { if (this._map) this._map.invalidateSize(); this.refreshMarkers(); return; }
     el._kInit = true;
     if (this._map) { try { this._map.remove(); } catch (e) {} this._map = null; this._layer = null; }
     const map = L.map(el, { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap contributors © CARTO',
     }).addTo(map);
-    this._map = map; this._layer = null; this._renderedView = null;
-    this.renderMarkers();
-    setTimeout(() => { try { map.invalidateSize(); } catch (e) {} }, 80);
+    this._map = map; this._layer = null;
+    // Fit to the subject + the in-window matches (keeps neighbor islands out).
+    const coords = [[this.DEPOT.lat, this.DEPOT.lng]];
+    this.windowMatches().forEach((o) => { if (o.lat != null) coords.push([o.lat, o.lng]); });
+    if (coords.length > 1) map.fitBounds(coords, { padding: [44, 44], maxZoom: 14 });
+    else map.setView([this.DEPOT.lat, this.DEPOT.lng], 13);
+    map.on('moveend', this.refreshMarkers);
+    this.refreshMarkers();
+    setTimeout(() => { try { map.invalidateSize(); } catch (e) {} this.refreshMarkers(); }, 80);
   };
 
   componentDidMount() { this.ensureMap(); }
   componentDidUpdate() { this.ensureMap(); }
   componentWillUnmount() {
-    clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._ocr); clearTimeout(this._mapWait);
+    clearTimeout(this._t); clearTimeout(this._t2); clearTimeout(this._mapWait);
     if (this._map) { try { this._map.remove(); } catch (e) {} }
   }
 
   renderVals() {
     const st = this.state;
     const matched = st.stage === 'matched';
-    const d = st.detail || {};
-    const orgs = this.getOrgs();
+    const orgs = this.orgs();
+    const wins = this.windowMatches();
+    const bestKey = (wins[0] || {}).key;
 
-    const directory = Object.keys(orgs).sort((a, b) => orgs[b].score - orgs[a].score).map((k) => {
-      const o = orgs[k]; const f = this.fit(o.score);
+    // Top matches = the in-window services (the subject's local options), top 3.
+    const topMatches = wins.slice(0, 3).map((o) => {
+      const recommended = o.key === bestKey;
+      const cardStyle = {
+        background: '#FFFFFF',
+        border: recommended ? '1.5px solid #0E7A66' : '1px solid #E6E1D7',
+        borderRadius: '14px', padding: '20px 22px 18px', cursor: 'pointer',
+        boxShadow: recommended ? '0 12px 32px -18px rgba(14,122,102,0.5)' : '0 1px 2px rgba(20,40,40,0.04)',
+      };
+      const badgeStyle = recommended
+        ? { display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#0E7A66', color: '#FFFFFF', fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', padding: '4px 9px', borderRadius: '6px', marginBottom: '11px' }
+        : { display: 'none' };
+      const referBtnStyle = recommended
+        ? { display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#0E7A66', color: '#FFFFFF', border: 'none', fontSize: '14px', fontWeight: 600, padding: '11px 20px', borderRadius: '9px', cursor: 'pointer', boxShadow: '0 1px 2px rgba(14,122,102,0.3)' }
+        : { display: 'inline-flex', alignItems: 'center', gap: '7px', background: '#FFFFFF', color: '#16242A', border: '1px solid #D8D2C6', fontSize: '13.5px', fontWeight: 600, padding: '9px 16px', borderRadius: '9px', cursor: 'pointer' };
       return {
-        key: k, name: o.name, tagline: o.tagline, location: o.location,
-        scoreLabel: o.score + '%', scoreColor: f.fg, barWidth: o.score + '%', barColor: f.color, dotColor: f.color,
-        fitLabel: f.label, fitBg: f.bg, fitColor: f.fg, fitBorder: f.border,
-        chips: (o.factors || []).map((fc) => { const c = this.CHIP[fc.k] || this.CHIP.info; return { text: (c.sym ? c.sym + ' ' : '') + fc.t, bg: c.bg, color: c.color, border: c.border }; }),
-        open: () => this.openByKey(k),
+        ...o, recommended, cardStyle, badgeStyle, referBtnStyle,
+        footnote: recommended ? ('Top match on the priority factors for ' + this.SUBJECT.name + '.') : (Math.round(o.distMi) + ' mi from ' + this.SUBJECT.name + ' · ' + o.typeLabel),
+        open: () => this.openByKey(o.key),
+        refer: this.openReferralFor(o),
       };
     });
+
+    // Full database = every service, in-window first then the rest, by score.
+    const directory = orgs.slice().sort((a, b) => (b.inWin - a.inWin) || (b.score - a.score)).map((o) => ({
+      ...o,
+      windowBadge: o.inWin ? 'In window' : o.island,
+      windowBadgeStyle: o.inWin
+        ? 'font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:#E7F1EE;color:#0E7A66;border:1px solid #CDE6DF;'
+        : 'font-size:10px;font-weight:600;letter-spacing:0.04em;padding:2px 8px;border-radius:6px;background:#EFECE4;color:#9AA6A4;border:1px solid #E2DDD3;',
+      open: () => this.openByKey(o.key),
+    }));
+
+    const d = st.detail || {};
+    const detailFactors = ((d.chips) || []).map((c) => {
+      const isGood = c.k === 'good';
+      return { text: c.text, sym: isGood ? '✓' : '✕', bg: isGood ? '#E9F1EC' : '#F3E7E3', color: isGood ? '#1C7A55' : '#9E4B39' };
+    });
+
+    const r = st.referralOrg || wins[0] || orgs[0] || {};
 
     const stepBase = { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', borderRadius: '9px', border: 'none', fontFamily: "'Public Sans',sans-serif", fontSize: '13px', fontWeight: 600, cursor: 'pointer' };
     const stepOn = Object.assign({}, stepBase, { background: '#E7F1EE', color: '#0E7A66' });
@@ -814,6 +729,8 @@ class Component extends DCLogic {
     const segOff = Object.assign({}, segBase, { background: 'transparent', color: '#7C8888' });
 
     return {
+      subjectName: this.SUBJECT.name,
+      subjectTags: this.SUBJECT_TAGS,
       isIntake: st.page === 'intake',
       isMatches: st.page === 'matches',
       goIntake: this.goIntake,
@@ -828,37 +745,50 @@ class Component extends DCLogic {
       showAll: this.showAll,
       segTopStyle: st.view === 'top' ? segOn : segOff,
       segAllStyle: st.view === 'all' ? segOn : segOff,
-      matchCountLabel: st.view === 'all' ? (Object.keys(orgs).length + ' in network') : '3 found',
-      segHint: st.view === 'all' ? 'Every organization in the network · ranked by fit' : 'Best-fit matches for this situation',
+      matchCountLabel: st.view === 'all' ? (orgs.length + ' in network') : (wins.length + ' near ' + this.SUBJECT.name),
+      segHint: st.view === 'all' ? 'Every organization · in-window first, ranked by fit' : 'Local options inside the map window · ranked by fit',
+      mapHint: 'Around the train depot, Honolulu · ' + wins.length + ' services in the window · tap a pin for details.',
+      topMatches,
       directory,
 
       detailOpen: st.detailShown,
       detailName: d.name, detailTagline: d.tagline, detailLocation: d.location,
-      detailWebsite: d.website, detailWebsiteHref: d.website ? 'https://' + d.website : '#',
-      detailPoc: d.poc, detailPocRole: d.pocRole, detailPhone: d.phone, detailCapacity: d.capacity,
-      detailServices: d.services || [], detailHelped: d.helped, detailPast: d.past || [],
-      openVa: this.openVa, openHarbor: this.openHarbor, openDowntown: this.openDowntown,
+      detailAddress: d.address || '—', detailPhone: d.phoneFmt || '—', detailType: d.typeLabel || '—',
+      detailScore: d.score != null ? (Math.round(d.score) + '%') : '—',
+      detailServices: d.services || [], detailFactors,
       closeDetail: this.closeDetail, backdropDetail: this.backdropDetail, backdropReferral: this.backdropReferral,
       referralFromDetail: this.referralFromDetail,
       isAnalyzing: st.stage === 'analyzing',
       isMatched: matched,
+
       referralOpen: st.referralOpen,
+      referralOrgName: r.name || 'the organization',
+      referralHeading: 'Introduce ' + this.SUBJECT.name + ' to ' + (r.name || 'the organization'),
+      referralTo: this.referralEmailFor(r),
+      referralSubject: 'Referral & introduction — ' + this.SUBJECT.name + ' needs housing + support',
+      referralBody: this.draftBody(r),
       draftDisplay: { display: st.referralStage === 'draft' ? 'block' : 'none' },
       sendingDisplay: { display: st.referralStage === 'sending' ? 'block' : 'none' },
       sentDisplay: { display: st.referralStage === 'sent' ? 'block' : 'none' },
+
       showSignals: (this.props.showSignals ?? true) && matched,
       showLegend: this.props.showLegend ?? true,
       showProximity: this.props.showProximity ?? true,
       ocrIdle: st.ocrStage === 'idle', ocrReading: st.ocrStage === 'reading', ocrDone: st.ocrStage === 'done',
       ocrThumbEl: st.ocrThumb ? React.createElement('img', { src: st.ocrThumb, style: { flex: 'none', width: '38px', height: '38px', borderRadius: '7px', objectFit: 'cover', border: '1px solid #DCE8E3' } }) : null,
-      ocrName: st.ocrName,
+      ocrName: st.ocrName, ocrNote: st.ocrNote || 'Transcribed from photo',
       triggerUpload: this.triggerUpload, onFile: this.onFile, removeOcr: this.removeOcr,
       findMatches: this.findMatches,
-      openReferral: this.openReferral, closeReferral: this.closeReferral, approveSend: this.approveSend, focusDraft: this.focusDraft,
+      apiError: st.apiError, apiErrorShown: !!st.apiError,
+      openReferral: this.openReferralFor, closeReferral: this.closeReferral, approveSend: this.approveSend, focusDraft: this.focusDraft,
       stop: this.stop,
     };
   }
 }
+</script>
+<script>
+  // Backend base URL (best-effort; the console works fully offline if it's down).
+  Component.prototype.API = 'http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com';
 </script>
 </body>
 </html>
