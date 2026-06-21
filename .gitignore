@@ -1,0 +1,21 @@
+# Credentials - never commit these
+*.json
+!package.json
+!package-lock.json
+backend/.env
+backend/google-credentials.json
+backend/adc.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyd
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

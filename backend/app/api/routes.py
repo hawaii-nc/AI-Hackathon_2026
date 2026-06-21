@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.matching import match_client_to_shelters, extract_client_tags
 from app.services.document_ai import process_handwritten_note
 from app.services.referral import generate_referral
@@ -19,10 +19,9 @@ class ReferralRequest(BaseModel):
 @router.post('/upload-notes')
 async def upload_notes(file: UploadFile = File(...)):
     image_bytes = await file.read()
-    ocr_result = process_handwritten_note(image_bytes, filename=file.filename or "note.jpg")
-    extracted_text = ocr_result.get("raw_transcription", "")
+    extracted_text = process_handwritten_note(image_bytes, filename=file.filename or "note.jpg")
     tags = extract_client_tags(extracted_text)
-    return {'extracted_text': extracted_text, 'tags': tags, 'ocr_fields': ocr_result}
+    return {'extracted_text': extracted_text, 'tags': tags}
 
 # Match client to shelters
 @router.post('/match')
