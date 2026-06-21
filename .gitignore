@@ -4,3 +4,5 @@ frontend-ui/uploads/
 
 **/__pycache__/
 *.pyc
+
+*.zip
