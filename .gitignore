@@ -1,41 +1,39 @@
-<<<<<<< HEAD
+# Env files
 .env
+.env.local
 backend/.env
 frontend/.env
+
+# Virtualenvs
 backend/venv/
 backend/.venv/
+.venv/
+
+# App-generated
 backend/outbox/
-frontend/node_modules/
-**/__pycache__/
-*.pyc
-.env.local
+frontend-ui/uploads/
 
 # Credentials - never commit these
 *.json
 !package.json
 !package-lock.json
-backend/.env
 backend/google-credentials.json
 backend/adc.json
 
 # Python
+**/__pycache__/
 __pycache__/
 *.pyc
 *.pyd
-.venv/
 *.egg-info/
 
 # Node
+frontend/node_modules/
 node_modules/
+
+# Archives
+*.zip
 
 # OS
 .DS_Store
 Thumbs.db
-=======
-
-backend/.env
-frontend-ui/uploads/
-
-**/__pycache__/
-*.pyc
->>>>>>> baac8bd4c9a0562b4b7867b173480eba76b11220

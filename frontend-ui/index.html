@@ -15,9 +15,17 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;scroll-behavior:smooth;}
   body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#F4F1EB;}
-  #how,#solution{scroll-margin-top:86px;}
+  #how,#solution,#problem{scroll-margin-top:86px;}
+  @keyframes kDraw{from{stroke-dashoffset:1000;opacity:0}to{stroke-dashoffset:0;opacity:1}}
+  @keyframes kDrawMuted{from{stroke-dashoffset:1000;opacity:0}to{stroke-dashoffset:0;opacity:.5}}
+  @keyframes kDrawFaint{from{stroke-dashoffset:1000;opacity:0}to{stroke-dashoffset:0;opacity:.14}}
+  @keyframes kFadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes kPopIn{0%{opacity:0;transform:scale(0)}70%{opacity:1;transform:scale(1.18)}100%{opacity:1;transform:scale(1)}}
+  @keyframes kFadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes kSlideIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
+
 <div style="min-height:100vh;background:#F4F1EB;font-family:'Public Sans',system-ui,sans-serif;color:#16242A;">
 
   <nav style="position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(244,241,235,0.82);backdrop-filter:blur(10px);border-bottom:1px solid #E6E1D7;">
@@ -34,7 +42,7 @@
   </nav>
 
   <section style="max-width:1180px;margin:0 auto;padding:78px 40px 88px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:60px;align-items:center;">
-    <div>
+    <div style="animation:kFadeUp 0.7s ease 0.12s both;">
       <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#0E7A66;font-weight:700;">Community care matching · Hawaiʻi</div>
       <h1 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:56px;line-height:1.05;letter-spacing:-0.025em;font-weight:600;color:#16242A;text-wrap:balance;">Help that finds the right door, the first time.</h1>
       <p style="margin:24px 0 0;font-size:18px;line-height:1.62;color:#46555A;max-width:31em;">Community health workers carry people through their worst days. Kōkua matches each person to the organizations that genuinely fit their situation — and drafts the introduction — so no one has to be passed around.</p>
@@ -43,35 +51,49 @@
         <a href="#problem" style="text-decoration:none;color:#16242A;font-size:15px;font-weight:600;border-bottom:1.5px solid #C9C2B4;padding-bottom:2px;" style-hover="border-color:#0E7A66;color:#0E7A66;">See the problem</a>
       </div>
     </div>
-    <div style="display:flex;justify-content:center;">
-      <svg viewBox="0 0 480 320" style="width:100%;height:auto;max-width:520px;font-family:'Public Sans',sans-serif;">
+    <div style="display:flex;justify-content:center;animation:kFadeIn 0.5s ease 0.2s both;">
+      <svg viewBox="0 0 480 320" style="width:100%;height:auto;max-width:{{ heroMaxW }};font-family:'Public Sans',sans-serif;">
+        <!-- Static context -->
         <text x="16" y="26" font-size="11" letter-spacing="2.5" fill="#9AA6A4" font-weight="700">TODAY</text>
-        <line x1="53" y1="78" x2="142" y2="56" stroke="#D8D2C6" stroke-width="2"/>
-        <line x1="158" y1="56" x2="228" y2="96" stroke="#D8D2C6" stroke-width="2"/>
-        <line x1="244" y1="96" x2="314" y2="56" stroke="#D8D2C6" stroke-width="2"/>
-        <line x1="330" y1="56" x2="400" y2="96" stroke="#D8D2C6" stroke-width="2"/>
-        <line x1="416" y1="96" x2="452" y2="96" stroke="#D8D2C6" stroke-width="2" stroke-dasharray="2 5"/>
-        <circle cx="44" cy="78" r="9" fill="#0E7A66"/>
-        <text x="44" y="103" font-size="11" fill="#7C8888" text-anchor="middle">Marcus</text>
-        <circle cx="150" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
-        <text x="150" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
-        <circle cx="236" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
-        <text x="236" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
-        <circle cx="322" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
-        <text x="322" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
-        <circle cx="408" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
-        <text x="408" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
-        <text x="460" y="92" font-size="14" fill="#B7BEBB" text-anchor="middle">?</text>
-        <text x="240" y="142" font-size="12" fill="#9AA6A4" text-anchor="middle">Four shelters already turned him away.</text>
         <line x1="16" y1="180" x2="464" y2="180" stroke="#E6E1D7" stroke-width="1"/>
-        <text x="16" y="212" font-size="11" letter-spacing="2.5" fill="#0E7A66" font-weight="700">WITH KŌKUA</text>
-        <circle cx="44" cy="252" r="9" fill="#0E7A66"/>
-        <text x="44" y="277" font-size="11" fill="#7C8888" text-anchor="middle">Marcus</text>
-        <line x1="53" y1="252" x2="285" y2="252" stroke="#0E7A66" stroke-width="2.5"/>
-        <circle cx="300" cy="252" r="13" fill="#0E7A66"/>
-        <text x="300" y="257" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">✓</text>
-        <text x="322" y="248" font-size="13" fill="#16242A" font-weight="700">94% compatibility</text>
-        <text x="322" y="267" font-size="11" fill="#7C8888">VA Stand Down Outreach</text>
+        <!-- TODAY: Marcus -->
+        <circle id="h-marcus" cx="44" cy="78" r="9" fill="#0E7A66" style="opacity:0;"/>
+        <text id="h-marcus-lbl" x="44" y="103" font-size="11" fill="#7C8888" text-anchor="middle" style="opacity:0;">Marcus</text>
+        <!-- TODAY: rejected shelters -->
+        <line id="h-l1" x1="53" y1="78" x2="142" y2="56" stroke="#D8D2C6" stroke-width="2" style="opacity:0;"/>
+        <g id="h-s1" style="opacity:0;">
+          <circle cx="150" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+          <text x="150" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        </g>
+        <line id="h-l2" x1="158" y1="56" x2="228" y2="96" stroke="#D8D2C6" stroke-width="2" style="opacity:0;"/>
+        <g id="h-s2" style="opacity:0;">
+          <circle cx="236" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+          <text x="236" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        </g>
+        <line id="h-l3" x1="244" y1="96" x2="314" y2="56" stroke="#D8D2C6" stroke-width="2" style="opacity:0;"/>
+        <g id="h-s3" style="opacity:0;">
+          <circle cx="322" cy="54" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+          <text x="322" y="58" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        </g>
+        <line id="h-l4" x1="330" y1="56" x2="400" y2="96" stroke="#D8D2C6" stroke-width="2" style="opacity:0;"/>
+        <g id="h-s4" style="opacity:0;">
+          <circle cx="408" cy="98" r="8" fill="#EFECE4" stroke="#D9D3C7" stroke-width="1.5"/>
+          <text x="408" y="102" font-size="10" fill="#B0928C" text-anchor="middle" font-weight="700">✕</text>
+        </g>
+        <line id="h-ldash" x1="416" y1="96" x2="452" y2="96" stroke="#D8D2C6" stroke-width="2" stroke-dasharray="2 5" style="opacity:0;"/>
+        <text id="h-qmark" x="460" y="92" font-size="14" fill="#B7BEBB" text-anchor="middle" style="opacity:0;">?</text>
+        <text id="h-caption" x="240" y="150" font-size="12" fill="#9AA6A4" text-anchor="middle" style="opacity:0;">Four shelters already turned him away.</text>
+        <!-- WITH KŌKUA path -->
+        <text id="h-kokua-lbl" x="16" y="212" font-size="11" letter-spacing="2.5" fill="#0E7A66" font-weight="700" style="opacity:0;">WITH KŌKUA</text>
+        <circle id="h-kdot" cx="44" cy="252" r="9" fill="#0E7A66" style="opacity:0;"/>
+        <text id="h-kdot-lbl" x="44" y="277" font-size="11" fill="#7C8888" text-anchor="middle" style="opacity:0;">Marcus</text>
+        <line id="h-kline" x1="53" y1="252" x2="285" y2="252" stroke="#0E7A66" stroke-width="2.5" style="opacity:0;"/>
+        <g id="h-kcheck" style="opacity:0;">
+          <circle cx="300" cy="252" r="13" fill="#0E7A66"/>
+          <text x="300" y="257" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">✓</text>
+        </g>
+        <text id="h-kscore" x="322" y="248" font-size="13" fill="#16242A" font-weight="700" style="opacity:0;">94% compatibility</text>
+        <text id="h-korg" x="322" y="267" font-size="11" fill="#7C8888" style="opacity:0;">VA Stand Down Outreach</text>
       </svg>
     </div>
   </section>
@@ -80,19 +102,18 @@
     <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#9AA6A4;font-weight:700;">The problem</div>
     <h2 style="margin:16px 0 0;font-family:'Source Serif 4',serif;font-size:40px;line-height:1.1;letter-spacing:-0.02em;font-weight:600;color:#16242A;max-width:18em;text-wrap:balance;">Meeting someone in crisis is the easy part.</h2>
     <p style="margin:20px 0 0;font-size:17px;line-height:1.65;color:#46555A;max-width:42em;">Then comes the maze. Dozens of organizations, each with different eligibility rules and capacity that changes by the day. Finding the one that fits — today, for this person — can take hours of phone calls. And every wrong turn costs something that's hard to win back: their trust.</p>
-
     <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:64px;border-top:1px solid #E6E1D7;">
-      <div style="padding:30px 30px 8px 0;">
+      <div id="prob-1" style="padding:30px 30px 8px 0;opacity:0;">
         <span style="display:inline-block;width:12px;height:12px;border:2px solid #0E7A66;border-radius:50%;"></span>
         <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">Different eligibility</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Veteran-only. Women-only. Sober-only. The rules rarely match the person standing in front of you.</p>
       </div>
-      <div style="padding:30px 30px 8px;border-left:1px solid #E6E1D7;">
+      <div id="prob-2" style="padding:30px 30px 8px;border-left:1px solid #E6E1D7;opacity:0;">
         <span style="display:inline-block;width:11px;height:11px;border:2px solid #0E7A66;transform:rotate(45deg);"></span>
         <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">Shifting capacity</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Beds open and close by the hour. Yesterday's answer is already wrong by the time you call.</p>
       </div>
-      <div style="padding:30px 0 8px 30px;border-left:1px solid #E6E1D7;">
+      <div id="prob-3" style="padding:30px 0 8px 30px;border-left:1px solid #E6E1D7;opacity:0;">
         <span style="display:inline-block;width:11px;height:11px;background:#0E7A66;"></span>
         <h3 style="margin:18px 0 0;font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:#16242A;">No shared map</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">The network lives in one worker's memory. When they're out, the knowledge walks out the door too.</p>
@@ -108,32 +129,41 @@
         <p style="margin:22px 0 0;font-size:17px;line-height:1.66;color:#B6C7C1;max-width:34em;">From a photo of handwritten notes or a few typed lines, Kōkua tags what matters — veteran status, clinical needs, housing, eligibility, proximity — then scores compatibility against every nearby resource. Ranked, with the reasoning shown, so the worker stays in command.</p>
       </div>
       <div style="display:flex;justify-content:center;">
-        <svg viewBox="0 0 520 360" style="width:100%;height:auto;max-width:560px;font-family:'Public Sans',sans-serif;">
-          <line x1="150" y1="70" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
-          <line x1="150" y1="140" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
-          <line x1="150" y1="210" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
-          <line x1="150" y1="280" x2="370" y2="96" stroke="#34BD95" stroke-width="2" opacity="0.5"/>
-          <line x1="150" y1="210" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" opacity="0.14"/>
-          <line x1="150" y1="280" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" opacity="0.14"/>
-          <line x1="150" y1="280" x2="370" y2="300" stroke="#CFE0DA" stroke-width="1.5" opacity="0.12"/>
-          <text x="132" y="74" font-size="13" fill="#AFC4BD" text-anchor="end">Veteran</text>
-          <circle cx="150" cy="70" r="5" fill="#4FA98F"/>
-          <text x="132" y="144" font-size="13" fill="#AFC4BD" text-anchor="end">Untreated PTSD</text>
-          <circle cx="150" cy="140" r="5" fill="#4FA98F"/>
-          <text x="132" y="214" font-size="13" fill="#AFC4BD" text-anchor="end">Substance use</text>
-          <circle cx="150" cy="210" r="5" fill="#4FA98F"/>
-          <text x="132" y="284" font-size="13" fill="#AFC4BD" text-anchor="end">Housing loss</text>
-          <circle cx="150" cy="280" r="5" fill="#4FA98F"/>
-          <circle cx="370" cy="96" r="10" fill="#34BD95"/>
-          <text x="370" y="101" font-size="11" fill="#0B2A23" text-anchor="middle" font-weight="700">✓</text>
-          <text x="390" y="92" font-size="14" fill="#EAF3F0" font-weight="700">VA Stand Down</text>
-          <text x="390" y="110" font-size="12" fill="#34BD95" font-weight="600">94% compatibility</text>
-          <circle cx="370" cy="210" r="6" fill="#C79A3A"/>
-          <text x="390" y="206" font-size="13" fill="#C9D6D1">Harbor Light Recovery</text>
-          <text x="390" y="223" font-size="12" fill="#D7B873">71%</text>
-          <circle cx="370" cy="300" r="6" fill="#C0705E"/>
-          <text x="390" y="296" font-size="13" fill="#C9D6D1">Downtown Shelter</text>
-          <text x="390" y="313" font-size="12" fill="#D49B8C">58%</text>
+        <svg viewBox="0 0 520 360" style="width:100%;height:auto;max-width:{{ solMaxW }};font-family:'Public Sans',sans-serif;">
+          <!-- Lines: attributes → VA (top match) -->
+          <line id="s-l1" x1="150" y1="70" x2="370" y2="96" stroke="#34BD95" stroke-width="2" style="opacity:0;"/>
+          <line id="s-l2" x1="150" y1="140" x2="370" y2="96" stroke="#34BD95" stroke-width="2" style="opacity:0;"/>
+          <line id="s-l3" x1="150" y1="210" x2="370" y2="96" stroke="#34BD95" stroke-width="2" style="opacity:0;"/>
+          <line id="s-l4" x1="150" y1="280" x2="370" y2="96" stroke="#34BD95" stroke-width="2" style="opacity:0;"/>
+          <!-- Lines: attributes → lower matches (faint) -->
+          <line id="s-lg1" x1="150" y1="210" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" style="opacity:0;"/>
+          <line id="s-lg2" x1="150" y1="280" x2="370" y2="210" stroke="#CFE0DA" stroke-width="1.5" style="opacity:0;"/>
+          <line id="s-lg3" x1="150" y1="280" x2="370" y2="300" stroke="#CFE0DA" stroke-width="1.5" style="opacity:0;"/>
+          <!-- Attribute labels -->
+          <text id="s-al1" x="132" y="74" font-size="13" fill="#AFC4BD" text-anchor="end" style="opacity:0;">Veteran</text>
+          <text id="s-al2" x="132" y="144" font-size="13" fill="#AFC4BD" text-anchor="end" style="opacity:0;">Untreated PTSD</text>
+          <text id="s-al3" x="132" y="214" font-size="13" fill="#AFC4BD" text-anchor="end" style="opacity:0;">Substance use</text>
+          <text id="s-al4" x="132" y="284" font-size="13" fill="#AFC4BD" text-anchor="end" style="opacity:0;">Housing loss</text>
+          <!-- Attribute dots -->
+          <circle id="s-a1" cx="150" cy="70" r="5" fill="#4FA98F" style="opacity:0;"/>
+          <circle id="s-a2" cx="150" cy="140" r="5" fill="#4FA98F" style="opacity:0;"/>
+          <circle id="s-a3" cx="150" cy="210" r="5" fill="#4FA98F" style="opacity:0;"/>
+          <circle id="s-a4" cx="150" cy="280" r="5" fill="#4FA98F" style="opacity:0;"/>
+          <!-- VA match (prominent) -->
+          <g id="s-m1" style="opacity:0;">
+            <circle cx="370" cy="96" r="10" fill="#34BD95"/>
+            <text x="370" y="101" font-size="11" fill="#0B2A23" text-anchor="middle" font-weight="700">✓</text>
+          </g>
+          <text id="s-m1t" x="390" y="92" font-size="14" fill="#EAF3F0" font-weight="700" style="opacity:0;">VA Stand Down</text>
+          <text id="s-m1s" x="390" y="110" font-size="12" fill="#34BD95" font-weight="600" style="opacity:0;">94% compatibility</text>
+          <!-- Harbor match -->
+          <circle id="s-m2" cx="370" cy="210" r="6" fill="#C79A3A" style="opacity:0;"/>
+          <text id="s-m2t" x="390" y="206" font-size="13" fill="#C9D6D1" style="opacity:0;">Harbor Light Recovery</text>
+          <text id="s-m2s" x="390" y="223" font-size="12" fill="#D7B873" style="opacity:0;">71%</text>
+          <!-- Downtown match -->
+          <circle id="s-m3" cx="370" cy="300" r="6" fill="#C0705E" style="opacity:0;"/>
+          <text id="s-m3t" x="390" y="296" font-size="13" fill="#C9D6D1" style="opacity:0;">Downtown Shelter</text>
+          <text id="s-m3s" x="390" y="313" font-size="12" fill="#D49B8C" style="opacity:0;">58%</text>
         </svg>
       </div>
     </div>
@@ -143,17 +173,17 @@
     <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:#9AA6A4;font-weight:700;">How it works</div>
     <h2 style="margin:16px 0 0;font-family:'Source Serif 4',serif;font-size:38px;line-height:1.12;letter-spacing:-0.02em;font-weight:600;color:#16242A;">Three steps. The worker decides every one.</h2>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid #E6E1D7;">
-      <div style="padding:34px 32px 0 0;">
+      <div id="how-1" style="padding:34px 32px 0 0;opacity:0;">
         <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">01</div>
         <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Describe</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Snap a photo of your handwritten notes or type a few lines. Kōkua turns it into structured needs.</p>
       </div>
-      <div style="padding:34px 32px 0;border-left:1px solid #E6E1D7;">
+      <div id="how-2" style="padding:34px 32px 0;border-left:1px solid #E6E1D7;opacity:0;">
         <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">02</div>
         <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Match</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">A compatibility model ranks nearby organizations by how well they truly fit — not just who has a bed.</p>
       </div>
-      <div style="padding:34px 0 0 32px;border-left:1px solid #E6E1D7;">
+      <div id="how-3" style="padding:34px 0 0 32px;border-left:1px solid #E6E1D7;opacity:0;">
         <div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;color:#0E7A66;line-height:1;">03</div>
         <h3 style="margin:16px 0 0;font-size:19px;font-weight:600;color:#16242A;">Refer</h3>
         <p style="margin:9px 0 0;font-size:14.5px;line-height:1.6;color:#7C8888;">Approve an AI-drafted introduction email. You always review before anything is sent.</p>
@@ -180,5 +210,125 @@
 
 </div>
 </x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;1440&quot;,&quot;height&quot;:&quot;2200&quot;},&quot;graphicScale&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:10,&quot;min&quot;:0.8,&quot;max&quot;:1.6,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  state = {};
+
+  $ = (id) => document.getElementById(id);
+
+  _line = (id, delay, kf, dur) => {
+    const el = this.$(id);
+    if (!el) return;
+    el.style.strokeDasharray = '1000';
+    el.style.animation = `${kf} ${dur}s ease ${delay}s both`;
+  };
+
+  _fade = (id, delay, dur) => {
+    const el = this.$(id);
+    if (!el) return;
+    el.style.animation = `kFadeIn ${dur}s ease ${delay}s both`;
+  };
+
+  _pop = (id, delay) => {
+    const el = this.$(id);
+    if (!el) return;
+    el.style.transformBox = 'fill-box';
+    el.style.transformOrigin = 'center';
+    el.style.animation = `kPopIn 0.42s cubic-bezier(.34,1.56,.64,1) ${delay}s both`;
+  };
+
+  _up = (id, delay) => {
+    const el = this.$(id);
+    if (!el) return;
+    el.style.animation = `kFadeUp 0.55s ease ${delay}s both`;
+  };
+
+  _playHero = () => {
+    // TODAY: Marcus enters
+    this._pop('h-marcus', 0);
+    this._fade('h-marcus-lbl', 0.12, 0.3);
+    // Shelter 1 rejected
+    this._line('h-l1', 0.32, 'kDraw', 0.4);
+    this._pop('h-s1', 0.72);
+    // Shelter 2 rejected
+    this._line('h-l2', 1.02, 'kDraw', 0.36);
+    this._pop('h-s2', 1.38);
+    // Shelter 3 rejected
+    this._line('h-l3', 1.66, 'kDraw', 0.36);
+    this._pop('h-s3', 2.02);
+    // Shelter 4 rejected
+    this._line('h-l4', 2.30, 'kDraw', 0.36);
+    this._pop('h-s4', 2.66);
+    // Trail off into unknown
+    this._fade('h-ldash', 2.92, 0.28);
+    this._fade('h-qmark', 3.12, 0.28);
+    this._fade('h-caption', 3.32, 0.42);
+    // WITH KŌKUA: direct path
+    this._fade('h-kokua-lbl', 3.88, 0.4);
+    this._pop('h-kdot', 4.18);
+    this._fade('h-kdot-lbl', 4.28, 0.28);
+    this._line('h-kline', 4.46, 'kDraw', 0.44);
+    this._pop('h-kcheck', 4.9);
+    this._fade('h-kscore', 5.18, 0.36);
+    this._fade('h-korg', 5.38, 0.36);
+  };
+
+  _playSolution = () => {
+    // Attribute labels + dots
+    ['s-al1','s-al2','s-al3','s-al4'].forEach((id, i) => this._fade(id, i * 0.1, 0.32));
+    ['s-a1','s-a2','s-a3','s-a4'].forEach((id, i) => this._pop(id, 0.06 + i * 0.1));
+    // Lines: attributes → VA top match (muted green)
+    ['s-l1','s-l2','s-l3','s-l4'].forEach((id, i) => this._line(id, 0.36 + i * 0.07, 'kDrawMuted', 0.55));
+    // Lines: → lower matches (very faint)
+    ['s-lg1','s-lg2','s-lg3'].forEach((id, i) => this._line(id, 0.52 + i * 0.1, 'kDrawFaint', 0.45));
+    // VA Stand Down (best match pops)
+    this._pop('s-m1', 0.84);
+    this._fade('s-m1t', 1.02, 0.3);
+    this._fade('s-m1s', 1.14, 0.3);
+    // Harbor (fades in)
+    this._fade('s-m2', 1.24, 0.34);
+    this._fade('s-m2t', 1.34, 0.28);
+    this._fade('s-m2s', 1.44, 0.28);
+    // Downtown (fades in last)
+    this._fade('s-m3', 1.56, 0.34);
+    this._fade('s-m3t', 1.66, 0.28);
+    this._fade('s-m3s', 1.76, 0.28);
+  };
+
+  componentDidMount() {
+    clearTimeout(this._ht);
+    this._ht = setTimeout(this._playHero, 480);
+
+    this._obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        if (id === 'solution') this._playSolution();
+        if (id === 'problem') ['prob-1','prob-2','prob-3'].forEach((pid, i) => this._up(pid, i * 0.15));
+        if (id === 'how')     ['how-1','how-2','how-3'].forEach((pid, i) => this._up(pid, i * 0.17));
+        this._obs.unobserve(e.target);
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -50px 0px' });
+
+    ['solution','problem','how'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) this._obs.observe(el);
+    });
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._ht);
+    if (this._obs) this._obs.disconnect();
+  }
+
+  renderVals() {
+    const scale = this.props.graphicScale ?? 1;
+    return {
+      heroMaxW: (520 * scale) + 'px',
+      solMaxW: (560 * scale) + 'px',
+    };
+  }
+}
+</script>
 </body>
 </html>

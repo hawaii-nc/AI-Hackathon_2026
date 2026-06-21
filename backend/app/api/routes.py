@@ -35,11 +35,7 @@ class ReferralEmailRequest(BaseModel):
 @router.post('/upload-notes')
 async def upload_notes(file: UploadFile = File(...)):
     image_bytes = await file.read()
-<<<<<<< HEAD
     extracted_text = process_handwritten_note(image_bytes, filename=file.filename or "note.jpg")
-=======
-    extracted_text = process_handwritten_note(image_bytes)
->>>>>>> baac8bd4c9a0562b4b7867b173480eba76b11220
     tags = extract_client_tags(extracted_text)
     return {'extracted_text': extracted_text, 'tags': tags}
 
