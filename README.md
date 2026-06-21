@@ -3,7 +3,7 @@
 
 ---
 
-# **🌐 [LIVE DEMO → CLICK HERE TO VIEW THE WEBSITE](http://kokua-frontend-prod.s3-website.us-east-2.amazonaws.com)**
+# **🌐 LIVE DEMO → http://kokua-frontend-prod.s3-website.us-east-2.amazonaws.com/console.html
 
 ---
 
