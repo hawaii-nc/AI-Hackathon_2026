@@ -914,9 +914,14 @@ class Component extends DCLogic {
     if (!notes) { this.setState({ apiError: 'Add notes or upload a photo before generating matches.' }); return; }
     this.setState({ page: 'matches', stage: 'analyzing', apiError: '' });
     try {
+      // Bound the request so a slow/hung backend can't leave the spinner up forever.
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 12000);
       const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/match', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes }), signal: ctrl.signal,
       });
+      clearTimeout(to);
+      if (!response.ok) throw new Error('match ' + response.status);
       const data = await response.json();
       const matches = Array.isArray(data.matches) ? data.matches : [];
       const baseOrgs = this.getOrgs();
@@ -930,7 +935,10 @@ class Component extends DCLogic {
       const topKeys = matches.slice(0, 3).map((_, i) => orgKeys[i] || String(i));
       this.setState({ stage: 'matched', tags: data.tags || null, apiOrgs: Object.keys(newOrgs).length ? newOrgs : null, apiTopKeys: topKeys.length ? topKeys : null });
     } catch (err) {
-      this.setState({ stage: 'idle', apiError: 'Could not generate matches. Check your connection.' });
+      // Backend unreachable, errored, or timed out — fall back to the built-in
+      // local ranking so the matches page and referral flow always work instead
+      // of dead-ending on a blank screen.
+      this.setState({ stage: 'matched', apiError: '' });
     }
   };
   openReferral    = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
