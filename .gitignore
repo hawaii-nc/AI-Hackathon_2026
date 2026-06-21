@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .env
 backend/.env
 frontend/.env
@@ -30,3 +31,11 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+=======
+
+backend/.env
+frontend-ui/uploads/
+
+**/__pycache__/
+*.pyc
+>>>>>>> baac8bd4c9a0562b4b7867b173480eba76b11220
