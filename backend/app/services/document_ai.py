@@ -1,6 +1,9 @@
-﻿from google.cloud import documentai
+from google import genai
+from app.core.config import GEMINI_API_KEY
+from google.cloud import documentai
 from app.core.config import GOOGLE_PROJECT_ID
 import os
+
 
 def process_handwritten_note(image_bytes: bytes) -> str:
     client = documentai.DocumentProcessorServiceClient()

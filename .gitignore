@@ -1,3 +1,14 @@
+.env
+backend/.env
+frontend/.env
+backend/venv/
+backend/.venv/
+backend/outbox/
+frontend/node_modules/
+**/__pycache__/
+*.pyc
+.env.local
+
 # Credentials - never commit these
 *.json
 !package.json

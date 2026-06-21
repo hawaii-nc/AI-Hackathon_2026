@@ -2,6 +2,13 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
+load_dotenv()
+
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_ANON_KEY = os.getenv('SUPABASE_ANON_KEY')
+GOOGLE_PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
 _backend_dir = Path(__file__).resolve().parent.parent.parent
 load_dotenv(_backend_dir / ".env")
 
@@ -10,6 +17,4 @@ _creds = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 if _creds and not Path(_creds).is_absolute():
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(_backend_dir / _creds)
 
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_ANON_KEY = os.getenv('SUPABASE_ANON_KEY')
-GOOGLE_PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID')
+
