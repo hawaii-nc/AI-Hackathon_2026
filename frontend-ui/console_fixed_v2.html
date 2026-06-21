@@ -387,6 +387,21 @@ class Component extends DCLogic {
 
   getApiUrl = (path) => `${API_BASE.replace(/\/$/, '')}${path}`;
 
+  // Aborts after a timeout so a slow/hanging backend can never leave the UI
+  // stuck on a spinner. Returns the response; callers still check response.ok.
+  fetchWithTimeout = async (url, options = {}, timeoutMs = 45000) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, Object.assign({}, options, { signal: controller.signal }));
+    } catch (err) {
+      if (err && err.name === 'AbortError') throw new Error('The request timed out. Please try again.');
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
   getNotesEl = () => document.getElementById('intake-notes');
 
   getNotesText = () => {
@@ -555,7 +570,7 @@ class Component extends DCLogic {
       try {
         const formData = new FormData();
         formData.append('file', f);
-        const response = await fetch(this.getApiUrl('/api/upload-notes'), {
+        const response = await this.fetchWithTimeout(this.getApiUrl('/api/upload-notes'), {
           method: 'POST',
           body: formData,
         });
@@ -590,7 +605,7 @@ class Component extends DCLogic {
     }
     this.setState({ stage: 'analyzing', apiError: '', referralOpen: false, referralStage: 'idle' });
     try {
-      const response = await fetch(this.getApiUrl('/api/match'), {
+      const response = await this.fetchWithTimeout(this.getApiUrl('/api/match'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes }),
@@ -614,7 +629,7 @@ class Component extends DCLogic {
   };
   generateReferral = async (match) => {
     try {
-      const response = await fetch(this.getApiUrl('/api/referral'), {
+      const response = await this.fetchWithTimeout(this.getApiUrl('/api/referral'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

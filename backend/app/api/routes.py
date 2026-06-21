@@ -1,4 +1,7 @@
+import asyncio
+
 from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi.concurrency import run_in_threadpool
 from app.services.matching import match_client_to_shelters, extract_client_tags
 from app.services.document_ai import process_handwritten_note
 from app.services.referral import generate_referral, draft_referral_email, draft_patient_referral_email
@@ -53,8 +56,26 @@ class ServiceEmailRequest(BaseModel):
 @router.post('/upload-notes')
 async def upload_notes(file: UploadFile = File(...)):
     image_bytes = await file.read()
-    extracted_text = process_handwritten_note(image_bytes, filename=file.filename or "note.jpg")
-    tags = extract_client_tags(extracted_text)
+
+    # DocumentAI and Gemini are blocking SDK calls — run them in a threadpool so
+    # they don't stall the event loop, and bound each with a timeout so a slow or
+    # hanging upstream returns a clean error instead of freezing the request.
+    try:
+        extracted_text = await asyncio.wait_for(
+            run_in_threadpool(process_handwritten_note, image_bytes, filename=file.filename or "note.jpg"),
+            timeout=40,
+        )
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail='Text extraction timed out. Try a smaller or clearer photo.')
+
+    try:
+        tags = await asyncio.wait_for(
+            run_in_threadpool(extract_client_tags, extracted_text),
+            timeout=30,
+        )
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail='Tag extraction timed out. Please try again.')
+
     return {'extracted_text': extracted_text, 'tags': tags}
 
 # Match client to shelters

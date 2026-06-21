@@ -483,6 +483,38 @@ Outreach Coordinator, Hawaiʻi Department of Health</textarea>
   &quot;showLegend&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;},
   &quot;showProximity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
 }">
+// Backend base URL. Override with ?api=<url> in the page URL for local testing,
+// e.g. ...console.html?api=http://localhost:8000
+const API_BASE = (() => {
+  try {
+    const override = new URLSearchParams(window.location.search).get('api');
+    if (override) return override.replace(/\/$/, '');
+  } catch (e) {}
+  return 'http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com';
+})();
+
+// fetch wrapper that (1) aborts after a timeout so a slow/hanging backend can
+// never leave the UI stuck on a spinner, and (2) turns non-2xx responses into
+// thrown errors carrying the backend's "detail" message.
+async function fetchWithTimeout(url, options = {}, timeoutMs = 45000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, Object.assign({}, options, { signal: controller.signal }));
+    if (!response.ok) {
+      let detail = 'Request failed (' + response.status + ')';
+      try { const body = await response.json(); if (body && body.detail) detail = body.detail; } catch (e) {}
+      throw new Error(detail);
+    }
+    return response;
+  } catch (err) {
+    if (err && err.name === 'AbortError') throw new Error('The request timed out. Please try again.');
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 class Component extends DCLogic {
   MARCUS_TEXT = "Marcus, 52. Army veteran, two tours. Lost his apartment three weeks ago after a relapse — drinking heavily again. Has PTSD, hasn't had meds in months. Sleeping near the train depot. Four shelters already turned him away. Wants help but says he's 'done being passed around.'";
 
@@ -670,11 +702,11 @@ class Component extends DCLogic {
       r.onload = (ev) => res(ev.target.result);
       r.readAsDataURL(f);
     });
-    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name });
+    this.setState({ ocrStage: 'reading', ocrThumb: thumb, ocrName: f.name, apiError: '' });
     try {
       const formData = new FormData();
       formData.append('file', f);
-      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/upload-notes', {
+      const response = await fetchWithTimeout(API_BASE + '/api/upload-notes', {
         method: 'POST',
         body: formData,
       });
@@ -683,7 +715,12 @@ class Component extends DCLogic {
       if (el) el.value = data.extracted_text || '';
       this.setState({ ocrStage: 'done' });
     } catch (err) {
-      this.setState({ ocrStage: 'idle', apiError: 'Could not read the photo. Try typing notes instead.' });
+      this.setState({
+        ocrStage: 'idle',
+        ocrThumb: null,
+        ocrName: '',
+        apiError: 'Could not read the photo: ' + (err && err.message ? err.message : 'unknown error') + ' — try typing notes instead.',
+      });
     }
     e.target.value = '';
   };
@@ -698,7 +735,7 @@ class Component extends DCLogic {
     }
     this.setState({ page: 'matches', stage: 'analyzing', apiError: '' });
     try {
-      const response = await fetch('http://kokua-backend-env.eba-pki3m9xk.us-east-2.elasticbeanstalk.com/api/match', {
+      const response = await fetchWithTimeout(API_BASE + '/api/match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes }),
@@ -710,7 +747,7 @@ class Component extends DCLogic {
         matches: Array.isArray(data.matches) ? data.matches : [],
       });
     } catch (err) {
-      this.setState({ stage: 'idle', apiError: 'Could not generate matches. Check your connection.' });
+      this.setState({ stage: 'idle', apiError: 'Could not generate matches: ' + (err && err.message ? err.message : 'check your connection.') });
     }
   };
   openReferral = (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ referralOpen: true, referralStage: 'draft' }); };
